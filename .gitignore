@@ -1,0 +1,27 @@
+# Secrets
+.env
+.env.local
+.env.*
+!.env.example
+*.key
+
+# Python / OS
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+*.tmp
+.codex_tmp/
+
+# Heavy / regenerable — copy ProductImages separately on the other PC
+/ProductImages
+/ProductImages/
+output/
+outputs/
+google_product_feed.csv
+
+# Keep slim queue state
+!output/product_rotation.json
+!output/publish_configs/
+!output/publish_configs/**

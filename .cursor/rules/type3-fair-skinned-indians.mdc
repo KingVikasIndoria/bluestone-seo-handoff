@@ -1,0 +1,12 @@
+# Type 3 casting: fair-skinned Indians only
+
+When generating BlueStone festive blog Type 3 images (hero, lifestyle, or any scene with visible people/skin):
+
+1. **Cast fair-skinned Indian subjects only** — light wheatish to fair North Indian / urban Indian complexion.
+2. State casting explicitly in the prompt (e.g. "fair-skinned Indian father and child").
+3. Add negatives: `dark skin, deep brown skin, heavily tanned skin`.
+4. Applies to faces, hands, wrists, necks — any visible skin.
+5. Flatlay with **no people** is exempt.
+6. Do not regenerate or ship people images that default to deep/dark complexions when the brief calls for Indian lifestyle.
+
+This applies to Higgsfield MCP (current Type 3 provider) and any future Type 3 generator.

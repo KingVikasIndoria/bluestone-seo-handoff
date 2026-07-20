@@ -1,0 +1,49 @@
+{
+  "occasion": "fathers-day-2026",
+  "article": "Week1 Rank14 - happy fathers day wishes quotes and messages for every dad",
+  "wp_post_id": 28468,
+  "workflow": "Magnific Nano Banana Pro realism with direct public CDN references. Proportional scale constraints, single-featured-product limits, and strict visual hygiene checks.",
+  "notes": "Tetyana Gold Chain: classic solid gold link chain. Jasper Band For Him: sleek textured gold band ring. Volara Bracelet For Him: masculine modern link bracelet.",
+  "magnific": {
+    "model": "nano-banana-pro",
+    "theme_anchor": "High-end commercial jewellery photography, hyper-realistic, HD quality, no distortion of jewellery, identical scale and design, macro-level detail, physically accurate details, natural textures only, no stylization, no illustration. Soft natural window light, warm daylight color temperature, realistic soft shadows, proper shallow depth of field. Shot on high-end DSLR, cinematic realism, 4K resolution, widescreen 16:9 landscape with full frame composition and safe margins. Entire subjects and jewellery fully visible, nothing cropped at frame edges.",
+    "negative_prompt": "illustration, CGI look, cartoon, fantasy style, over-stylized, plastic glass, fake diamonds, fake gemstones, artificial lighting, studio HDR glow, unreal reflections, blurry jewellery, noise, low detail, AI artifacts, painting, digital art, unreal scale, oversized jewellery, distorted hands, extra fingers, extra bracelets, extra rings, product shot on plain background, cropped faces, cut-off heads, cut-off jewellery, out of frame, readable text, logos, giant rings, exaggerated proportions"
+  },
+  "slots": {
+    "hero": {
+      "reference_images": [
+        "https://kinclimg5.bluestone.com/giproduct/BVEM0663C88_YAA22XXXXXXXXXXXX_ABCD00-PICS-00003-1024-99995.png",
+        "https://kinclimg0.bluestone.com/giproduct/BVEM0663C88_YAA22XXXXXXXXXXXX_ABCD00-PICS-00000-1024-99995.png",
+        "https://kinclimg9.bluestone.com/giproduct/BVEM0663C88_YAA22XXXXXXXXXXXX_ABCD00-PICS-00001-1024-99995.png",
+        "https://kinclimg2.bluestone.com/giproduct/BVEM0663C88_YAA22XXXXXXXXXXXX_ABCD00-PICS-00002-1024-99995.png"
+      ],
+      "prompt": "Father's Day warm festive scene. A close-up lifestyle shot of a smiling father hugging his child. The father wears the identical gold chain shown in the reference images (@img1, @img2, @img3, @img4) naturally around his neck, resting on his collarbone. The gold chain must be in sharp focus, 100% accurate, and identical in shape, link pattern, and proportions to the reference images, with zero distortion. The gold chain must be rendered at its actual, natural product scale. Maintain the exact proportions of the gold chain relative to the father's neck, avoiding any oversized, thick, or exaggerated rendering. This gold chain is the single and only piece of jewelry in the entire image; the child and background characters wear simple festive clothes with absolutely no other jewelry. There are absolutely no floating overlays, no separate cutout drawings, and no giant product diagrams in front of the characters' faces or anywhere in the image. Keep the design of these jewelries accurate and do not change it's design. Add light, shadow and sufficient depth to the jewelleries. Jewelleries in focus. Hyperrealistic jewelry photography image. Position the jewelries naturally. Use dramatic lighting, contrast and shadow play to enhance depth. Do not change or crop the horizontal composition, fit it in the creative ratio. Avoid: any other jewelry, extra necklaces, extra rings, extra bracelets, distorted hands, floating overlays, graphic drawings, cutouts, product diagrams, extra floating jewelry, split screen, boxes, labels, oversized jewelry. • Do not distort or hallucinate the jewelries",
+      "alt": "Father's Day warm family celebration featuring The Tetyana Gold Chain"
+    },
+    "flatlay": {
+      "reference_images": [
+        "https://kinclimg0.bluestone.com/giproduct/BISL0851R28_YAA22XXXXXXXXXXXX_ABCD00-PICS-00001-1024-70393.png",
+        "https://kinclimg7.bluestone.com/giproduct/BISL0851R28_YAA22XXXXXXXXXXXX_ABCD00-PICS-00000-1024-70393.png",
+        "https://kinclimg3.bluestone.com/giproduct/BISL0851R28_YAA22XXXXXXXXXXXX_ABCD00-PICS-00002-1024-70393.png",
+        "https://kinclimg6.bluestone.com/giproduct/BISL0851R28_YAA22XXXXXXXXXXXX_ABCD00-PICS-00003-1024-70393.png",
+        "https://kinclimg1.bluestone.com/giproduct/BISL0851R28_YAA22XXXXXXXXXXXX_ABCD00-PICS-00004-1024-70393.png"
+      ],
+      "prompt": "Father's Day greeting card flatlay on a rich dark leather organizer, top-down view. On the right, a pen and a rolled-up gift map lie. At the center, the identical gold band ring shown in the reference images (@img1, @img2, @img3, @img4, @img5) is in sharp focus. The ring must be rendered at its actual, natural product scale. Maintain the exact proportions of the ring, textured metal detailing, and band width, with zero distortion. A blank card is on the left side with a simple handwritten note that reads: Happy Father's Day. Realistic shallow depth of field, warm candlelight. Keep the design of these jewelries accurate and do not change it's design. Add light, shadow and sufficient depth to the jewelleries. Jewelleries in focus. Hyperrealistic jewelry photography image. Position the jewelries naturally. Use dramatic lighting, contrast and shadow play to enhance depth. Do not change or crop the horizontal composition, fit it in the creative ratio. Avoid: floating overlays, graphic drawings, cutouts, product diagrams, extra floating jewelry, split screen, boxes, labels, oversized jewelry. • Do not distort or hallucinate the jewelries",
+      "alt": "Father's Day greeting card flatlay with The Jasper Band For Him"
+    },
+    "lifestyle": {
+      "reference_images": [
+        "https://kinclimg0.bluestone.com/giproduct/BISL1006V287_YAA18DIG6XXXXXXXX_ABCD00-PICS-00000-1024-104117.png",
+        "https://kinclimg7.bluestone.com/giproduct/BISL1006V287_YAA18DIG6XXXXXXXX_ABCD00-PICS-00001-1024-104117.png",
+        "https://kinclimg2.bluestone.com/giproduct/BISL1006V287_YAA18DIG6XXXXXXXX_ABCD00-PICS-00002-1024-104117.png"
+      ],
+      "prompt": "Father's Day warm celebration scene. A close-up lifestyle shot of a man's wrist as he pours a cup of hot tea from a kettle. On his wrist, he wears the identical link bracelet shown in the reference images (@img1, @img2, @img3) worn naturally. The link bracelet must be in sharp focus, 100% accurate, and identical in gold and platinum link structure and proportions to the reference images, with zero distortion. The link bracelet must be rendered at its actual, natural product scale. Maintain the exact proportions of the link bracelet relative to the man's wrist, avoiding any oversized, giant, or exaggerated rendering. This link bracelet is the single and only piece of jewelry in the entire image. There are absolutely no floating overlays, no separate cutout drawings, and no giant product diagrams in front of his arm or anywhere in the image. Keep the design of these jewelries accurate and do not change it's design. Add light, shadow and sufficient depth to the jewelleries. Jewelleries in focus. Hyperrealistic jewelry photography image. Use dramatic lighting, contrast and shadow play to enhance depth. Do not change or crop the horizontal composition, fit it in the creative ratio. Avoid: any other jewelry, extra rings, extra bracelets, watches, distorted hands, floating overlays, graphic drawings, cutouts, product diagrams, extra floating jewelry, split screen, boxes, labels, oversized jewelry, giant rings, exaggerated proportions. • Do not distort or hallucinate the jewelries",
+      "alt": "Father's Day warm celebration lifestyle with The Volara Bracelet For Him"
+    }
+  },
+  "output": {
+    "hero": "output/magnific_generated/fathers-day-hero-2026.webp",
+    "flatlay": "output/magnific_generated/fathers-day-flatlay-2026.webp",
+    "lifestyle": "output/magnific_generated/fathers-day-lifestyle-2026.webp"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "occasion": "OCCASION-SLUG",
+  "article": "Week N RankX - primary keyword",
+  "wp_post_id": 0,
+  "workflow": "Higgsfield MCP nano_banana_pro. PEOPLE: scene-first + 2 refs max + people_theme_anchor. FLATLAY: product_theme_anchor + 3-4 refs.",
+  "notes": "1) People slots: import 2 CDN angles only (front + 3/4). Flatlay: 3-4. 2) media_import_url then generate_image medias role=image. 3) Generate AFTER article publish. 4) Carousel uses ProductImages/seo images/ only. 5) Never lead people prompts with commercial/macro jewellery language (causes floating packshot overlays).",
+  "prompt_rules": {
+    "people_slots": "scene first, jewellery second; 2 refs max; people_theme_anchor; negative_prompt_people; count=1; retry only if QA fails",
+    "flatlay": "product_theme_anchor OK; 3-4 refs; count=1",
+    "credits": "Exactly 3 images per article (hero+flatlay+lifestyle). No dual variants by default.",
+    "anti_overlay": "Do not lead people prompts with commercial/macro jewellery language"
+  },
+  "higgsfield": {
+    "model": "nano_banana_pro",
+    "aspect_ratio": "16:9",
+    "resolution": "2k",
+    "people_theme_anchor": "Photoreal candid lifestyle photograph, natural skin texture, no illustration, no CGI. Soft natural window light, warm daylight, realistic soft shadows, gentle shallow depth of field. Shot on DSLR, 16:9 full frame with safe margins. People are the primary subject; jewellery is a small worn detail on the body, not a floating product graphic. Entire faces and worn jewellery fully visible, nothing cropped at frame edges.",
+    "product_theme_anchor": "Photoreal product-in-scene jewellery photograph, HD quality, no distortion of jewellery, identical scale and design, physically accurate metal and stone detail, natural textures only, no stylization, no illustration. Soft natural window light, warm daylight, realistic soft shadows, shallow depth of field. Shot on DSLR, 16:9 full frame with safe margins. Entire jewellery fully visible, nothing cropped at frame edges.",
+    "negative_prompt_people": "floating jewellery overlay, giant pendant collage, product cutout over people, packshot composited on lifestyle photo, oversized necklace covering torso, graphic drawings, cutouts, product diagrams, split screen, illustration, CGI look, cartoon, fake diamonds, studio HDR glow, unreal scale, oversized jewellery, distorted hands, extra fingers, extra bracelets, extra rings, extra earrings, product shot on plain background, cropped faces, cut-off heads, readable text, logos, dark skin, deep brown skin, heavily tanned skin",
+    "negative_prompt": "illustration, CGI look, cartoon, fantasy style, over-stylized, plastic glass, fake diamonds, fake gemstones, artificial lighting, studio HDR glow, unreal reflections, blurry jewellery, noise, low detail, AI artifacts, painting, digital art, unreal scale, oversized jewellery, floating overlays, cutouts, product diagrams, readable text, logos, exaggerated proportions, dark skin, deep brown skin, heavily tanned skin",
+    "casting_rule": "Fair-skinned Indians only for hero/lifestyle (any visible people/skin). Light wheatish to fair North Indian / urban Indian complexion. Flatlay with no people is exempt."
+  },
+  "slots": {
+    "hero": {
+      "reference_images": [],
+      "prompt": "Casting (required): fair-skinned Indian subjects only. Light wheatish to fair North Indian / urban Indian complexion.\n\n[Occasion] [year] candid lifestyle photograph, mid-shot of people (not a product ad). [Warm people scene]. Faces/upper bodies fill most of the frame. Subject is physically wearing the identical jewellery from (@img1, @img2) on [body part] at real-world size (small in frame), with soft contact shadow on skin/fabric. Camera focuses on people; jewellery sharp but NOT the largest object. Design fidelity to refs. ONLY jewellery piece. Bare ears/wrists otherwise. CRITICAL: attached to body — never floating cutout / packshot overlay.",
+      "alt": "[primary KW] [year] hero, fair-skinned Indian [subject] wearing [product name]"
+    },
+    "flatlay": {
+      "reference_images": [],
+      "prompt": "[Occasion] [year] flatlay top-down. [Lived-in desk/table with festive props]. Blank dark phone fully in frame if included. The identical jewellery from (@img1, @img2, @img3) sharp on surface, entire piece visible, natural product scale. Warm light. No people. No floating overlays.",
+      "alt": "[Occasion] [year] flatlay with [product name]"
+    },
+    "lifestyle": {
+      "reference_images": [],
+      "prompt": "Casting (required): fair-skinned Indian subjects only. Light wheatish to fair North Indian / urban Indian complexion.\n\n[Occasion] [year] lifestyle mid-shot. [Hands/wrist/ear in action]. Subject physically wears identical jewellery from (@img1, @img2) at natural scale with contact shadow. Sharp but small vs body. Single piece only. Never floating packshot overlay.",
+      "alt": "[primary KW / supporting KW] [year] lifestyle with [product name]"
+    }
+  },
+  "output": {
+    "hero": "output/magnific_generated/OCCASION-hero.webp",
+    "flatlay": "output/magnific_generated/OCCASION-flatlay.webp",
+    "lifestyle": "output/magnific_generated/OCCASION-lifestyle.webp"
+  }
+}

@@ -1,0 +1,14 @@
+---
+description: Festive Week 1-2 queue is New publish only — never Optimize existing posts.
+alwaysApply: true
+---
+
+# New blogs only (ignore Optimize)
+
+For BlueStone festive SEO articles from `SEO Strategy 2026.xlsx` → `Week 1-2`:
+
+1. **Always publish a new WordPress post** (new slug, `publish_*` flow).
+2. **Ignore** sheet `Action = Optimize`. Do not patch or rewrite an existing BlueStone URL for that keyword.
+3. If the sheet still shows an old BlueStone Blog URL on an Optimize-turned-New row, treat it as **reference only** — do not update that post. Create a fresh URL instead.
+4. Do **not** invent a second post for ranks already completed (see Execution Note / live URL). Completed historical Optimize rows stay as-is; do not redo them as New unless the user asks.
+5. Template script: `scripts/publish_diwali_article.py` / `publish_bhai_dooj_article.py`. Do not start from `optimize_*.py` for new queue work.

@@ -1,0 +1,17 @@
+---
+description: Mid-article product carousels must use ProductImages/seo images only (never raw packshots).
+alwaysApply: true
+---
+
+# Carousel images = SEO images only
+
+When building or patching BlueStone festive blog carousels (`bs-cf`):
+
+1. **Source Type 2 carousel cards only from** `ProductImages/seo images/<Category>/<Exact Product Name>.png`.
+2. **Never** use `ProductImages/raw/`, multi-angle folders, CDN `giproduct` primary packshots, or Google feed images for carousel cards.
+3. Convert those SEO PNGs to WebP (~960×535, quality ~82) before upload; filename `{product-slug}-carousel.webp`.
+4. Carousel alt: `{occasion/KW + year} gift idea: {Exact Product Name}`; set WP media `title` + `alt_text` on upload (see `.cursor/rules/image-seo.mdc`).
+5. Raw / CDN product angles are for **Type 3 Higgsfield prompts only** (`reference_images` → MCP `media_import_url`), not the mid-article carousel.
+6. If an SEO image is missing for an approved SKU, stop and ask — do not fall back to raw.
+
+This applies to all New article scripts (`publish_*`) and any live carousel image swaps. (Legacy `optimize_*` scripts are not used for new queue work.)

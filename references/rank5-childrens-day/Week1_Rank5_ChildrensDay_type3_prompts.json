@@ -1,0 +1,34 @@
+{
+  "occasion": "childrens-day-2026",
+  "article": "Week1 Rank5 - inspirational children's day quotes",
+  "wp_post_id": 16280,
+  "workflow": "hyper-real prompts + optional structure_ref. People scenes: NO structure ref (describe SKU in text). Flatlay: optional low structure ref or text-only.",
+  "notes": "Winkoo = gold chain + green evil eye charm. Novare = black beads + blue evil eye on gold chain. structure_ref clones product flatlay — skip for people scenes.",
+  "magnific": {
+    "model": "mystic",
+    "theme_anchor": "Ultra-realistic photography, macro-level detail, physically accurate details, natural textures only, no stylization, no illustration. Soft natural window light from the left, warm daylight color temperature, realistic soft shadows. Shot on high-end DSLR, shallow depth of field, cinematic realism, 4K resolution, widescreen 16:9 landscape with full frame composition and safe margins — entire subjects and jewellery fully visible, nothing cropped at frame edges.",
+    "negative_prompt": "illustration, CGI look, cartoon, fantasy style, over-stylized, plastic glass, fake gemstones, artificial lighting, studio HDR glow, unreal reflections, blurry jewellery, noise, low detail, AI artifacts, painting, digital art, unreal scale, oversized jewellery, rainbow beads, product shot on plain background, cropped faces, cut-off jewellery"
+  },
+  "slots": {
+    "hero": {
+      "structure_ref": null,
+      "prompt": "Children's Day 2026 Bal Diwas. Close-up mid-shot, 85mm lens. Indian mother and 6-year-old daughter in warm sunlit living room with soft balloons. Mother presenting thin yellow gold kids bracelet — fine gold cable chain with small round green enamel evil eye charm — to daughter, child-scale jewellery sharp in mother's palm or on daughter wrist. Both smiling, full faces in frame, safe margins.",
+      "alt": "Children's Day 2026 lifestyle hero, mother gifting kids evil eye bracelet to daughter"
+    },
+    "flatlay": {
+      "structure_ref": null,
+      "prompt": "Children's Day 2026 flatlay top-down, 100mm macro. Child wooden desk: open notebook, crayons in cup, red balloon, milk glass, snack. Black phone left with blank dark screen, fully in frame. Center: thin yellow gold kids nazariya bracelet — small black round beads with gold spacers and blue white evil eye charm, entire piece sharp focus on notebook. Warm morning light, desk fills frame.",
+      "alt": "Children's Day 2026 lifestyle flatlay, nazariya bracelet on child's desk with crafts and blank phone"
+    },
+    "lifestyle": {
+      "structure_ref": null,
+      "prompt": "Children's Day 2026 Bal Diwas. Mid-shot 85mm. Indian father, mother and 7-year-old daughter laughing in bright living room with colourful balloons. Daughter raises wrists showing thin yellow gold kids bracelet with green evil eye charm and gold bangles — wrist jewellery sharp macro focus. All faces visible waist up, full frame safe margins.",
+      "alt": "Father and daughter celebrating Children's Day 2026, daughter wearing kids evil eye bracelet"
+    }
+  },
+  "output": {
+    "hero": "output/magnific_generated/childrens-day-hero-2026.webp",
+    "flatlay": "output/magnific_generated/childrens-day-flatlay-2026.webp",
+    "lifestyle": "output/magnific_generated/childrens-day-lifestyle-2026.webp"
+  }
+}

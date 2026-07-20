@@ -1,0 +1,37 @@
+---
+description: Rotate SEO/Type3 products, caption Type 3 images, mix paragraphs on education posts.
+alwaysApply: true
+---
+
+# Product rotation + Type 3 captions + education prose
+
+## Product rotation (carousel + Type 3)
+
+1. **Do not default** every article to Valeria / Muricelle / Rohal.
+2. Across a batch, **rotate categories**: pendants, earrings, bangles, rings, bracelets, mangalsutra, necklaces, chains, kids (when relevant).
+3. Track recent Type 3 SKUs in `article generation seo codex/output/product_rotation.json` and avoid reusing the same hero/flatlay/lifestyle trio on consecutive ranks.
+4. **Occasion fit still wins:**
+   - Men / mama ji / him gifts → For Him pendants, bracelets, bands, chains
+   - Newborn / kids → Kids Bracelets + protective evil-eye styles
+   - Wedding / mangalsutra intent → mangalsutra in the mix
+   - Romantic crush / couple → pendants, rings, earrings (vary SKUs)
+5. Carousel (6 products) and Type 3 (3 products) should **overlap at most 1 SKU** when the SEO library allows.
+6. Flatlay **props** should also rotate (not always phone + napkin + rose). Vary desk props by occasion.
+
+## Type 3 image captions (required)
+
+For every body Type 3 image (flatlay + lifestyle; featured hero caption optional in media title only):
+
+- Gutenberg `wp:image` must include a short `<figcaption>` under the image.
+- Caption pattern: `{Occasion/KW + year} vibe: {Exact Product Name}` or one warm editorial line naming the product (no prices; no em/en dash; no spaced hyphen).
+- Example: `Crush birthday 2026 vibe: The Lumeelle Cluster Pendant`
+- Keep captions unique per slot; sync with product used in that image.
+
+## Educational / explainer blogs
+
+When the article is meaning/history/why/how (not a 100+ wishes listicle):
+
+1. Prefer **short paragraphs** as the main reading experience.
+2. Use **short bullet lists** only for quick facts, steps, or 4 to 8 key takeaways, not every H2.
+3. Typical H2 pattern: 1 to 3 paragraphs, then optional compact list, then a bridge sentence into the next section.
+4. Still meet FAQ, schema, year lock, and hard copy rules.

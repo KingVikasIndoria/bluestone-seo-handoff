@@ -1,0 +1,67 @@
+{
+  "rank": 46,
+  "sections_json": "output/Week1_Rank46_MothersDayThought_sections.json",
+  "output_prefix": "Week1_Rank46_MothersDayThought",
+  "carousel_id": "bs-cf-momthought",
+  "occasion_year": "Mothers Day 2027",
+  "carousel_alt_prefix": "mothers day thought 2027 gift idea",
+  "content_mode": "education",
+  "gift_h2": "A Soft Mothers Day Gift Idea (If You Are Gifting Too)",
+  "gift_blurb": "A mothers day thought lands even warmer with a lasting keepsake. Pendants, bangles, earrings, and rings make thoughtful gifts for Mom in 2027. Explore these six approved BlueStone designs.",
+  "conclusion_html": "The best mothers day thought for 2027 sounds grateful, simple, and true. Pick a short status line, a card quote, or a heart touching note, and tell Mom she is the home your heart returns to.",
+  "schema_keywords": [
+    "mothers day thought",
+    "nice mothers day quotes",
+    "mothers day wishes quotes",
+    "heart touching lines for mother in english",
+    "mothers day love quotes"
+  ],
+  "type3_prompts_json": "output/Week1_Rank46_MothersDayThought_type3_prompts.json",
+  "products": [
+    {
+      "code": "BISW1080P32",
+      "name": "The Teshvarya Pendant",
+      "url": "https://www.bluestone.com/pendants/the-teshvarya-pendant~173771.html",
+      "png": "ProductImages/seo images/Pendants/The Teshvarya Pendant.png"
+    },
+    {
+      "code": "BIPM0017R18",
+      "name": "The Malibu Ring",
+      "url": "https://www.bluestone.com/rings/the-malibu-ring~2321.html",
+      "png": "ProductImages/seo images/Rings/The Malibu Ring.png"
+    },
+    {
+      "code": "BINS0639R18",
+      "name": "The Gigi Ring",
+      "url": "https://www.bluestone.com/rings/the-gigi-ring~64382.html",
+      "png": "ProductImages/seo images/Rings/The Gigi Ring.png"
+    },
+    {
+      "code": "BIKR0993R117",
+      "name": "The Luvee Highway Ring",
+      "url": "https://www.bluestone.com/rings/the-luvee-highway-ring~123242.html",
+      "png": "ProductImages/seo images/Rings/The Luvee Highway Ring.png"
+    },
+    {
+      "code": "BISE0932R181",
+      "name": "The Le Sommet Ring",
+      "url": "https://www.bluestone.com/rings/the-le-sommet-ring~105031.html",
+      "png": "ProductImages/seo images/Rings/The Le Sommet Ring.png"
+    },
+    {
+      "code": "BIIP0090R24",
+      "name": "The Ebony Ring",
+      "url": "https://www.bluestone.com/rings/the-ebony-ring~9686.html",
+      "png": "ProductImages/seo images/Rings/The Ebony Ring.png"
+    }
+  ],
+  "flatlay_insert_h2": "WhatsApp and Instagram Mothers Day Thoughts",
+  "lifestyle_insert_h2": "Short Mothers Day Thoughts for Status",
+  "more_reads_html": "Explore our other guides including <a href=\"https://blog.bluestone.com/rakhi-wishes-2026/\">Rakhi wishes for 2026</a>, <a href=\"https://blog.bluestone.com/funny-friendship-shayari-2026/\">Funny friendship shayari for 2026</a>, <a href=\"https://blog.bluestone.com/happy-diwali-message-2026/\">Happy Diwali messages for 2026</a>, and <a href=\"https://blog.bluestone.com/happy-birthday-to-myself-quotes-2026/\">Happy birthday to myself quotes for 2026</a>.",
+  "faq_h2": "Frequently Asked Questions about Mothers Day Thought",
+  "section_leads": {
+    "Mothers Day Thought for 2027": "A mothers day thought for 2027 works best when it sounds like gratitude you finally said out loud. Keep it simple, name what she does, and let the feeling lead the wording.",
+    "Nice Mothers Day Quotes": "Nice mothers day quotes work when they feel sincere instead of ornate. Choose a line that matches how your mother actually loves, through food, advice, humour, or quiet presence.",
+    "Heart Touching Lines for Mother in English": "Heart touching lines for mother in english land best when they name a real memory. Skip dramatic poetry if a plain sentence feels truer to your relationship."
+  }
+}

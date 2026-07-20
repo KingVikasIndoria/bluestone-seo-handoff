@@ -1,0 +1,23 @@
+---
+description: Image SEO for BlueStone festive blogs — filenames, alts, media titles, WebP.
+alwaysApply: true
+---
+
+# Image SEO (Type 2 + Type 3)
+
+For every festive blog publish:
+
+1. **WebP only** for carousel and Type 3 (q ~82). No heavy PNG heroes.
+2. **Filenames:** Type 3 `{occasion}-{hero|flatlay|lifestyle}-{year}.webp`; Type 2 `{product-slug}-carousel.webp`.
+3. **Alts unique** with locked festive year + product/scene. **Primary KW in hero alt.**
+4. **Carousel alts:** `{occasion/KW + year} gift idea: {Exact Product Name}` (not bare product name).
+5. **WP media titles** descriptive on upload (`alt_text` + `title` together). Sync body `wp:image` alts.
+5b. **Type 3 body captions:** flatlay + lifestyle Gutenberg images need a short `<figcaption>` (`{occasion/KW + year} vibe: {Exact Product Name}`). Rotate products across articles (see `product-rotation-captions-education.mdc`).
+6. Featured hero must **not** also appear in the body.
+7. Gutenberg Type 3: `sizeSlug: "full"` only — no `large` + `width`/`height`/`loading`/`decoding`.
+
+Canonical detail: `KnowledgeBase/Writing/HIGGSFIELD_IMAGE_GENERATION.md` → **Image SEO**.
+
+Type 3 people heroes: use people-first prompts + 2 product refs max (see HIGGSFIELD_IMAGE_GENERATION.md). Macro/commercial jewellery lead-ins cause floating packshot overlays.
+
+Credits: exactly **3** Type 3 images per article (`count: 1` each for hero/flatlay/lifestyle). Retry a slot only if QA fails — no dual variants by default. Prefer “photoreal candid” over “hyper-realistic”.
