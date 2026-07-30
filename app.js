@@ -113,12 +113,34 @@ function getActiveDataset() {
 function renderKpiCards() {
   if (!appData) return;
   const allBlogs = appData.all_blogs || [];
-  const stratComp = appData.metadata ? appData.metadata.strategy_comparison : {};
+  const stratComp = (appData.metadata && appData.metadata.strategy_comparison) ? appData.metadata.strategy_comparison : {};
 
-  // Weekly Publish Volume (Last 7 Days)
-  const weeklyVol = stratComp.published_last_7_days || 0;
+  // Calculate Weekly Publish Volume (Last 7 Days) with dynamic fallback
+  let weeklyVol = stratComp.published_last_7_days || 0;
+  if (!weeklyVol && allBlogs.length) {
+    let latestMs = 0;
+    allBlogs.forEach(b => {
+      if (b.raw_date) {
+        const ms = new Date(b.raw_date).getTime();
+        if (!isNaN(ms) && ms > latestMs) latestMs = ms;
+      }
+    });
+    if (!latestMs) latestMs = Date.now();
+    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+    const cutoffMs = latestMs - sevenDaysMs;
+
+    allBlogs.forEach(b => {
+      if (b.raw_date) {
+        const ms = new Date(b.raw_date).getTime();
+        if (!isNaN(ms) && ms >= cutoffMs) weeklyVol++;
+      }
+    });
+  }
+
   if (document.getElementById("kpiWeeklyVol")) {
     document.getElementById("kpiWeeklyVol").innerText = weeklyVol.toLocaleString();
+  }
+  if (document.getElementById("kpiWeeklyVolSub")) {
     document.getElementById("kpiWeeklyVolSub").innerHTML = `<i class="fa-solid fa-bolt"></i> ${weeklyVol} blogs published in last 7 days`;
   }
 
@@ -144,11 +166,11 @@ function renderKpiCards() {
   const avgPos = positions.length ? (positions.reduce((a,b)=>a+b,0)/positions.length).toFixed(1) : "0.0";
   const indexingRate = allBlogs.length ? ((indexedCount / allBlogs.length) * 100).toFixed(1) : "0.0";
 
-  document.getElementById("kpiClicks").innerText = totalClicks.toLocaleString();
-  document.getElementById("kpiImpressions").innerText = totalImpressions.toLocaleString();
-  document.getElementById("kpiCtr").innerText = `${avgCtr}%`;
-  document.getElementById("kpiIndexing").innerText = `${indexingRate}%`;
-  document.getElementById("kpiIndexingSub").innerText = `${indexedCount} / ${allBlogs.length} total blogs active`;
+  if (document.getElementById("kpiClicks")) document.getElementById("kpiClicks").innerText = totalClicks.toLocaleString();
+  if (document.getElementById("kpiImpressions")) document.getElementById("kpiImpressions").innerText = totalImpressions.toLocaleString();
+  if (document.getElementById("kpiCtr")) document.getElementById("kpiCtr").innerText = `${avgCtr}%`;
+  if (document.getElementById("kpiIndexing")) document.getElementById("kpiIndexing").innerText = `${indexingRate}%`;
+  if (document.getElementById("kpiIndexingSub")) document.getElementById("kpiIndexingSub").innerText = `${indexedCount} / ${allBlogs.length} total blogs active`;
 }
 
 function renderDailyTrendChart() {
