@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "Jul 30, 2026 04:11 PM",
+    "generated_at": "Jul 30, 2026 04:15 PM",
     "start_date": "2026-06-27",
     "end_date": "2026-07-27",
     "strategy_pivot_date": "2026-07-16",
@@ -8,8 +8,8 @@
     "total_all_blogs": 1259,
     "strategy_comparison": {
       "pivot_date": "July 16, 2026",
-      "published_this_week": 163,
-      "published_last_week": 57,
+      "published_this_week": 108,
+      "published_last_week": 75,
       "published_last_30_days": 262,
       "new_strategy": {
         "count": 220,

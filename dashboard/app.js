@@ -118,28 +118,21 @@ function renderKpiCards() {
   let thisWeek = stratComp.published_this_week || 0;
   let lastWeek = stratComp.published_last_week || 0;
 
-  // Dynamic fallback calculation directly from blog post timestamps
+  // Dynamic fallback for exact Calendar Week (Mon-Today vs Prev Mon-Sun)
   if (!thisWeek && allBlogs.length) {
-    let latestMs = 0;
-    allBlogs.forEach(b => {
-      if (b.raw_date) {
-        const ms = new Date(b.raw_date).getTime();
-        if (!isNaN(ms) && ms > latestMs) latestMs = ms;
-      }
-    });
-    if (!latestMs) latestMs = Date.now();
-
-    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-    const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 is Sun, 1 is Mon...
+    const distToMon = (dayOfWeek + 6) % 7;
+    const currentMon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - distToMon);
+    const prevMon = new Date(currentMon.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     allBlogs.forEach(b => {
       if (b.raw_date) {
-        const ms = new Date(b.raw_date).getTime();
-        if (!isNaN(ms)) {
-          const diff = latestMs - ms;
-          if (diff >= 0 && diff <= sevenDaysMs) {
+        const dt = new Date(b.raw_date.split("T")[0]);
+        if (!isNaN(dt.getTime())) {
+          if (dt >= currentMon && dt <= now) {
             thisWeek++;
-          } else if (diff > sevenDaysMs && diff <= fourteenDaysMs) {
+          } else if (dt >= prevMon && dt < currentMon) {
             lastWeek++;
           }
         }
@@ -153,7 +146,7 @@ function renderKpiCards() {
   if (document.getElementById("kpiWeeklyVolSub")) {
     const isUp = thisWeek >= lastWeek;
     const iconClass = isUp ? "fa-arrow-trend-up text-success" : "fa-arrow-trend-down text-muted";
-    document.getElementById("kpiWeeklyVolSub").innerHTML = `<i class="fa-solid ${iconClass}"></i> <strong>This Week: ${thisWeek}</strong> vs <strong>Last Week: ${lastWeek}</strong>`;
+    document.getElementById("kpiWeeklyVolSub").innerHTML = `<i class="fa-solid ${iconClass}"></i> <strong>This Week (Mon-Thu): ${thisWeek}</strong> | Last Week: ${lastWeek}`;
   }
 
   let totalClicks = 0;

@@ -364,10 +364,15 @@ def main():
     striking_distance = [b for b in processed_blogs if 10.0 < b["position"] <= 20.0 and b["impressions"] > 500]
     striking_distance = sorted(striking_distance, key=lambda x: x["impressions"], reverse=True)[:100]
 
-    # Compute weekly publish volumes (This Week vs Previous Week)
+    # Compute Calendar Week publish volumes (Monday to Today vs Prev Monday to Sunday)
     now = datetime.now()
-    published_this_week = 0   # 0 to 7 days ago
-    published_last_week = 0   # 8 to 14 days ago
+    # Monday of current week
+    current_mon = datetime(now.year, now.month, now.day) - timedelta(days=now.weekday())
+    prev_mon = current_mon - timedelta(days=7)
+    prev_sun = current_mon - timedelta(days=1)
+
+    published_this_week = 0   # Mon to Today
+    published_last_week = 0   # Prev Mon to Prev Sun
     published_30d = 0
 
     for b in processed_blogs:
@@ -375,12 +380,11 @@ def main():
         if date_raw and "T" in date_raw:
             try:
                 dt = datetime.strptime(date_raw.split("T")[0], "%Y-%m-%d")
-                days_diff = (now - dt).days
-                if 0 <= days_diff <= 7:
+                if current_mon <= dt <= now:
                     published_this_week += 1
-                elif 8 <= days_diff <= 14:
+                elif prev_mon <= dt <= prev_sun:
                     published_last_week += 1
-                if days_diff <= 30:
+                if (now - dt).days <= 30:
                     published_30d += 1
             except Exception:
                 pass
