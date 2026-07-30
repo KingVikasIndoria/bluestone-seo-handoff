@@ -1,8 +1,8 @@
-// ── Bluestone Blog Dashboard Logic (Strategy Comparison) ──
+// ── Bluestone SEO Dashboard Logic ──
 
 let appData = null;
-let currentTab = "postJuly16";
-let currentSortField = "raw_date";
+let currentTab = "all";
+let currentSortField = "clicks";
 let currentSortOrder = "desc";
 let dailyChart = null;
 let rankingChart = null;
@@ -25,14 +25,12 @@ async function fetchDashboardData() {
     }
 
     // Populate Tab Counts
-    document.getElementById("countPostJuly16").innerText = (appData.post_july16_blogs || []).length;
-    document.getElementById("countPreJuly16").innerText = (appData.pre_july16_blogs || []).length;
+    document.getElementById("countAll").innerText = (appData.all_blogs || []).length;
     document.getElementById("countTop100").innerText = (appData.top_100_performing || []).length;
     document.getElementById("countStriking").innerText = (appData.striking_distance || []).length;
-    document.getElementById("countAll").innerText = (appData.all_blogs || []).length;
-
-    // Render Strategy Comparison Banner
-    renderStrategyComparison();
+    
+    const recentBlogs = (appData.all_blogs || []).slice(0, 100);
+    document.getElementById("countRecent").innerText = recentBlogs.length;
 
     // Render KPIs & Charts
     renderKpiCards();
@@ -57,33 +55,13 @@ async function fetchDashboardData() {
   }
 }
 
-function renderStrategyComparison() {
-  if (!appData || !appData.metadata || !appData.metadata.strategy_comparison) return;
-  const sc = appData.metadata.strategy_comparison;
-  const n = sc.new_strategy;
-  const l = sc.legacy_strategy;
-
-  document.getElementById("stratNewCount").innerText = n.count.toLocaleString();
-  document.getElementById("stratNewIndexed").innerText = n.indexed_count.toLocaleString();
-  document.getElementById("stratNewIndexRate").innerText = `${n.indexing_rate}% indexed`;
-  document.getElementById("stratNewClicks").innerText = n.total_clicks.toLocaleString();
-  document.getElementById("stratNewImpr").innerText = n.total_impressions.toLocaleString();
-
-  document.getElementById("stratLegacyCount").innerText = l.count.toLocaleString();
-  document.getElementById("stratLegacyIndexed").innerText = l.indexed_count.toLocaleString();
-  document.getElementById("stratLegacyIndexRate").innerText = `${l.indexing_rate}% indexed`;
-  document.getElementById("stratLegacyClicks").innerText = l.total_clicks.toLocaleString();
-  document.getElementById("stratLegacyImpr").innerText = l.total_impressions.toLocaleString();
-}
-
 function getActiveDataset() {
   if (!appData) return [];
-  if (currentTab === "postJuly16") return appData.post_july16_blogs || [];
-  if (currentTab === "preJuly16") return appData.pre_july16_blogs || [];
+  if (currentTab === "all") return appData.all_blogs || [];
   if (currentTab === "top100") return appData.top_100_performing || [];
   if (currentTab === "striking") return appData.striking_distance || [];
-  if (currentTab === "all") return appData.all_blogs || [];
-  return appData.post_july16_blogs || [];
+  if (currentTab === "recent") return (appData.all_blogs || []).slice(0, 100);
+  return appData.all_blogs || [];
 }
 
 function renderKpiCards() {
@@ -117,7 +95,7 @@ function renderKpiCards() {
   document.getElementById("kpiCtr").innerText = `${avgCtr}%`;
   document.getElementById("kpiPosition").innerText = avgPos;
   document.getElementById("kpiIndexing").innerText = `${indexingRate}%`;
-  document.getElementById("kpiIndexingSub").innerText = `${indexedCount} / ${allBlogs.length} total blogs active in search`;
+  document.getElementById("kpiIndexingSub").innerText = `${indexedCount} / ${allBlogs.length} total blogs indexed`;
 }
 
 function renderDailyTrendChart() {
@@ -186,28 +164,34 @@ function renderRankingDistChart() {
   if (rankingChart) rankingChart.destroy();
 
   const dataset = getActiveDataset();
-  let top3 = 0, page1 = 0, striking = 0, lowRank = 0, noData = 0;
+  let top3 = 0, page1 = 0, striking = 0, lowRank = 0, unindexed = 0;
 
   dataset.forEach(b => {
-    if (b.health.includes("Top 3")) top3++;
-    else if (b.health.includes("Page 1")) page1++;
-    else if (b.health.includes("Striking")) striking++;
-    else if (b.health.includes("Low Rank")) lowRank++;
-    else noData++;
+    if (b.impressions === 0) unindexed++;
+    else if (b.position > 0 && b.position <= 3) top3++;
+    else if (b.position > 3 && b.position <= 10) page1++;
+    else if (b.position > 10 && b.position <= 20) striking++;
+    else lowRank++;
   });
 
   rankingChart = new Chart(ctx, {
     type: "doughnut",
     data: {
-      labels: ["Top 3 Rank", "Page 1 (Pos 4-10)", "Striking (11-20)", "Low Rank (>20)", "New / No Data"],
+      labels: [
+        `Top 3 Rank (Pos 1-3): ${top3}`,
+        `Page 1 (Pos 4-10): ${page1}`,
+        `Striking Dist. (Pos 11-20): ${striking}`,
+        `Low Rank (Pos 21+): ${lowRank}`,
+        `Non-Indexed / Pending: ${unindexed}`
+      ],
       datasets: [{
-        data: [top3, page1, striking, lowRank, noData],
+        data: [top3, page1, striking, lowRank, unindexed],
         backgroundColor: [
           "#059669", // Emerald
           "#0284c7", // Sky
           "#d97706", // Amber
           "#dc2626", // Red
-          "#94a3b8"  // Slate
+          "#94a3b8"  // Slate / Gray
         ],
         borderWidth: 2,
         borderColor: "#ffffff"
@@ -217,9 +201,16 @@ function renderRankingDistChart() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: "right", labels: { color: "#334155", font: { family: "Inter", size: 11 } } }
+        legend: { 
+          position: "right", 
+          labels: { 
+            color: "#334155", 
+            font: { family: "Inter", size: 11 },
+            boxWidth: 12
+          } 
+        }
       },
-      cutout: "68%"
+      cutout: "65%"
     }
   });
 }
@@ -228,6 +219,7 @@ function renderTable() {
   const tbody = document.getElementById("blogsTableBody");
   const dataset = getActiveDataset();
   const searchVal = document.getElementById("searchInput").value.toLowerCase().trim();
+  const indexingFilter = document.getElementById("indexingFilter").value;
   const healthFilter = document.getElementById("healthFilter").value;
 
   // Filter
@@ -237,9 +229,14 @@ function renderTable() {
       b.slug.toLowerCase().includes(searchVal) ||
       (b.top_queries && b.top_queries.some(q => q.query.toLowerCase().includes(searchVal)));
 
+    // Indexing Filter: 'indexed' (impressions > 0) vs 'non-indexed' (impressions == 0)
+    let matchesIndexing = true;
+    if (indexingFilter === "indexed") matchesIndexing = b.impressions > 0;
+    else if (indexingFilter === "non-indexed") matchesIndexing = b.impressions === 0;
+
     const matchesHealth = healthFilter === "all" || b.health === healthFilter;
 
-    return matchesSearch && matchesHealth;
+    return matchesSearch && matchesIndexing && matchesHealth;
   });
 
   // Sort
@@ -270,8 +267,9 @@ function renderTable() {
   }
 
   tbody.innerHTML = filtered.map(b => {
-    const stratBadgeClass = b.is_new_strategy ? "badge-strat-new" : "badge-strat-legacy";
-    const stratText = b.is_new_strategy ? "🚀 Post-July 16" : "📜 Pre-July 16";
+    const isIndexed = b.impressions > 0;
+    const indexBadgeClass = isIndexed ? "badge-success" : "badge-secondary";
+    const indexBadgeText = isIndexed ? "🟢 Indexed" : "⚪ Non-Indexed";
 
     return `
       <tr>
@@ -280,7 +278,7 @@ function renderTable() {
           <span class="blog-slug">/${b.slug}/</span>
         </td>
         <td>${b.published_date}</td>
-        <td><span class="${stratBadgeClass}">${stratText}</span></td>
+        <td><span class="badge-status ${indexBadgeClass}">${indexBadgeText}</span></td>
         <td class="text-right font-weight-bold" style="color:#0f172a;">${b.clicks.toLocaleString()}</td>
         <td class="text-right">${b.impressions.toLocaleString()}</td>
         <td class="text-right">${b.ctr.toFixed(2)}%</td>
@@ -309,11 +307,11 @@ function setupEventListeners() {
       target.classList.add("active");
       currentTab = target.getAttribute("data-tab");
 
-      if (currentTab === "postJuly16" || currentTab === "preJuly16") {
-        currentSortField = "raw_date";
-        currentSortOrder = "desc";
-      } else if (currentTab === "top100") {
+      if (currentTab === "all" || currentTab === "top100") {
         currentSortField = "clicks";
+        currentSortOrder = "desc";
+      } else if (currentTab === "recent") {
+        currentSortField = "raw_date";
         currentSortOrder = "desc";
       } else if (currentTab === "striking") {
         currentSortField = "impressions";
@@ -340,7 +338,12 @@ function setupEventListeners() {
     renderTable();
   });
 
-  // Health Filter
+  // Indexing Filter
+  document.getElementById("indexingFilter").addEventListener("change", () => {
+    renderTable();
+  });
+
+  // Search Rank Tier Filter
   document.getElementById("healthFilter").addEventListener("change", () => {
     renderTable();
   });
@@ -380,18 +383,15 @@ function openInspector(slug) {
   const insightTitle = document.getElementById("insightTitle");
   const insightBody = document.getElementById("insightBody");
 
-  if (blog.is_new_strategy && blog.impressions > 0) {
-    insightTitle.innerText = "🚀 New Strategy Article Gains Search Visibility!";
-    insightBody.innerText = `Published post-July 16. Already generated ${blog.impressions.toLocaleString()} impressions and ${blog.clicks} clicks in under 14 days! Keep monitoring keyword positions.`;
-  } else if (blog.position > 10 && blog.position <= 20) {
+  if (blog.position > 10 && blog.position <= 20) {
     insightTitle.innerText = "⚡ Striking Distance Opportunity!";
-    insightBody.innerText = `This article is ranking on Page 2 (Pos ${blog.position}). With ${blog.impressions.toLocaleString()} impressions, adding subheadings & internal links can boost it to Page 1!`;
+    insightBody.innerText = `This article is ranking on Page 2 (Position ${blog.position}). With ${blog.impressions.toLocaleString()} impressions, adding subheadings & internal links can boost it to Page 1!`;
   } else if (blog.position > 0 && blog.position <= 3) {
     insightTitle.innerText = "🏆 Top Performer!";
     insightBody.innerText = `Great job! This article holds rank #${blog.position}. Ensure links & products stay fresh.`;
-  } else if (blog.clicks === 0 && blog.is_new_strategy) {
-    insightTitle.innerText = "🌱 New Strategy Article (Indexing Pipeline)";
-    insightBody.innerText = `Published recently on ${blog.published_date}. Articles take 2-4 weeks to build full search authority.`;
+  } else if (blog.impressions === 0) {
+    insightTitle.innerText = "⚪ Non-Indexed / Pending Article";
+    insightBody.innerText = `This URL has not yet generated search impressions on Google. We submitted it to Google Indexing API; expect indexing within 24-48 hours.`;
   } else {
     insightTitle.innerText = "💡 SEO Optimization Recommendation";
     insightBody.innerText = `Article active with ${blog.clicks} clicks and ${blog.impressions.toLocaleString()} impressions.`;
@@ -399,7 +399,7 @@ function openInspector(slug) {
 
   const qBody = document.getElementById("modalQueriesBody");
   if (!blog.top_queries || blog.top_queries.length === 0) {
-    qBody.innerHTML = `<tr><td colspan="5" class="text-center" style="color:#64748b;">No query data recorded for this page yet.</td></tr>`;
+    qBody.innerHTML = `<tr><td colspan="5" class="text-center" style="color:#64748b;">No keyword query data recorded for this page yet.</td></tr>`;
   } else {
     qBody.innerHTML = blog.top_queries.map(q => `
       <tr>
