@@ -115,9 +115,11 @@ function renderKpiCards() {
   const allBlogs = appData.all_blogs || [];
   const stratComp = (appData.metadata && appData.metadata.strategy_comparison) ? appData.metadata.strategy_comparison : {};
 
-  // Calculate Weekly Publish Volume (Last 7 Days) with dynamic fallback
-  let weeklyVol = stratComp.published_last_7_days || 0;
-  if (!weeklyVol && allBlogs.length) {
+  let thisWeek = stratComp.published_this_week || 0;
+  let lastWeek = stratComp.published_last_week || 0;
+
+  // Dynamic fallback calculation directly from blog post timestamps
+  if (!thisWeek && allBlogs.length) {
     let latestMs = 0;
     allBlogs.forEach(b => {
       if (b.raw_date) {
@@ -126,22 +128,32 @@ function renderKpiCards() {
       }
     });
     if (!latestMs) latestMs = Date.now();
+
     const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-    const cutoffMs = latestMs - sevenDaysMs;
+    const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
 
     allBlogs.forEach(b => {
       if (b.raw_date) {
         const ms = new Date(b.raw_date).getTime();
-        if (!isNaN(ms) && ms >= cutoffMs) weeklyVol++;
+        if (!isNaN(ms)) {
+          const diff = latestMs - ms;
+          if (diff >= 0 && diff <= sevenDaysMs) {
+            thisWeek++;
+          } else if (diff > sevenDaysMs && diff <= fourteenDaysMs) {
+            lastWeek++;
+          }
+        }
       }
     });
   }
 
   if (document.getElementById("kpiWeeklyVol")) {
-    document.getElementById("kpiWeeklyVol").innerText = weeklyVol.toLocaleString();
+    document.getElementById("kpiWeeklyVol").innerText = thisWeek.toLocaleString();
   }
   if (document.getElementById("kpiWeeklyVolSub")) {
-    document.getElementById("kpiWeeklyVolSub").innerHTML = `<i class="fa-solid fa-bolt"></i> ${weeklyVol} blogs published in last 7 days`;
+    const isUp = thisWeek >= lastWeek;
+    const iconClass = isUp ? "fa-arrow-trend-up text-success" : "fa-arrow-trend-down text-muted";
+    document.getElementById("kpiWeeklyVolSub").innerHTML = `<i class="fa-solid ${iconClass}"></i> <strong>This Week: ${thisWeek}</strong> vs <strong>Last Week: ${lastWeek}</strong>`;
   }
 
   let totalClicks = 0;

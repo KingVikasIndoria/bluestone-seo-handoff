@@ -364,10 +364,10 @@ def main():
     striking_distance = [b for b in processed_blogs if 10.0 < b["position"] <= 20.0 and b["impressions"] > 500]
     striking_distance = sorted(striking_distance, key=lambda x: x["impressions"], reverse=True)[:100]
 
-    # Compute weekly publish volumes (Last 7 days, 14 days, 30 days)
+    # Compute weekly publish volumes (This Week vs Previous Week)
     now = datetime.now()
-    published_7d = 0
-    published_14d = 0
+    published_this_week = 0   # 0 to 7 days ago
+    published_last_week = 0   # 8 to 14 days ago
     published_30d = 0
 
     for b in processed_blogs:
@@ -376,10 +376,10 @@ def main():
             try:
                 dt = datetime.strptime(date_raw.split("T")[0], "%Y-%m-%d")
                 days_diff = (now - dt).days
-                if days_diff <= 7:
-                    published_7d += 1
-                if days_diff <= 14:
-                    published_14d += 1
+                if 0 <= days_diff <= 7:
+                    published_this_week += 1
+                elif 8 <= days_diff <= 14:
+                    published_last_week += 1
                 if days_diff <= 30:
                     published_30d += 1
             except Exception:
@@ -387,8 +387,8 @@ def main():
 
     strategy_comparison = {
         "pivot_date": "July 16, 2026",
-        "published_last_7_days": published_7d,
-        "published_last_14_days": published_14d,
+        "published_this_week": published_this_week,
+        "published_last_week": published_last_week,
         "published_last_30_days": published_30d,
         "new_strategy": compute_group_stats(post_july16_blogs),
         "legacy_strategy": compute_group_stats(pre_july16_blogs),
