@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bluestone Blog Strategy & Performance Dashboard</title>
+  
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome & Chart.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+  <div class="app-container">
+    <!-- Top Navigation Header -->
+    <header class="top-nav glass-card">
+      <div class="brand-section">
+        <div class="brand-logo">
+          <i class="fa-solid fa-gem"></i>
+        </div>
+        <div class="brand-info">
+          <h1>Bluestone SEO & Strategy Dashboard</h1>
+          <span class="sub-text"><i class="fa-solid fa-rocket"></i> Strategy Pivot Date: <strong>July 16, 2026</strong> • <code>blog.bluestone.com</code></span>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <div class="sync-badge" id="syncBadge">
+          <i class="fa-solid fa-arrows-rotate fa-spin"></i> Loading Data...
+        </div>
+        <button class="btn-refresh" id="refreshBtn" onclick="location.reload()">
+          <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+      </div>
+    </header>
+
+    <!-- Strategy Comparison Cards (Side-by-Side) -->
+    <section class="strategy-banner glass-card">
+      <div class="strategy-col new-strategy-box">
+        <div class="strat-header">
+          <span class="badge-tag tag-new"><i class="fa-solid fa-bolt"></i> NEW STRATEGY</span>
+          <h3>Post-July 16 Articles</h3>
+          <p class="strat-desc">Tracking content published after the strategy pivot on July 16, 2026</p>
+        </div>
+        <div class="strat-metrics-grid">
+          <div class="s-metric">
+            <span class="sm-label">Articles Published</span>
+            <span class="sm-val" id="stratNewCount">205</span>
+          </div>
+          <div class="s-metric">
+            <span class="sm-label">Indexed in Search</span>
+            <span class="sm-val" id="stratNewIndexed">33</span>
+            <span class="sm-sub" id="stratNewIndexRate">16.1% indexing rate</span>
+          </div>
+          <div class="s-metric">
+            <span class="sm-label">Search Clicks</span>
+            <span class="sm-val" id="stratNewClicks">102</span>
+          </div>
+          <div class="s-metric">
+            <span class="sm-label">Impressions</span>
+            <span class="sm-val" id="stratNewImpr">10,883</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="strategy-divider"></div>
+
+      <div class="strategy-col legacy-strategy-box">
+        <div class="strat-header">
+          <span class="badge-tag tag-legacy"><i class="fa-solid fa-clock-rotate-left"></i> LEGACY STRATEGY</span>
+          <h3>Pre-July 16 Articles</h3>
+          <p class="strat-desc">Historical baseline content published prior to July 16, 2026</p>
+        </div>
+        <div class="strat-metrics-grid">
+          <div class="s-metric">
+            <span class="sm-label">Articles Published</span>
+            <span class="sm-val" id="stratLegacyCount">1,039</span>
+          </div>
+          <div class="s-metric">
+            <span class="sm-label">Indexed in Search</span>
+            <span class="sm-val" id="stratLegacyIndexed">641</span>
+            <span class="sm-sub" id="stratLegacyIndexRate">61.7% indexing rate</span>
+          </div>
+          <div class="s-metric">
+            <span class="sm-label">Search Clicks</span>
+            <span class="sm-val" id="stratLegacyClicks">7,231</span>
+          </div>
+          <div class="s-metric">
+            <span class="sm-label">Impressions</span>
+            <span class="sm-val" id="stratLegacyImpr">1,506,768</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Metrics Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon icon-clicks">
+          <i class="fa-solid fa-mouse-pointer"></i>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Total Clicks (30d)</span>
+          <h2 class="kpi-value" id="kpiClicks">--</h2>
+          <span class="kpi-sub" id="kpiClicksSub"><i class="fa-solid fa-calendar"></i> Overall Blog Traffic</span>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon icon-impressions">
+          <i class="fa-solid fa-eye"></i>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Total Impressions</span>
+          <h2 class="kpi-value" id="kpiImpressions">--</h2>
+          <span class="kpi-sub" id="kpiImpressionsSub"><i class="fa-solid fa-arrow-trend-up"></i> Search Visibility</span>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon icon-ctr">
+          <i class="fa-solid fa-percent"></i>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Average CTR</span>
+          <h2 class="kpi-value" id="kpiCtr">--</h2>
+          <span class="kpi-sub" id="kpiCtrSub"><i class="fa-solid fa-bullseye"></i> Click-through Rate</span>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon icon-position">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Avg Search Rank</span>
+          <h2 class="kpi-value" id="kpiPosition">--</h2>
+          <span class="kpi-sub" id="kpiPositionSub"><i class="fa-solid fa-ranking-star"></i> Avg Rank Position</span>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon icon-indexing">
+          <i class="fa-solid fa-magnifying-glass-chart"></i>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Indexing Rate</span>
+          <h2 class="kpi-value" id="kpiIndexing">--</h2>
+          <span class="kpi-sub" id="kpiIndexingSub"><i class="fa-solid fa-check-circle"></i> Active Search Presence</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Charts Section -->
+    <section class="charts-grid">
+      <div class="chart-card glass-card span-2">
+        <div class="chart-header">
+          <h3><i class="fa-solid fa-chart-area"></i> Daily Traffic Trend (30 Days)</h3>
+          <span class="badge-tag">Clicks & Impressions</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="dailyTrendChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card glass-card">
+        <div class="chart-header">
+          <h3><i class="fa-solid fa-chart-pie"></i> Ranking Health Split</h3>
+          <span class="badge-tag">SERP Position Tiers</span>
+        </div>
+        <div class="chart-container">
+          <canvas id="rankingDistChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- View Switcher Tabs & Controls -->
+    <section class="controls-section glass-card">
+      <div class="tab-group">
+        <button class="tab-btn active" data-tab="postJuly16">
+          <i class="fa-solid fa-rocket"></i> New Strategy (Post-July 16)
+          <span class="tab-count" id="countPostJuly16">0</span>
+        </button>
+        <button class="tab-btn" data-tab="top100">
+          <i class="fa-solid fa-fire"></i> Top 100 Performers
+          <span class="tab-count" id="countTop100">100</span>
+        </button>
+        <button class="tab-btn" data-tab="striking">
+          <i class="fa-solid fa-bolt"></i> Striking Distance (Pos 11-20)
+          <span class="tab-count" id="countStriking">0</span>
+        </button>
+        <button class="tab-btn" data-tab="preJuly16">
+          <i class="fa-solid fa-clock-rotate-left"></i> Pre-July 16 Legacy
+          <span class="tab-count" id="countPreJuly16">0</span>
+        </button>
+        <button class="tab-btn" data-tab="all">
+          <i class="fa-solid fa-list-check"></i> All Tracked Blogs
+          <span class="tab-count" id="countAll">0</span>
+        </button>
+      </div>
+
+      <div class="filter-group">
+        <div class="search-box">
+          <i class="fa-solid fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Search blog title, slug, or keyword...">
+          <button id="clearSearchBtn" class="btn-clear" style="display:none;"><i class="fa-solid fa-times"></i></button>
+        </div>
+
+        <select id="healthFilter" class="select-filter">
+          <option value="all">All Ranking Tiers</option>
+          <option value="Top 3 Rank">🟢 Top 3 Rank</option>
+          <option value="Page 1 (Pos 4-10)">🔵 Page 1 (Pos 4-10)</option>
+          <option value="Striking Distance (11-20)">🟡 Striking Distance (11-20)</option>
+          <option value="Low Rank (>20)">🔴 Low Rank (>20)</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Main Data Table -->
+    <section class="table-section glass-card">
+      <div class="table-responsive">
+        <table class="data-table" id="blogsTable">
+          <thead>
+            <tr>
+              <th class="th-sortable" data-sort="title">Blog Article <i class="fa-solid fa-sort"></i></th>
+              <th class="th-sortable" data-sort="raw_date">Published Date <i class="fa-solid fa-sort"></i></th>
+              <th>Strategy Group</th>
+              <th class="th-sortable text-right" data-sort="clicks">Clicks <i class="fa-solid fa-sort"></i></th>
+              <th class="th-sortable text-right" data-sort="impressions">Impressions <i class="fa-solid fa-sort"></i></th>
+              <th class="th-sortable text-right" data-sort="ctr">CTR % <i class="fa-solid fa-sort"></i></th>
+              <th class="th-sortable text-right" data-sort="position">Avg Position <i class="fa-solid fa-sort"></i></th>
+              <th>Status / Health</th>
+              <th class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="blogsTableBody">
+            <tr>
+              <td colspan="9" class="text-center loading-state">
+                <i class="fa-solid fa-circle-notch fa-spin"></i> Loading Search Console & Strategy records...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span id="showingCount">Showing 0 of 0 blogs</span>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Detailed Blog Inspector Drawer Modal -->
+  <div class="modal-overlay" id="inspectorModal">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <div class="modal-title-box">
+          <span class="health-pill" id="modalHealthPill">Top 3</span>
+          <h2 id="modalTitle">Blog Article Title</h2>
+          <a href="#" target="_blank" id="modalLink" class="modal-url"><i class="fa-solid fa-external-link-alt"></i> Open Article</a>
+        </div>
+        <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-kpis">
+          <div class="m-kpi">
+            <span class="m-label">Clicks</span>
+            <span class="m-val" id="mClicks">0</span>
+          </div>
+          <div class="m-kpi">
+            <span class="m-label">Impressions</span>
+            <span class="m-val" id="mImpressions">0</span>
+          </div>
+          <div class="m-kpi">
+            <span class="m-label">CTR</span>
+            <span class="m-val" id="mCtr">0%</span>
+          </div>
+          <div class="m-kpi">
+            <span class="m-label">Avg Rank Position</span>
+            <span class="m-val" id="mPosition">0.0</span>
+          </div>
+        </div>
+
+        <div class="seo-insight-box" id="seoInsightBox">
+          <div class="insight-icon"><i class="fa-solid fa-lightbulb"></i></div>
+          <div class="insight-text">
+            <h4 id="insightTitle">SEO Optimization Tip</h4>
+            <p id="insightBody">Analyzing search performance metrics...</p>
+          </div>
+        </div>
+
+        <div class="modal-queries-section">
+          <h3><i class="fa-solid fa-key"></i> Top Search Queries Bringing Traffic</h3>
+          <div class="table-responsive">
+            <table class="mini-table">
+              <thead>
+                <tr>
+                  <th>Search Query</th>
+                  <th class="text-right">Clicks</th>
+                  <th class="text-right">Impressions</th>
+                  <th class="text-right">CTR</th>
+                  <th class="text-right">SERP Position</th>
+                </tr>
+              </thead>
+              <tbody id="modalQueriesBody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

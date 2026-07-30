@@ -4,6 +4,9 @@
 .env.*
 !.env.example
 *.key
+scripts/client_secret.json
+scripts/gsc_token.json
+scripts/indexing_token.json
 
 # Python / OS
 __pycache__/
