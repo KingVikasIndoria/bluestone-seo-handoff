@@ -677,20 +677,66 @@ body {
 }
 
 .strat-header {
-  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.strat-header h3 {
-  font-family: var(--font-heading);
-  font-size: 17px;
+.strat-header h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
   font-weight: 700;
-  color: var(--text-heading);
-  margin: 6px 0 2px 0;
+  color: #0f172a;
+  margin: 0;
 }
 
 .strat-desc {
-  font-size: 12px;
-  color: var(--text-muted);
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.strat-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.s-metric {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.s-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.s-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.s-sub {
+  font-size: 0.68rem;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.strategy-divider {
+  background: #e2e8f0;
+  height: 80%;
+  width: 1px;
 }
 
 .tag-new {
@@ -703,43 +749,6 @@ body {
   background: #f1f5f9;
   color: #475569;
   border: 1px solid #e2e8f0;
-}
-
-.strat-metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-}
-
-.s-metric {
-  background: var(--bg-subtle);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-}
-
-.sm-label {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.sm-val {
-  font-family: var(--font-heading);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text-heading);
-  margin-top: 2px;
-}
-
-.sm-sub {
-  font-size: 10px;
-  color: #059669;
-  font-weight: 600;
-  margin-top: 2px;
 }
 
 /* Strategy Badges in Table */

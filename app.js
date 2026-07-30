@@ -113,6 +113,14 @@ function getActiveDataset() {
 function renderKpiCards() {
   if (!appData) return;
   const allBlogs = appData.all_blogs || [];
+  const stratComp = appData.metadata ? appData.metadata.strategy_comparison : {};
+
+  // Weekly Publish Volume (Last 7 Days)
+  const weeklyVol = stratComp.published_last_7_days || 0;
+  if (document.getElementById("kpiWeeklyVol")) {
+    document.getElementById("kpiWeeklyVol").innerText = weeklyVol.toLocaleString();
+    document.getElementById("kpiWeeklyVolSub").innerHTML = `<i class="fa-solid fa-bolt"></i> ${weeklyVol} blogs published in last 7 days`;
+  }
 
   let totalClicks = 0;
   let totalImpressions = 0;
@@ -139,7 +147,6 @@ function renderKpiCards() {
   document.getElementById("kpiClicks").innerText = totalClicks.toLocaleString();
   document.getElementById("kpiImpressions").innerText = totalImpressions.toLocaleString();
   document.getElementById("kpiCtr").innerText = `${avgCtr}%`;
-  document.getElementById("kpiPosition").innerText = avgPos;
   document.getElementById("kpiIndexing").innerText = `${indexingRate}%`;
   document.getElementById("kpiIndexingSub").innerText = `${indexedCount} / ${allBlogs.length} total blogs active`;
 }

@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Custom Styles (Cache Buster v3) -->
-  <link rel="stylesheet" href="styles.css?v=3">
+  <!-- Custom Styles (Cache Buster v4) -->
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
   
@@ -42,25 +42,25 @@
       </div>
     </header>
 
-    <!-- Strategy Pivot Performance Comparison Cards -->
+    <!-- Compact Strategy Pivot Performance Comparison Cards (Space Efficient) -->
     <section class="strategy-banner glass-card">
       <div class="strategy-col new-strategy-box">
         <div class="strat-header">
           <h2>Post-July 16 Articles</h2>
-          <p class="strat-desc">Tracking content published after the strategy pivot on July 16, 2026</p>
+          <p class="strat-desc">Tracking content published after strategy pivot on July 16, 2026</p>
         </div>
         <div class="strat-metrics">
           <div class="s-metric">
-            <span class="s-label">Articles Published</span>
-            <span class="s-val" id="stratNewPublished">205</span>
+            <span class="s-label">Published</span>
+            <span class="s-val" id="stratNewPublished">219</span>
           </div>
           <div class="s-metric">
-            <span class="s-label">Indexed in Search</span>
+            <span class="s-label">Indexed</span>
             <span class="s-val" id="stratNewIndexed">33</span>
-            <span class="s-sub text-success" id="stratNewIndexedPct">16.1% indexed</span>
+            <span class="s-sub text-success" id="stratNewIndexedPct">15.1% indexed</span>
           </div>
           <div class="s-metric">
-            <span class="s-label">Search Clicks</span>
+            <span class="s-label">Clicks</span>
             <span class="s-val" id="stratNewClicks">102</span>
           </div>
           <div class="s-metric">
@@ -79,16 +79,16 @@
         </div>
         <div class="strat-metrics">
           <div class="s-metric">
-            <span class="s-label">Articles Published</span>
+            <span class="s-label">Published</span>
             <span class="s-val" id="stratLegacyPublished">1,039</span>
           </div>
           <div class="s-metric">
-            <span class="s-label">Indexed in Search</span>
+            <span class="s-label">Indexed</span>
             <span class="s-val" id="stratLegacyIndexed">641</span>
             <span class="s-sub text-muted" id="stratLegacyIndexedPct">61.7% indexed</span>
           </div>
           <div class="s-metric">
-            <span class="s-label">Search Clicks</span>
+            <span class="s-label">Clicks</span>
             <span class="s-val" id="stratLegacyClicks">7,231</span>
           </div>
           <div class="s-metric">
@@ -99,8 +99,19 @@
       </div>
     </section>
 
-    <!-- Overall Key Metrics Cards -->
+    <!-- Overall Key Metrics & Weekly Volume Grid -->
     <section class="kpi-grid">
+      <div class="kpi-card glass-card">
+        <div class="kpi-icon icon-volume">
+          <i class="fa-solid fa-newspaper"></i>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Weekly Publish Volume</span>
+          <h2 class="kpi-value" id="kpiWeeklyVol">162</h2>
+          <span class="kpi-sub" id="kpiWeeklyVolSub"><i class="fa-solid fa-bolt"></i> Blogs published in last 7 days</span>
+        </div>
+      </div>
+
       <div class="kpi-card glass-card">
         <div class="kpi-icon icon-clicks">
           <i class="fa-solid fa-mouse-pointer"></i>
@@ -131,17 +142,6 @@
           <span class="kpi-label">Average CTR</span>
           <h2 class="kpi-value" id="kpiCtr">--</h2>
           <span class="kpi-sub" id="kpiCtrSub"><i class="fa-solid fa-bullseye"></i> Click-through Rate</span>
-        </div>
-      </div>
-
-      <div class="kpi-card glass-card">
-        <div class="kpi-icon icon-position">
-          <i class="fa-solid fa-trophy"></i>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-label">Avg Search Rank</span>
-          <h2 class="kpi-value" id="kpiPosition">--</h2>
-          <span class="kpi-sub" id="kpiPositionSub"><i class="fa-solid fa-ranking-star"></i> Avg Rank Position</span>
         </div>
       </div>
 
@@ -185,7 +185,7 @@
       <div class="tab-group">
         <button class="tab-btn active" data-tab="post_july16">
           <i class="fa-solid fa-rocket"></i> New Strategy (Post-July 16)
-          <span class="tab-count" id="countPostJuly16">205</span>
+          <span class="tab-count" id="countPostJuly16">219</span>
         </button>
         <button class="tab-btn" data-tab="top100">
           <i class="fa-solid fa-fire"></i> Top 100 Performers
@@ -201,7 +201,7 @@
         </button>
         <button class="tab-btn" data-tab="all">
           <i class="fa-solid fa-list-check"></i> All Tracked Blogs
-          <span class="tab-count" id="countAll">1244</span>
+          <span class="tab-count" id="countAll">1258</span>
         </button>
       </div>
 
@@ -328,6 +328,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=3"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>
