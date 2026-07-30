@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="styles.css">
+  <!-- Custom Styles (Cache Buster v2) -->
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
   
@@ -36,7 +36,7 @@
         <div class="sync-badge" id="syncBadge">
           <i class="fa-solid fa-arrows-rotate fa-spin"></i> Loading Data...
         </div>
-        <button class="btn-refresh" id="refreshBtn" onclick="location.reload()">
+        <button class="btn-refresh" id="refreshBtn" onclick="location.reload(true)">
           <i class="fa-solid fa-rotate-right"></i> Refresh
         </button>
       </div>
@@ -266,6 +266,6 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
