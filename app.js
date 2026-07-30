@@ -1,8 +1,8 @@
 // ── Bluestone SEO Dashboard Logic ──
 
 let appData = null;
-let currentTab = "all";
-let currentSortField = "clicks";
+let currentTab = "post_july16";
+let currentSortField = "raw_date";
 let currentSortOrder = "desc";
 let dailyChart = null;
 let rankingChart = null;
@@ -25,12 +25,24 @@ async function fetchDashboardData() {
     }
 
     // Populate Tab Counts
-    document.getElementById("countAll").innerText = (appData.all_blogs || []).length;
-    document.getElementById("countTop100").innerText = (appData.top_100_performing || []).length;
-    document.getElementById("countStriking").innerText = (appData.striking_distance || []).length;
-    
-    const recentBlogs = (appData.all_blogs || []).slice(0, 100);
-    document.getElementById("countRecent").innerText = recentBlogs.length;
+    if (document.getElementById("countPostJuly16")) {
+      document.getElementById("countPostJuly16").innerText = (appData.post_july16_blogs || []).length;
+    }
+    if (document.getElementById("countPreJuly16")) {
+      document.getElementById("countPreJuly16").innerText = (appData.pre_july16_blogs || []).length;
+    }
+    if (document.getElementById("countAll")) {
+      document.getElementById("countAll").innerText = (appData.all_blogs || []).length;
+    }
+    if (document.getElementById("countTop100")) {
+      document.getElementById("countTop100").innerText = (appData.top_100_performing || []).length;
+    }
+    if (document.getElementById("countStriking")) {
+      document.getElementById("countStriking").innerText = (appData.striking_distance || []).length;
+    }
+
+    // Render Strategy Comparison Metrics
+    renderStrategyBanner();
 
     // Render KPIs & Charts
     renderKpiCards();
@@ -45,7 +57,7 @@ async function fetchDashboardData() {
     document.getElementById("syncBadge").innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:#dc2626"></i> Error loading data`;
     document.getElementById("blogsTableBody").innerHTML = `
       <tr>
-        <td colspan="9" class="text-center" style="padding: 40px; color: #dc2626;">
+        <td colspan="10" class="text-center" style="padding: 40px; color: #dc2626;">
           <i class="fa-solid fa-triangle-exclamation fa-2x"></i><br><br>
           Failed to load <code>dashboard_data.json</code>.<br>
           Run <code>python3 scripts/generate_dashboard_dataset.py</code> to build the dataset.
@@ -55,13 +67,47 @@ async function fetchDashboardData() {
   }
 }
 
+function renderStrategyBanner() {
+  if (!appData || !appData.post_july16_blogs || !appData.pre_july16_blogs) return;
+
+  const postBlogs = appData.post_july16_blogs;
+  const preBlogs = appData.pre_july16_blogs;
+
+  // Post July 16
+  const postPublished = postBlogs.length;
+  const postIndexed = postBlogs.filter(b => b.impressions > 0).length;
+  const postClicks = postBlogs.reduce((acc, b) => acc + b.clicks, 0);
+  const postImpressions = postBlogs.reduce((acc, b) => acc + b.impressions, 0);
+  const postIndexedPct = postPublished ? ((postIndexed / postPublished) * 100).toFixed(1) : "0.0";
+
+  document.getElementById("stratNewPublished").innerText = postPublished;
+  document.getElementById("stratNewIndexed").innerText = postIndexed;
+  document.getElementById("stratNewIndexedPct").innerText = `${postIndexedPct}% indexed`;
+  document.getElementById("stratNewClicks").innerText = postClicks.toLocaleString();
+  document.getElementById("stratNewImpressions").innerText = postImpressions.toLocaleString();
+
+  // Pre July 16
+  const prePublished = preBlogs.length;
+  const preIndexed = preBlogs.filter(b => b.impressions > 0).length;
+  const preClicks = preBlogs.reduce((acc, b) => acc + b.clicks, 0);
+  const preImpressions = preBlogs.reduce((acc, b) => acc + b.impressions, 0);
+  const preIndexedPct = prePublished ? ((preIndexed / prePublished) * 100).toFixed(1) : "0.0";
+
+  document.getElementById("stratLegacyPublished").innerText = prePublished.toLocaleString();
+  document.getElementById("stratLegacyIndexed").innerText = preIndexed.toLocaleString();
+  document.getElementById("stratLegacyIndexedPct").innerText = `${preIndexedPct}% indexed`;
+  document.getElementById("stratLegacyClicks").innerText = preClicks.toLocaleString();
+  document.getElementById("stratLegacyImpressions").innerText = preImpressions.toLocaleString();
+}
+
 function getActiveDataset() {
   if (!appData) return [];
-  if (currentTab === "all") return appData.all_blogs || [];
+  if (currentTab === "post_july16") return appData.post_july16_blogs || [];
+  if (currentTab === "pre_july16") return appData.pre_july16_blogs || [];
   if (currentTab === "top100") return appData.top_100_performing || [];
   if (currentTab === "striking") return appData.striking_distance || [];
-  if (currentTab === "recent") return (appData.all_blogs || []).slice(0, 100);
-  return appData.all_blogs || [];
+  if (currentTab === "all") return appData.all_blogs || [];
+  return appData.post_july16_blogs || [];
 }
 
 function renderKpiCards() {
@@ -95,7 +141,7 @@ function renderKpiCards() {
   document.getElementById("kpiCtr").innerText = `${avgCtr}%`;
   document.getElementById("kpiPosition").innerText = avgPos;
   document.getElementById("kpiIndexing").innerText = `${indexingRate}%`;
-  document.getElementById("kpiIndexingSub").innerText = `${indexedCount} / ${allBlogs.length} total blogs indexed`;
+  document.getElementById("kpiIndexingSub").innerText = `${indexedCount} / ${allBlogs.length} total blogs active`;
 }
 
 function renderDailyTrendChart() {
@@ -191,7 +237,7 @@ function renderRankingDistChart() {
           "#0284c7", // Sky
           "#d97706", // Amber
           "#dc2626", // Red
-          "#94a3b8"  // Slate / Gray
+          "#94a3b8"  // Slate
         ],
         borderWidth: 2,
         borderColor: "#ffffff"
@@ -229,7 +275,6 @@ function renderTable() {
       b.slug.toLowerCase().includes(searchVal) ||
       (b.top_queries && b.top_queries.some(q => q.query.toLowerCase().includes(searchVal)));
 
-    // Indexing Filter: 'indexed' (impressions > 0) vs 'non-indexed' (impressions == 0)
     let matchesIndexing = true;
     if (indexingFilter === "indexed") matchesIndexing = b.impressions > 0;
     else if (indexingFilter === "non-indexed") matchesIndexing = b.impressions === 0;
@@ -257,7 +302,7 @@ function renderTable() {
   if (filtered.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="9" class="text-center" style="padding: 40px; color: #64748b;">
+        <td colspan="10" class="text-center" style="padding: 40px; color: #64748b;">
           <i class="fa-solid fa-folder-open fa-2x"></i><br><br>
           No matching blogs found for your filters.
         </td>
@@ -271,6 +316,11 @@ function renderTable() {
     const indexBadgeClass = isIndexed ? "badge-success" : "badge-secondary";
     const indexBadgeText = isIndexed ? "🟢 Indexed" : "⚪ Non-Indexed";
 
+    const isPostJuly16 = b.is_post_july16;
+    const stratGroupBadge = isPostJuly16 ?
+      `<span class="badge-status badge-primary"><i class="fa-solid fa-rocket"></i> Post-July 16</span>` :
+      `<span class="badge-status badge-secondary"><i class="fa-solid fa-clock-rotate-left"></i> Pre-July 16</span>`;
+
     return `
       <tr>
         <td class="blog-title-cell">
@@ -278,6 +328,7 @@ function renderTable() {
           <span class="blog-slug">/${b.slug}/</span>
         </td>
         <td>${b.published_date}</td>
+        <td>${stratGroupBadge}</td>
         <td><span class="badge-status ${indexBadgeClass}">${indexBadgeText}</span></td>
         <td class="text-right font-weight-bold" style="color:#0f172a;">${b.clicks.toLocaleString()}</td>
         <td class="text-right">${b.impressions.toLocaleString()}</td>
@@ -307,14 +358,17 @@ function setupEventListeners() {
       target.classList.add("active");
       currentTab = target.getAttribute("data-tab");
 
-      if (currentTab === "all" || currentTab === "top100") {
-        currentSortField = "clicks";
-        currentSortOrder = "desc";
-      } else if (currentTab === "recent") {
+      if (currentTab === "post_july16") {
         currentSortField = "raw_date";
+        currentSortOrder = "desc";
+      } else if (currentTab === "top100") {
+        currentSortField = "clicks";
         currentSortOrder = "desc";
       } else if (currentTab === "striking") {
         currentSortField = "impressions";
+        currentSortOrder = "desc";
+      } else if (currentTab === "pre_july16" || currentTab === "all") {
+        currentSortField = "clicks";
         currentSortOrder = "desc";
       }
 

@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Custom Styles (Cache Buster v2) -->
-  <link rel="stylesheet" href="styles.css?v=2">
+  <!-- Custom Styles (Cache Buster v3) -->
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
   
@@ -28,7 +28,7 @@
         </div>
         <div class="brand-info">
           <h1>SEO Dashboard</h1>
-          <span class="sub-text"><i class="fa-solid fa-chart-line"></i> Performance Analytics & Keyword Tracker • <code>blog.bluestone.com</code></span>
+          <span class="sub-text"><i class="fa-solid fa-rocket"></i> Strategy Pivot Date: <strong>July 16, 2026</strong> • <code>blog.bluestone.com</code></span>
         </div>
       </div>
       
@@ -42,7 +42,64 @@
       </div>
     </header>
 
-    <!-- Key Metrics Cards -->
+    <!-- Strategy Pivot Performance Comparison Cards -->
+    <section class="strategy-banner glass-card">
+      <div class="strategy-col new-strategy-box">
+        <div class="strat-header">
+          <h2>Post-July 16 Articles</h2>
+          <p class="strat-desc">Tracking content published after the strategy pivot on July 16, 2026</p>
+        </div>
+        <div class="strat-metrics">
+          <div class="s-metric">
+            <span class="s-label">Articles Published</span>
+            <span class="s-val" id="stratNewPublished">205</span>
+          </div>
+          <div class="s-metric">
+            <span class="s-label">Indexed in Search</span>
+            <span class="s-val" id="stratNewIndexed">33</span>
+            <span class="s-sub text-success" id="stratNewIndexedPct">16.1% indexed</span>
+          </div>
+          <div class="s-metric">
+            <span class="s-label">Search Clicks</span>
+            <span class="s-val" id="stratNewClicks">102</span>
+          </div>
+          <div class="s-metric">
+            <span class="s-label">Impressions</span>
+            <span class="s-val" id="stratNewImpressions">10,883</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="strategy-divider"></div>
+
+      <div class="strategy-col legacy-strategy-box">
+        <div class="strat-header">
+          <h2>Pre-July 16 Articles</h2>
+          <p class="strat-desc">Historical baseline content published prior to July 16, 2026</p>
+        </div>
+        <div class="strat-metrics">
+          <div class="s-metric">
+            <span class="s-label">Articles Published</span>
+            <span class="s-val" id="stratLegacyPublished">1,039</span>
+          </div>
+          <div class="s-metric">
+            <span class="s-label">Indexed in Search</span>
+            <span class="s-val" id="stratLegacyIndexed">641</span>
+            <span class="s-sub text-muted" id="stratLegacyIndexedPct">61.7% indexed</span>
+          </div>
+          <div class="s-metric">
+            <span class="s-label">Search Clicks</span>
+            <span class="s-val" id="stratLegacyClicks">7,231</span>
+          </div>
+          <div class="s-metric">
+            <span class="s-label">Impressions</span>
+            <span class="s-val" id="stratLegacyImpressions">1,506,768</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overall Key Metrics Cards -->
     <section class="kpi-grid">
       <div class="kpi-card glass-card">
         <div class="kpi-icon icon-clicks">
@@ -126,9 +183,9 @@
     <!-- Controls & Filters Section -->
     <section class="controls-section glass-card">
       <div class="tab-group">
-        <button class="tab-btn active" data-tab="all">
-          <i class="fa-solid fa-list-check"></i> All Articles
-          <span class="tab-count" id="countAll">0</span>
+        <button class="tab-btn active" data-tab="post_july16">
+          <i class="fa-solid fa-rocket"></i> New Strategy (Post-July 16)
+          <span class="tab-count" id="countPostJuly16">205</span>
         </button>
         <button class="tab-btn" data-tab="top100">
           <i class="fa-solid fa-fire"></i> Top 100 Performers
@@ -136,11 +193,15 @@
         </button>
         <button class="tab-btn" data-tab="striking">
           <i class="fa-solid fa-bolt"></i> Striking Distance (Pos 11-20)
-          <span class="tab-count" id="countStriking">0</span>
+          <span class="tab-count" id="countStriking">40</span>
         </button>
-        <button class="tab-btn" data-tab="recent">
-          <i class="fa-solid fa-clock-rotate-left"></i> Most Recent Published
-          <span class="tab-count" id="countRecent">100</span>
+        <button class="tab-btn" data-tab="pre_july16">
+          <i class="fa-solid fa-clock-rotate-left"></i> Pre-July 16 Legacy
+          <span class="tab-count" id="countPreJuly16">1039</span>
+        </button>
+        <button class="tab-btn" data-tab="all">
+          <i class="fa-solid fa-list-check"></i> All Tracked Blogs
+          <span class="tab-count" id="countAll">1244</span>
         </button>
       </div>
 
@@ -177,6 +238,7 @@
             <tr>
               <th class="th-sortable" data-sort="title">Blog Article <i class="fa-solid fa-sort"></i></th>
               <th class="th-sortable" data-sort="raw_date">Published Date <i class="fa-solid fa-sort"></i></th>
+              <th>Strategy Group</th>
               <th>Indexing Status</th>
               <th class="th-sortable text-right" data-sort="clicks">Clicks <i class="fa-solid fa-sort"></i></th>
               <th class="th-sortable text-right" data-sort="impressions">Impressions <i class="fa-solid fa-sort"></i></th>
@@ -188,7 +250,7 @@
           </thead>
           <tbody id="blogsTableBody">
             <tr>
-              <td colspan="9" class="text-center loading-state">
+              <td colspan="10" class="text-center loading-state">
                 <i class="fa-solid fa-circle-notch fa-spin"></i> Loading SEO records...
               </td>
             </tr>
@@ -266,6 +328,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=2"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
