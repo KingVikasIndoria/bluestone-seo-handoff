@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-20",
+  "updated": "2026-07-23",
   "recent_type3_trios": [
     {
       "rank": 35,
@@ -96,6 +96,233 @@
       "hero": "BIAV0987N78 The Ailia Evil Eye Layered Necklace",
       "flatlay": "BIAV0865V25 The Malocchio Charm Holder Bracelet",
       "lifestyle": "BIAR0097R16 The Quinn Ring"
+    },
+    {
+      "rank": 52,
+      "hero": "BIPO0783P11 The Ixea Evil Eye Pendant",
+      "flatlay": "BISL0804O13 The Pear Evil Eye Toggle Bangle",
+      "lifestyle": "BISA0255D05 The Asya Huggie Earrings"
+    },
+    {
+      "rank": 53,
+      "hero": "BISW1080P32 The Teshvarya Pendant",
+      "flatlay": "BIMG0635V45 The Shining Star Bracelet",
+      "lifestyle": "BIIP0427H16 The Vicky Hoop Earrings"
+    },
+    {
+      "rank": 54,
+      "hero": "BISW1080P246 The Xarvithis Pendant",
+      "flatlay": "BIPS0003O06 The Channing Bangle",
+      "lifestyle": "BISV0910V22 The Concatenate Bracelet For Him"
+    },
+    {
+      "rank": 55,
+      "hero": "BISW1080P131 The Thaloria Pendant",
+      "flatlay": "BIDG0393O37 The Estrella Oval Bangle",
+      "lifestyle": "BIIP0279S08 The Aleena Huggie Earrings"
+    },
+    {
+      "rank": 56,
+      "hero": "BIHS1145P21 The Valeria Rose Pendant",
+      "flatlay": "BENS0325O09 The Tarentella Oval Bangle",
+      "lifestyle": "BIPO0945V20 The Fonseca Bracelet For Him"
+    },
+    {
+      "rank": 57,
+      "hero": "BISW1080P133 The Lumeelle Cluster Pendant",
+      "flatlay": "BISL0987V71 The Elize Evil Eye Bracelet",
+      "lifestyle": "BIPM0001H28 The Rohal Huggie Earrings"
+    },
+    {
+      "rank": 58,
+      "hero": "BIPO0987P67 The Serenity Evil Eye Pendant For Him",
+      "flatlay": "BISV0910R24 The Interlink Band Ring",
+      "lifestyle": "BISL1006V249 The Kilxer Link Bracelet For Him"
+    },
+    {
+      "rank": 59,
+      "hero": "BIKR0987P33 The Talisman Evil Eye Pendant For Him",
+      "flatlay": "BISV0910V12 The Bandhan Bracelet For Him",
+      "lifestyle": "BISL1006V287 The Volara Bracelet For Him"
+    },
+    {
+      "rank": 60,
+      "hero": "BISW1080P132 The Sarvanya Pendant",
+      "flatlay": "BIPO0987V31 The Tapia Chain Bracelet",
+      "lifestyle": "BIPN0880H218 The Nettile Huggie Earrings"
+    },
+    {
+      "rank": 61,
+      "hero": "BINS0639R18 The Gigi Ring",
+      "flatlay": "BINK0363B03 The Skein Bangle",
+      "lifestyle": "BIJP0686H03 The Faliha Purse Hoop Earrings"
+    },
+    {
+      "rank": 62,
+      "hero": "BISW1080P28 The Thyvarne Pendant",
+      "flatlay": "BIAV0865V24 The Pervinca Charm Holder Bracelet",
+      "lifestyle": "BISV0910V26 The Network Link Bracelet"
+    },
+    {
+      "rank": 63,
+      "hero": "BIIP0550P16 The Aagarna Pendant",
+      "flatlay": "BISM0003O14 The Muricelle Bangle",
+      "lifestyle": "BIPO0945V21 The Amandine Bracelet For Him"
+    },
+    {
+      "rank": 64,
+      "hero": "BISE0987P01 The Protecteur Evil Eye Pendant",
+      "flatlay": "BIAV0865V25 The Malocchio Charm Holder Bracelet",
+      "lifestyle": "BIIP0090R24 The Ebony Ring"
+    },
+    {
+      "rank": 65,
+      "hero": "BISW1080P246 The Xarvithis Pendant",
+      "flatlay": "BISL0804O13 The Pear Evil Eye Toggle Bangle",
+      "lifestyle": "BISP0427H21 The Ursa Hoop Earrings"
+    },
+    {
+      "rank": 66,
+      "hero": "BIAV1037C17 The Ruan Cuban Diamond Chain",
+      "flatlay": "BIHM1002V07 The Protector Evil Eye Rakhi",
+      "lifestyle": "BVEM0663C65 The Chevalier Gold Chain"
+    },
+    {
+      "rank": 67,
+      "hero": "BISW1080P32 The Teshvarya Pendant",
+      "flatlay": "BIPS0003O06 The Channing Bangle",
+      "lifestyle": "BIIP0427H16 The Vicky Hoop Earrings"
+    },
+    {
+      "rank": 68,
+      "hero": "BISW1080P131 The Thaloria Pendant",
+      "flatlay": "BIMG0635V45 The Shining Star Bracelet",
+      "lifestyle": "BIAR0097R16 The Quinn Ring"
+    },
+    {
+      "rank": 69,
+      "hero": "BIPO0783P11 The Ixea Evil Eye Pendant",
+      "flatlay": "BISL0987V71 The Elize Evil Eye Bracelet",
+      "lifestyle": "BINS0639R11 The Haily Ring"
+    },
+    {
+      "rank": 70,
+      "hero": "BIEK1005V227 The Winkoo Kids Evil Eye Bracelet",
+      "flatlay": "BIEK1005V227 The Winkoo Kids Evil Eye Bracelet",
+      "lifestyle": "BIEK1005V227 The Winkoo Kids Evil Eye Bracelet",
+      "note": "all Winkoo; Novare body import failed"
+    },
+    {
+      "rank": 71,
+      "hero": "BIKR0987V33 The Talisman Evil Eye Steel Bracelet",
+      "flatlay": "BISL1006V287 The Volara Bracelet For Him",
+      "lifestyle": "BISL1006V249 The Kilxer Link Bracelet For Him",
+      "note": "bete birthday English; Male Type3; festive-mantel"
+    },
+    {
+      "rank": 72,
+      "hero": "BISW1080P132 The Sarvanya Pendant",
+      "flatlay": "BIJP0993R123 The Viperine Twist Ring",
+      "lifestyle": "BIJP0686H03 The Faliha Purse Hoop Earrings"
+    },
+    {
+      "rank": 73,
+      "hero": "BIPO0783P12 The Melene Evil Eye Pendant",
+      "flatlay": "BINK0363B03 The Skein Bangle",
+      "lifestyle": "BIPM0017R18 The Malibu Ring"
+    },
+    {
+      "rank": 74,
+      "hero": "BISW1080P28 The Thyvarne Pendant",
+      "flatlay": "BIPO0730V39 The Kricia Charm Bracelet",
+      "lifestyle": "BIKR0993R117 The Luvee Highway Ring"
+    }
+  ],
+  "flatlay_settings_menu": [
+    "desk-kraft",
+    "marble-vanity",
+    "linen-bedside",
+    "cafe-tray",
+    "festive-mantel",
+    "windowsill-daylight",
+    "gift-wrapping-station",
+    "study-desk"
+  ],
+  "recent_flatlay_settings": [
+    {
+      "rank": 60,
+      "setting": "cafe-tray",
+      "note": "shayari Tapia"
+    },
+    {
+      "rank": 61,
+      "setting": "desk-kraft",
+      "note": "captions Skein"
+    },
+    {
+      "rank": 62,
+      "setting": "festive-mantel",
+      "note": "thankyou Pervinca"
+    },
+    {
+      "rank": 63,
+      "setting": "marble-vanity",
+      "note": "marathi Muricelle"
+    },
+    {
+      "rank": 64,
+      "setting": "study-desk",
+      "note": "emoji bestie Malocchio"
+    },
+    {
+      "rank": 65,
+      "setting": "linen-bedside",
+      "note": "teachers day Pear bangle"
+    },
+    {
+      "rank": 66,
+      "setting": "windowsill-daylight",
+      "note": "big brother Protector Rakhi"
+    },
+    {
+      "rank": 67,
+      "setting": "cafe-tray",
+      "note": "sorry late wishes Channing"
+    },
+    {
+      "rank": 68,
+      "setting": "gift-wrapping-station",
+      "note": "exam quotes Shining Star bracelet"
+    },
+    {
+      "rank": 69,
+      "setting": "desk-kraft",
+      "note": "teachers shayari Elize + Haily"
+    },
+    {
+      "rank": 70,
+      "setting": "marble-vanity",
+      "note": "one month baby boy Winkoo kids bracelet"
+    },
+    {
+      "rank": 71,
+      "setting": "festive-mantel",
+      "note": "bete birthday Volara For Him flatlay"
+    },
+    {
+      "rank": 72,
+      "setting": "study-desk",
+      "note": "advance lover birthday Viperine Twist ring"
+    },
+    {
+      "rank": 73,
+      "setting": "linen-bedside",
+      "note": "gf birthday english Melene / Skein / Malibu"
+    },
+    {
+      "rank": 74,
+      "setting": "cafe-tray",
+      "note": "girlfriend birthday hindi Kricia cafe tray"
     }
   ]
 }

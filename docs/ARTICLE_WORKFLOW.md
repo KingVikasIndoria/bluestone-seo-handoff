@@ -12,7 +12,7 @@ SEO is built into Master Prompt v5 + Checklist v2. **Do not use claude-seo to dr
 2. Competitor analysis skill → filled artifact (structure / gaps only, never copy)
 3. Article Brief (v5 template): next upcoming festival year, one **new** URL for near-duplicates, 80/20 wishes
 4. Draft with `bluestone-blog-master-prompt-v5.md`
-5. Soft CTA: 5–6 SKUs from `Seo Products - final products (1).csv` (PDP `Link`, **no prices**)
+5. Soft CTA: 5–6 SKUs from `Seo Products - consolidated.csv` (PDP `Link`, **no prices**; respect `GenderTag` + mm size for Type 3)
 6. Images (see Image system below)
 7. Push WordPress **new post** via API (`publish_*` scripts)
 8. Yoast via API (focus keyphrase, SEO title, meta description)
@@ -127,7 +127,7 @@ Minimum bar every publish:
 | Checklist | `KnowledgeBase/Writing/Blog-SEO-AEO-GEO-Checklist-v2.md` |
 | Competitor skill | `KnowledgeBase/Writing/competitor-blog-analysis-SKILL.md` |
 | This workflow | `KnowledgeBase/Writing/ARTICLE_WORKFLOW.md` |
-| Products CSV | `Seo Products - final products (1).csv` |
+| Products CSV | `Seo Products - consolidated.csv` |
 | Week plan | [SEO Strategy 2026.xlsx](file:///Users/vikasindoria/Documents/Geo%20and%20Seo/SEO%20Strategy%202026.xlsx) (Sheet: "Week 1-2") |
 | Type 1 raw | `ProductImages/raw/` |
 | Type 2 AI product | `ProductImages/seo images/` |

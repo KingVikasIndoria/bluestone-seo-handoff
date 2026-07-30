@@ -11,12 +11,15 @@ alwaysApply: true
 2. Across a batch, **rotate categories**: pendants, earrings, bangles, rings, bracelets, mangalsutra, necklaces, chains, kids (when relevant).
 3. Track recent Type 3 SKUs in `article generation seo codex/output/product_rotation.json` and avoid reusing the same hero/flatlay/lifestyle trio on consecutive ranks.
 4. **Occasion fit still wins:**
-   - Men / mama ji / him gifts → For Him pendants, bracelets, bands, chains
-   - Newborn / kids → Kids Bracelets + protective evil-eye styles
-   - Wedding / mangalsutra intent → mangalsutra in the mix
-   - Romantic crush / couple → pendants, rings, earrings (vary SKUs)
+ - Men / mama ji / him gifts → **Male** GenderTag only (For Him pendants, bracelets, bands, chains)
+ - Newborn / kids → **Kids** GenderTag (Kids Bracelets + protective evil-eye styles)
+ - Wedding / mangalsutra intent → mangalsutra in the mix (**Female**)
+ - Romantic crush / couple → pendants, rings, earrings (vary SKUs; wearer must match GenderTag)
+4b. **Type 3 gender lock:** never put a Male SKU on a woman or Female on a man. Read GenderTag from `Seo Products - consolidated.csv`.
+4c. **Type 3 exact size:** CSV `height_mm` × `width_mm` + short body_image line: keep size like `@img1` body_image; `@img2` design only; do not make bigger for visibility.
+4d. **Body image hard gate (hero + lifestyle):** `@img1` must be raw/`BP-PICS` **body_image** (or `1_body_portrait`). `@img2` = front/design only. If no body_image exists for a SKU, **skip that SKU** and pick another with a body shot — never generate people hero/lifestyle from packshots alone. Flatlay is exempt (3–4 packshot angles OK).
 5. Carousel (6 products) and Type 3 (3 products) should **overlap at most 1 SKU** when the SEO library allows.
-6. Flatlay **props** should also rotate (not always phone + napkin + rose). Vary desk props by occasion.
+6. **Flatlay settings must rotate** (not always wood desk + kraft box + linen). Pick one ID from the 8-setting menu in `HIGGSFIELD_IMAGE_GENERATION.md` (`desk-kraft`, `marble-vanity`, `linen-bedside`, `cafe-tray`, `festive-mantel`, `windowsill-daylight`, `gift-wrapping-station`, `study-desk`). Track in `output/product_rotation.json` → `recent_flatlay_settings`. Avoid the same setting on consecutive ranks. Set `"flatlay_setting"` in Type 3 prompts JSON. Props stay secondary; no readable text.
 
 ## Type 3 image captions (required)
 

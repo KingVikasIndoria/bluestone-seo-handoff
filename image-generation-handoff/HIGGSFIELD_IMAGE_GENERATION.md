@@ -168,11 +168,14 @@ Nano Banana often **hallucinates a giant floating packshot** when the prompt lea
 
 {OCCASION} candid lifestyle photograph, mid-shot of people (not a product ad).
 {SCENE with SUBJECTS}. Faces and upper bodies fill most of the frame.
-{SUBJECT} is physically wearing the {product} from reference images (@img1, @img2) {ON body part}.
-The {product} rests on skin/fabric with a soft contact shadow, at real-world jewellery size
-(small in frame — roughly {2–3 cm pendant / normal ring / normal bracelet scale vs body}).
-Camera focuses on the people; jewellery is sharp but NOT the largest object in the image.
-Design fidelity to refs: {DESIGN_DETAILS}. Zero distortion.
+{SUBJECT matching GenderTag} is physically wearing the {product} from reference images (@img1 body_image worn scale, @img2 design only) {ON body part}.
+GENDER LOCK: GenderTag from `Seo Products - consolidated.csv` — Male→adult man only; Female→adult woman only; Kids→child only; Unisex→one clear adult wearer. Never put a Male SKU on a woman or Female SKU on a man.
+The {product} rests on skin/fabric with a soft contact shadow at EXACT PDP size from the CSV:
+height_mm={H} × width_mm={W} (use size_prompt_note: face dims vs bracelet length axis).
+BODY_IMAGE SCALE LINE (required): Keep the jewellery size on the person like @img1 body_image (worn ear/neck/wrist/finger scale). Use @img2 only for the jewellery design. Do not make it bigger for visibility.
+Jewellery fidelity (campaign hybrid): HD hyperreal metal and stones, 100% identical to refs, zero distortion, exact design and proportions. Controlled soft key light with gentle realistic shadows; proper shallow depth of field. People stay candid; jewellery reads high-end commercial quality without becoming a packshot overlay.
+Camera focuses on the people; jewellery is sharp and true but NOT the largest object in the image.
+Design fidelity to refs: {DESIGN_DETAILS}. Zero distortion. Size and design must remain 100% identical to the product references.
 This is the ONLY jewellery in the image. Bare ears and bare wrists otherwise.
 CRITICAL anti-collage: the jewellery is attached to the body, never a floating cutout,
 never a giant product diagram composited over the photo, never a packshot overlay.
@@ -185,11 +188,38 @@ Avoid: {NEGATIVE_PROMPT_PEOPLE}
 ```
 {PRODUCT_THEME_ANCHOR}
 
-{OCCASION} top-down flatlay. {PROPS}.
-The identical {product} from (@img1, @img2, @img3) rests on the surface at natural scale, sharp, full piece visible.
-No floating overlays or cutouts.
+{OCCASION} top-down flatlay. Flatlay setting ID: {FLATLAY_SETTING_ID}.
+Surface + props: {FLATLAY_SETTING_PROMPT}.
+The identical {product} from (@img1, @img2, @img3) rests on the surface at EXACT PDP size (height_mm × width_mm from consolidated CSV), HD hyperreal fidelity, zero distortion, 100% identical design, sharp, full piece visible, centered as hero of the still life but true-to-life scale (do not enlarge for visibility). Controlled soft key + gentle shadows, shallow depth of field, no blown whites.
+Props stay secondary; jewellery is the clear subject. No people, no hands.
+No floating overlays or cutouts. No readable text, logos, or brand marks on props.
 Avoid: {NEGATIVE_PROMPT}
 ```
+
+### Flatlay setting rotation (mandatory)
+
+Do **not** default every article to warm wood + kraft box + linen. Pick one setting per article from the menu below. Track last settings in `output/product_rotation.json` → `recent_flatlay_settings` and **avoid repeating the same ID on consecutive ranks**.
+
+| Setting ID | Surface | Prop kit (2–4 items, blank/no text) | Best for |
+|---|---|---|---|
+| `desk-kraft` | warm wood desk | kraft gift box, blank cream card, linen napkin | formal / principal / teachers / default |
+| `marble-vanity` | soft marble or stone vanity | blank perfume silhouette (no label), silk ribbon, tiny tray | romantic / her gifts / crush |
+| `linen-bedside` | rumpled linen + nightstand edge | closed book (no title), soft lamp glow, dried flower | birthday / evening / soft personal |
+| `cafe-tray` | ceramic tray / stoneware | plain espresso cup + saucer, napkin | friendship / status / casual |
+| `festive-mantel` | wood shelf or mantel | pine sprig or diya (no logos), blank gift tag | Diwali / Christmas / festive |
+| `windowsill-daylight` | painted windowsill | sheer curtain blur, small plant pot, blank envelope | soft daylight editorial |
+| `gift-wrapping-station` | kraft paper roll surface (blank) | matte scissors, twine, blank tag | gifting CTA articles |
+| `study-desk` | dark wood / matte study desk | closed notebook (no title), plain pen, soft blotter | principal / teachers / academic |
+
+**Occasion defaults (override if last article used the same ID):**
+- Principal / teachers / academic → `study-desk` or `desk-kraft`
+- Christmas / Diwali / festive → `festive-mantel`
+- Birthday / status / friendship → `linen-bedside` or `cafe-tray`
+- Romantic / her gifts → `marble-vanity`
+- Soft editorial filler → `windowsill-daylight`
+- Strong gift CTA → `gift-wrapping-station`
+
+In each Type 3 prompts JSON, set `"flatlay_setting": "<setting_id>"` and write the matching surface/props into the flatlay prompt.
 
 ---
 
@@ -197,41 +227,40 @@ Avoid: {NEGATIVE_PROMPT}
 
 | Slot | Scene | Subject | Product Placement | Refs | Lens |
 |---|---|---|---|---|---|
-| hero | Warm lifestyle with people | Hug / gift / celebration | **Worn** on body, small in frame | **2** | 85mm mid-shot |
-| flatlay | Top-down desk / gift scene | No people — props only | On surface, center frame | 3–4 | 100mm top-down |
-| lifestyle | Action close-up | Wrist / hand / ear in motion | On wrist / in hand / on ear | **2** | 85mm mid-shot |
+| hero | Warm lifestyle with people | Hug / gift / celebration | **Worn** on body, small in frame | **2** (body_image + design) | 85mm mid-shot |
+| flatlay | Rotating setting from menu | No people — props only | On surface, center frame, true scale | 3–4 | 100mm top-down |
+| lifestyle | Action close-up | Wrist / hand / ear in motion | On wrist / in hand / on ear | **2** (body_image + design) | 85mm mid-shot |
 
 ---
 
-## Hyper-real prompt system
+## Hyper-real prompt system (campaign hybrid)
 
-Use **different theme anchors** for people vs flatlay. Only change scene/pose per slot.  
-Prefer candid / documentary language for people. Avoid “studio catalogue / macro product” wording on heroes.
+Use **different theme anchors** for people vs flatlay. Only change scene/pose per slot.
+
+**Campaign hybrid (locked from 2026-07-20):** people stay **candid lifestyle**; jewellery upgrades to **HD hyperreal commercial fidelity** (exact size/design, no distortion). Controlled soft key + gentle shadows + proper shallow DoF. Ban blown whites / HDR glare. Keep GenderTag + exact mm rules. Do **not** lead people prompts with macro packshot language (that still triggers floating overlays).
 
 ### People Theme Anchor (hero + lifestyle with skin)
 
-Prefer **photoreal candid** language over “hyper-realistic” (that phrase is optional and can push stylized CGI looks). Do **not** use “macro-level detail” on people shots.
-
 ```
-Photoreal candid lifestyle photograph, natural skin texture, no illustration, no CGI. Soft natural window light, warm daylight, realistic soft shadows, gentle shallow depth of field. Shot on DSLR, 16:9 full frame with safe margins. People are the primary subject; jewellery is a small worn detail on the body, not a floating product graphic. Entire faces and worn jewellery fully visible, nothing cropped at frame edges.
+Photoreal candid lifestyle photograph with high-end jewellery commercial fidelity on the worn piece only. Natural skin texture, no illustration, no CGI. Controlled soft key light with gentle fill, realistic soft shadows, proper shallow depth of field (85mm), balanced exposure with no blown whites and no HDR glare. Shot on DSLR, HD quality, 16:9 full frame with safe margins. People are the primary subject and remain candid; the jewellery is a small worn detail that is 100% identical to product refs (exact size, exact design, zero distortion, HD metal and stone detail). Entire faces and worn jewellery fully visible, nothing cropped at frame edges.
 ```
 
 ### Product Theme Anchor (flatlay only)
 
 ```
-Photoreal product-in-scene jewellery photograph, HD quality, no distortion of jewellery, identical scale and design, physically accurate metal and stone detail, natural textures only, no stylization, no illustration. Soft natural window light, warm daylight, realistic soft shadows, shallow depth of field. Shot on DSLR, 16:9 full frame with safe margins. Entire jewellery fully visible, nothing cropped at frame edges.
+Photoreal high-end jewellery commercial flatlay, HD quality, no distortion of jewellery, identical scale and design (100% match to refs), physically accurate metal and stone detail, natural textures only, no stylization, no illustration. Controlled soft key light with gentle realistic shadows, proper shallow depth of field, balanced exposure with no blown whites and no HDR glare. Shot on DSLR, 16:9 full frame with safe margins. Entire jewellery fully visible, nothing cropped at frame edges.
 ```
 
 ### Standard Negative Prompt — people (append as `Avoid: ...`)
 
 ```
-floating jewellery overlay, giant pendant collage, product cutout over people, packshot composited on lifestyle photo, oversized necklace covering torso, graphic drawings, cutouts, product diagrams, split screen, illustration, CGI look, cartoon, fake diamonds, studio HDR glow, unreal scale, oversized jewellery, distorted hands, extra fingers, extra bracelets, extra rings, extra earrings, product shot on plain background, cropped faces, cut-off heads, readable text, logos, dark skin, deep brown skin, heavily tanned skin
+floating jewellery overlay, giant pendant collage, product cutout over people, packshot composited on lifestyle photo, oversized necklace covering torso, oversized earrings, statement earrings, fashion runway proportions, exaggerated hoop diameter, jewellery upscaled for visibility, graphic drawings, cutouts, product diagrams, split screen, illustration, CGI look, cartoon, fake diamonds, studio HDR glow, blown whites, overexposed highlights, washed-out lighting, unreal scale, oversized jewellery, distorted jewellery, warped metal, melted stones, wrong design, distorted hands, extra fingers, extra bracelets, extra rings, extra earrings, product shot on plain background, cropped faces, cut-off heads, readable text, logos, dark skin, deep brown skin, heavily tanned skin
 ```
 
 ### Standard Negative Prompt — flatlay
 
 ```
-illustration, CGI look, cartoon, fantasy style, over-stylized, plastic glass, fake diamonds, fake gemstones, artificial lighting, studio HDR glow, unreal reflections, blurry jewellery, noise, low detail, AI artifacts, painting, digital art, unreal scale, oversized jewellery, floating overlays, cutouts, product diagrams, readable text, logos, exaggerated proportions
+illustration, CGI look, cartoon, fantasy style, over-stylized, plastic glass, fake diamonds, fake gemstones, artificial harsh lighting, studio HDR glow, blown whites, overexposed highlights, washed-out lighting, unreal reflections, blurry jewellery, distorted jewellery, warped metal, noise, low detail, AI artifacts, painting, digital art, unreal scale, oversized jewellery, floating overlays, cutouts, product diagrams, readable text, logos, exaggerated proportions
 ```
 
 ### Casting block (required for people slots)
@@ -251,10 +280,25 @@ Describe like a product photographer:
 ### Jewellery visibility (always specify)
 
 - **Where:** on wrist, on desk, on neck, on ear
-- **Scale:** natural product scale relative to body — NOT oversized
-- **Focus:** jewellery sharp
+- **Scale:** true-to-life worn scale from CSV mm + refs — **NOT** oversized, **NOT** statement, **NOT** upscaled for visibility
+- **Earrings / hoops:** do not exaggerate hoop diameter; keep near earlobe; never jawline-length unless PDP mm truly supports it
+- **Focus:** jewellery sharp (HD fidelity) even when small
 - **Framing:** entire piece visible, safe margins, nothing cut off
 - **Wear:** nested into fabric/skin with soft contact shadows (not floating)
+
+### Body_image scale line (required on every people prompt)
+
+Paste after exact mm. Prefer this short line (category-swap ear/neck/wrist/finger as needed):
+
+```
+Keep the jewellery size on the person like @img1 body_image (worn ear/neck/wrist/finger scale). Use @img2 only for the jewellery design. Do not make it bigger for visibility.
+```
+
+Earrings example:
+
+```
+Keep the earring size on the woman like @img1 body_image (worn ear scale). Use @img2 only for the earring design. Do not make it bigger for visibility.
+```
 
 ---
 
@@ -262,8 +306,8 @@ Describe like a product photographer:
 
 | Slot | Product refs | Why |
 |---|---|---|
-| **Hero / lifestyle (people)** | Import 3–5 CDN angles as MCP medias (`role: image`) | Jewellery fidelity without cloning plain packshots into the scene |
-| **Flatlay** | Same — CDN angles as medias | Exact product on a lived-in surface |
+| **Hero / lifestyle (people)** | Import **exactly 2** medias (`role: image`): **(1) `@img1` = `1_body_portrait` / CDN `BP-PICS` body_image** + **(2) `@img2` = front/primary design**. Body_image is **mandatory** for both hero and lifestyle. If no body_image exists for the SKU, **skip that SKU** and pick another — never run people shots from packshots alone. |
+| **Flatlay** | Import **3–4** CDN/raw angles as medias (front / side / close-up). Body portrait optional, not required. |
 | **Carousel (Type 2)** | Never — use `ProductImages/seo images/` only | Separate pipeline |
 
 Always read the product images even when writing text descriptions — use them for accurate materials + as MCP medias.
@@ -275,7 +319,7 @@ Always read the product images even when writing text descriptions — use them 
 | Slot | Must show | Must NOT show |
 |---|---|---|
 | **Hero** (featured) | People + jewellery gifted/worn; warm home; occasion mood | Plain product on beige/dark surface |
-| **Flatlay** | Lived-in desk/table + props; jewellery on surface | Empty catalog shot |
+| **Flatlay** | Lived-in **rotated setting** from flatlay menu + props; jewellery on surface at true scale | Empty catalog shot; same wood+kraft set every time |
 | **Lifestyle** | People / hands in action; jewellery on body, sharp | Product flatlay only |
 
 ### Hard rules
@@ -295,19 +339,23 @@ Always read the product images even when writing text descriptions — use them 
 
 1. **FAIR-SKINNED INDIANS (CASTING):** In every Type 3 image that shows people (faces, hands, wrists, necks, or any visible skin), cast **fair-skinned Indian** subjects only — light wheatish to fair North Indian / urban Indian complexion. Explicitly state this in the prompt. Do **not** use deep brown, dark, or heavily tanned skin. Add to negatives: `dark skin, deep brown skin, heavily tanned skin`. Flatlay with no people is exempt.
 
-2. **PROPORTIONAL SCALE:** Always add "The [product] must be rendered at its actual natural scale. Maintain exact proportions relative to [body part], avoid oversized/exaggerated rendering."
+2. **PROPORTIONAL SCALE (EXACT MM) + BODY_IMAGE LINE:** Before prompting, read `height_mm`, `width_mm`, and `size_prompt_note` from `Seo Products - consolidated.csv`. State exact millimetres. Always include the short body_image line: keep jewellery size on the person like `@img1` body_image (worn scale); use `@img2` only for design; do not make it bigger for visibility. Require HD hyperreal fidelity, 100% identical design, zero distortion. Campaign-hybrid lighting (soft key, gentle shadows, shallow DoF, no blown whites). Oversized jewellery vs body_image/CSV is a QA fail — regenerate.
+
+2b. **GENDER TAG LOCK:** `GenderTag` on the consolidated CSV is mandatory for people shots. Male SKUs (including “For Him”) only on adult men; Female only on adult women; Kids only on children. Wrong-gender wear is a QA fail — regenerate.
 
 3. **SINGLE PRODUCT:** Always add "This [product] is the single and only piece of jewelry in the entire image. [Others] wear absolutely no other jewelry." + add "extra necklaces, extra rings, extra bracelets" to negative prompt.
 
 4. **NO OVERLAYS:** People prompts must say jewellery is **physically worn / on body** with contact shadow. Put anti-collage negatives **first** in Avoid list. Saying “no overlays” alone is not enough if the prompt leads with macro/commercial jewellery language.
 
-5. **REFERENCE COUNT:** People hero/lifestyle = **2 refs max** (front + 3/4). Flatlay = 3–4 angles. Do **not** send 4–5 packshots into a people scene — that strongly triggers floating product overlays.
+5. **REFERENCE COUNT + BODY_IMAGE:** People hero/lifestyle = **2 refs max**. `@img1` = `1_body_portrait` / CDN `BP-PICS` body_image; `@img2` = front/primary design. Body_image is **required** for hero and lifestyle. If missing → **skip the SKU** (do not fall back to packshots). Prompt must use the short body_image scale line. Flatlay = 3–4 angles. Do **not** send 4–5 packshots into a people scene.
 
 6. **@img1 @img2 IN PROMPT:** Must reference images in prompt text matching the medias array order (use `@img1, @img2` for people).
 
 7. **MCP MEDIA IDS:** Never pass raw `https://` URLs into `medias[].value`. Always import first; use role **`image`** (not `image_reference`).
 
 8. **MANGALSUTRA ONLY:** Add "The AI must replicate the exact metal, exact number of bead stations (if any), their exact colors/count, and precise spacing. No extra black beads added if not visible in references."
+
+9. **FLATLAY SETTING ROTATION:** Every Type 3 flatlay must declare a `flatlay_setting` ID from the 8-setting menu. Log it in `output/product_rotation.json` → `recent_flatlay_settings`. Do not reuse the same setting on consecutive ranks. Never default every blog to warm wood + kraft box + linen.
 
 ---
 
@@ -316,10 +364,13 @@ Always read the product images even when writing text descriptions — use them 
 | Check | Pass |
 |---|---|
 | Lifestyle feel | People or lived-in scene |
+| Flatlay setting | Setting ID from 8-menu; not same as previous rank; props secondary / no text |
 | Jewellery worn (people) | On body — **not** floating cutout / collage |
-| Scale | Natural vs body (small in frame for hero) |
-| Jewellery visible | Sharp, realistic scale, in frame |
-| SKU accuracy | Matches product refs (chain, beads, charm colours) |
+| Scale | Exact CSV mm + short body_image line (`@img1` worn scale; `@img2` design only; do not enlarge for visibility) |
+| Gender | Wearer matches GenderTag (Male/Female/Kids/Unisex) |
+| Jewellery visible | Sharp HD fidelity, exact CSV scale, in frame; no blown metal highlights |
+| Lighting | Soft key + gentle shadows, shallow DoF, no washed/HDR glare |
+| SKU accuracy | 100% identical to product refs (chain, beads, charm colours); zero distortion |
 | Casting | Fair-skinned Indians when people/skin visible |
 | Single piece | No extra earrings/bangles/rings unless intended |
 | Screen text | None readable |

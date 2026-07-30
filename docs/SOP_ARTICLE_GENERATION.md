@@ -30,7 +30,7 @@ This is the **primary runbook** for any agent drafting and publishing festive SE
 | **Execution queue** | `SEO Strategy 2026.xlsx` → **`Week 1-2`** |
 | **Later queue** | Same workbook → **`Week 3-4`** |
 | **Keyword clusters** | Sheet **`33 Groups festive`** / **`Keywords Grouping festive`** |
-| **Approved products** | `Seo Products - final products (1).csv` |
+| **Approved products** | `Seo Products - consolidated.csv` (legacy: `Seo Products - final products (1).csv`) |
 | **Type 1 raw (reference)** | `ProductImages/raw/<category>/` |
 | **Type 2 carousel images** | `ProductImages/seo images/<category>/` |
 | **Gold reference post** | Holi WP **#29853** → https://blog.bluestone.com/happy-holi-wishes-messages-quotes-2027/ |
@@ -194,7 +194,7 @@ Draft the article using **`bluestone-blog-master-prompt-v5.md`** (`soft-products
 ## Step 3: Product selection (Type 2 carousel)
 
 ### 3.1 Rules
-- Source: **`Seo Products - final products (1).csv`**
+- Source: **`Seo Products - consolidated.csv`** (GenderTag + height_mm/width_mm required for Type 3)
 - Count: **exactly 5–6 products** in the coverflow carousel
 - Each card: Type 2 WebP image + product name (plain text) + black **Buy now** → live PDP
 - No prices

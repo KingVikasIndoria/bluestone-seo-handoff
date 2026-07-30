@@ -20,4 +20,4 @@ Canonical detail: `KnowledgeBase/Writing/HIGGSFIELD_IMAGE_GENERATION.md` → **I
 
 Type 3 people heroes: use people-first prompts + 2 product refs max (see HIGGSFIELD_IMAGE_GENERATION.md). Macro/commercial jewellery lead-ins cause floating packshot overlays.
 
-Credits: exactly **3** Type 3 images per article (`count: 1` each for hero/flatlay/lifestyle). Retry a slot only if QA fails — no dual variants by default. Prefer “photoreal candid” over “hyper-realistic”.
+Credits: exactly **3** Type 3 images per article (`count: 1` each for hero/flatlay/lifestyle). Retry a slot only if QA fails — no dual variants by default. **Campaign hybrid:** candid people + HD jewellery. Lifestyle/hero refs: `@img1` body_image + `@img2` design. Short scale line: keep size like `@img1` body_image; `@img2` design only; do not make bigger for visibility. **If body_image missing → skip that SKU** (do not generate people shots from packshots only). **Flatlay:** rotate setting ID from 8-menu; log in `product_rotation.json`. See HIGGSFIELD_IMAGE_GENERATION.md.

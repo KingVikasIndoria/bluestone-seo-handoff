@@ -23,7 +23,8 @@ Self-contained handoff folder for generating festive SEO articles with Codex (or
 | **`HANDOFF.md`** | Current queue, completed articles, Codex opening prompt |
 | **`docs/`** | All writing rules, SOP, master prompt v5, checklist, Type 3 visual guide |
 | **`SEO Strategy 2026.xlsx`** | Execution queue (Week 1-2 tab) |
-| **`Seo Products - final products (1).csv`** | Approved carousel SKUs + PDP links |
+| **`Seo Products - consolidated.csv`** | Canonical SKUs + GenderTag + height/width mm + PDP/CDN (prefer this) |
+| **`Seo Products - final products (1).csv`** | Legacy approved list (still OK for download scripts) |
 | **`templates/`** | Type 3 prompts template + carousel HTML snippets |
 | **`references/`** | Worked examples (Rank 4 Diwali new, Rank 5 Children's Day optimize) |
 | **`scripts/`** | Publish, optimize, Type 3 WP patch (Higgsfield MCP for generation) |

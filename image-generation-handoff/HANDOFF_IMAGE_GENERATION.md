@@ -40,7 +40,7 @@ No Magnific key required.
 
 ## Step 1: Choose 3 Products and Get CDN URLs
 
-Open `Seo Products - final products (1).csv` (project root).  
+Open `Seo Products - consolidated.csv` (project root). Use `GenderTag` + `height_mm`/`width_mm` in every Type 3 people prompt.  
 Pick 3 products (one per slot: hero, flatlay, lifestyle).  
 Get their Design Code (e.g. BVEM0663C88).
 

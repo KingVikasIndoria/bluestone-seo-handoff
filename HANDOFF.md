@@ -2,10 +2,14 @@
 
 **Updated:** 2026-07-20  
 **Workspace:** Open this folder (`article generation seo codex`) as Codex root  
-**Next task:** Batch Ranks 45–50 complete (Type3 patched). Next start Rank 51 if continuing.  
+**Next task:** Rank 54 birthday wishes for principal live (NEW, body_image scale line). Next start Rank 55 if continuing.  
 **Ranks 45–50 live:** first birthday baby girl / mothers day thought / teachers day msg / 2-line dosti status / deepavali Tamil / yari status Hindi.  
 
+**Process updates (2026-07-20):** Canonical product list is `Seo Products - consolidated.csv` (merged GenderTag + height/width mm from `designfiltered2026.csv`). Type 3 must match gender + exact mm. See `docs/product/product-selection-guide.md`.
 **Process updates (2026-07-19 evening):** Rotate Type 3/carousel products (no Valeria/Muricelle/Rohal default). Add figcaptions under Type 3 body images. Education posts use paragraphs + short takeaways, not bullets-only. See `.cursor/rules/product-rotation-captions-education.mdc` and `output/product_rotation.json`.
+**Rank 54 live:** https://blog.bluestone.com/birthday-wishes-for-principal-2026/ (WP#30645)
+**Rank 53 live:** https://blog.bluestone.com/merry-christmas-wishes-quotes-2026/ (WP#30630)
+**Rank 52 live:** https://blog.bluestone.com/birthday-status-2026/ (WP#30618)
 **Rank 50 live:** https://blog.bluestone.com/yari-status-hindi-2026/ (WP#30571)
 **Rank 49 live:** https://blog.bluestone.com/deepavali-wishes-in-tamil-2026/ (WP#30564)
 **Rank 48 live:** https://blog.bluestone.com/2-line-dosti-status-in-english-2026/ (WP#30557)

@@ -351,7 +351,7 @@ def main():
         "no_em_dash": "\u2014" not in visible,
         "no_en_dash": "\u2013" not in visible,
         "no_spaced_hyphen": re.search(r"\s-\s", visible) is None,
-        "no_prices": not re.search(r"(?:₹|Rs\.?\s*\d|INR\s*\d)", visible, re.I),
+        "no_prices": not re.search(r"(?:₹|\bRs\.?\s*\d|\bINR\s*\d)", visible, re.I),
         "carousel_mid_article": content.index(carousel_id) < content.index("Frequently Asked Questions"),
         "six_buy_links": content.count(">Buy now<") == 6,
         "faq_schema": '"@type": "FAQPage"' in content,

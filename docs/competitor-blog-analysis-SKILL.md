@@ -26,7 +26,7 @@ Run this **before drafting** any festive or gift blog that has a competitor URL 
 | Primary keyword | Plan row |
 | Supporting keywords | Plan row (top ~8) + full pool if available |
 | Article type | festive wishes / gift / education / calendar |
-| BlueStone product list | `KnowledgeBase/Product/seo-products-final.csv` (or `Seo Products - final products.csv`) |
+| BlueStone product list | `Seo Products - consolidated.csv` (GenderTag + mm sizes; legacy: `Seo Products - final products (1).csv`) |
 
 ## Hard rules
 1. **Structure only** — extract outline, patterns, intents. Do **not** copy sentences, wish lists, or product blurbs.
@@ -136,7 +136,7 @@ For every H2 (and major H3):
 
 ## Product selection (from approved CSV)
 
-File: `KnowledgeBase/Product/seo-products-final.csv`  
+File: `Seo Products - consolidated.csv` (or legacy `Seo Products - final products (1).csv`)  
 Columns: Design Code, Design Name, Image link, ItemCategory, sellingPrice, DesignCategory
 
 **Wishes posts (80/20):** pick **5–6 products**, preferably **2 categories**, mid-article soft CTA only.

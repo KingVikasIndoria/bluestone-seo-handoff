@@ -44,7 +44,11 @@ def upload_media(path, alt, title):
         "Content-Type": "image/webp",
     }
     media = api("POST", "media", raw_body=path.read_bytes(), headers=headers)
-    api("POST", f"media/{media['id']}", {"alt_text": alt, "title": title})
+    try:
+        api("POST", f"media/{media['id']}", {"alt_text": alt, "title": title})
+    except Exception as exc:
+        # Upload already succeeded; alt/title update can time out on WP.
+        print(f"  warn: media {media['id']} meta update failed ({exc}); continuing")
     return media
 
 
