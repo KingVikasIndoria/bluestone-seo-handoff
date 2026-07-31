@@ -81,23 +81,33 @@ def fetch_wp_posts_parallel(max_pages=15):
 def fetch_gsc_data(service):
     print("📊 Querying Google Search Console API...")
     
-    # 1. Page metrics
-    p_req = {
-        "startDate": START_DATE,
-        "endDate": END_DATE,
-        "dimensions": ["page"],
-        "dimensionFilterGroups": [{
-            "filters": [{
-                "dimension": "page",
-                "operator": "includingRegex",
-                "expression": r"^https://blog\.bluestone\.com/"
-            }]
-        }],
-        "rowLimit": 5000,
-        "dataState": "final"
-    }
-    p_res = service.searchanalytics().query(siteUrl=SITE_URL, body=p_req).execute()
-    p_rows = p_res.get("rows", [])
+    # 1. Page metrics (paginated)
+    p_rows = []
+    start_row = 0
+    row_limit = 25000
+    while True:
+        p_req = {
+            "startDate": START_DATE,
+            "endDate": END_DATE,
+            "dimensions": ["page"],
+            "dimensionFilterGroups": [{
+                "filters": [{
+                    "dimension": "page",
+                    "operator": "includingRegex",
+                    "expression": r"^https://blog\.bluestone\.com/"
+                }]
+            }],
+            "rowLimit": row_limit,
+            "startRow": start_row,
+            "dataState": "final"
+        }
+        p_res = service.searchanalytics().query(siteUrl=SITE_URL, body=p_req).execute()
+        batch = p_res.get("rows", [])
+        p_rows.extend(batch)
+        if len(batch) < row_limit:
+            break
+        start_row += len(batch)
+
     print(f"   Fetched {len(p_rows)} blog pages from GSC.")
 
     gsc_page_map = {}
@@ -116,24 +126,33 @@ def fetch_gsc_data(service):
         gsc_page_map[norm_url.rstrip('/')] = item
         gsc_page_map[slug] = item
 
-    # 2. Page + Query metrics
-    pq_req = {
-        "startDate": START_DATE,
-        "endDate": END_DATE,
-        "dimensions": ["page", "query"],
-        "dimensionFilterGroups": [{
-            "filters": [{
-                "dimension": "page",
-                "operator": "includingRegex",
-                "expression": r"^https://blog\.bluestone\.com/"
-            }]
-        }],
-        "rowLimit": 5000,
-        "dataState": "final"
-    }
-    pq_res = service.searchanalytics().query(siteUrl=SITE_URL, body=pq_req).execute()
-    pq_rows = pq_res.get("rows", [])
-    print(f"   Fetched {len(pq_rows)} page+query pairs.")
+    # 2. Page + Query metrics (paginated to fetch all 16,800+ rows)
+    pq_rows = []
+    start_row = 0
+    while True:
+        pq_req = {
+            "startDate": START_DATE,
+            "endDate": END_DATE,
+            "dimensions": ["page", "query"],
+            "dimensionFilterGroups": [{
+                "filters": [{
+                    "dimension": "page",
+                    "operator": "includingRegex",
+                    "expression": r"^https://blog\.bluestone\.com/"
+                }]
+            }],
+            "rowLimit": row_limit,
+            "startRow": start_row,
+            "dataState": "final"
+        }
+        pq_res = service.searchanalytics().query(siteUrl=SITE_URL, body=pq_req).execute()
+        batch = pq_res.get("rows", [])
+        pq_rows.extend(batch)
+        if len(batch) < row_limit:
+            break
+        start_row += len(batch)
+
+    print(f"   Fetched {len(pq_rows)} page+query pairs from GSC.")
 
     queries_by_page = {}
     for r in pq_rows:
