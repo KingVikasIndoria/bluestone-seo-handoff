@@ -268,6 +268,15 @@ def main():
     creds = Credentials.from_authorized_user_file(str(TOKEN_FILE), SCOPES)
     service = build("searchconsole", "v1", credentials=creds)
 
+    # Read previous dataset for BEFORE vs AFTER comparison
+    prev_data = {}
+    if DATA_JSON_PATH.exists():
+        try:
+            with open(DATA_JSON_PATH, "r", encoding="utf-8") as f:
+                prev_data = json.load(f)
+        except Exception:
+            pass
+
     wp_posts = fetch_wp_posts_parallel(max_pages=15)
     gsc_page_map, queries_by_page, daily_trends, devices = fetch_gsc_data(service)
 
@@ -441,10 +450,40 @@ def main():
     with open(DATA_JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
 
-    print(f"\n✅ Dataset updated with July 16 strategy comparison!")
-    print(f"   📁 Saved to: {DATA_JSON_PATH}")
-    print(f"   🚀 Post-July 16 Blogs: {len(post_july16_blogs)} | Indexed: {strategy_comparison['new_strategy']['indexed_count']} | Clicks: {strategy_comparison['new_strategy']['total_clicks']}")
-    print(f"   📜 Pre-July 16 Blogs: {len(pre_july16_blogs)} | Clicks: {strategy_comparison['legacy_strategy']['total_clicks']}")
+    # Print BEFORE vs AFTER Comparison Summary
+    prev_meta = prev_data.get("metadata", {})
+    prev_strat = prev_meta.get("strategy_comparison", {})
+    prev_new = prev_strat.get("new_strategy", {})
+
+    prev_total_wp = prev_meta.get("total_wp_posts_fetched", 0)
+    prev_post_cnt = prev_new.get("count", 0)
+    prev_post_idx = prev_new.get("indexed_count", 0)
+    prev_post_clk = prev_new.get("total_clicks", 0)
+
+    curr_total_wp = len(wp_posts)
+    curr_post_cnt = len(post_july16_blogs)
+    curr_post_idx = strategy_comparison["new_strategy"]["indexed_count"]
+    curr_post_clk = strategy_comparison["new_strategy"]["total_clicks"]
+
+    def format_diff(curr, prev):
+        if not prev:
+            return f"{curr}"
+        diff = curr - prev
+        if diff > 0:
+            return f"{prev} ➔ {curr}  (▲ +{diff})"
+        elif diff < 0:
+            return f"{prev} ➔ {curr}  (▼ {diff})"
+        else:
+            return f"{curr}  (No change)"
+
+    print("\n" + "=" * 62)
+    print("📊 DASHBOARD UPDATE SUMMARY (BEFORE vs AFTER):")
+    print("=" * 62)
+    print(f" • Total WP Posts Published : {format_diff(curr_total_wp, prev_total_wp)}")
+    print(f" • Post-July 16 Articles    : {format_diff(curr_post_cnt, prev_post_cnt)}")
+    print(f" • Post-July 16 Indexed URLs: {format_diff(curr_post_idx, prev_post_idx)}")
+    print(f" • Post-July 16 Search Clicks: {format_diff(curr_post_clk, prev_post_clk)}")
+    print("=" * 62 + "\n")
 
 if __name__ == "__main__":
     main()
