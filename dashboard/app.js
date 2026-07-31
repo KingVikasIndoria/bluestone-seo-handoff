@@ -355,13 +355,20 @@ function renderTable() {
       `<span class="badge-status badge-primary"><i class="fa-solid fa-rocket"></i> Post-July 16</span>` :
       `<span class="badge-status badge-secondary"><i class="fa-solid fa-clock-rotate-left"></i> Pre-July 16</span>`;
 
+    const idxDateHtml = (b.first_indexed_date && b.first_indexed_date !== "Not Indexed Yet") ?
+      `<div style="font-size: 0.73rem; margin-top:3px; color: #16a34a; font-weight:600;" title="Date first indexed on Google Search Console"><i class="fa-solid fa-bolt"></i> ${b.first_indexed_date}</div>` :
+      `<div style="font-size: 0.72rem; margin-top:3px; color: #94a3b8;"><i class="fa-solid fa-hourglass-start"></i> Pending Index</div>`;
+
     return `
       <tr>
         <td class="blog-title-cell">
           <a href="${b.link}" target="_blank" class="blog-title-link">${escapeHtml(b.title)}</a>
           <span class="blog-slug">/${b.slug}/</span>
         </td>
-        <td>${b.published_date}</td>
+        <td>
+          <div style="font-weight: 500;">${b.published_date}</div>
+          ${idxDateHtml}
+        </td>
         <td>${stratGroupBadge}</td>
         <td><span class="badge-status ${indexBadgeClass}">${indexBadgeText}</span></td>
         <td class="text-right font-weight-bold" style="color:#0f172a;">${b.clicks.toLocaleString()}</td>
@@ -458,6 +465,18 @@ function openInspector(slug) {
 
   document.getElementById("modalTitle").innerText = blog.title;
   document.getElementById("modalLink").href = blog.link;
+  
+  if (document.getElementById("mPubDate")) {
+    document.getElementById("mPubDate").innerText = blog.published_date || "N/A";
+  }
+  if (document.getElementById("mIdxDate")) {
+    const idxStr = blog.first_indexed_date || "Not Indexed Yet";
+    let idxLabel = idxStr;
+    if (blog.indexing_lag_days !== null && blog.indexing_lag_days !== undefined && idxStr !== "Not Indexed Yet") {
+      idxLabel += ` (${blog.indexing_lag_days === 0 ? 'Same Day' : blog.indexing_lag_days + ' day' + (blog.indexing_lag_days === 1 ? '' : 's') + ' lag'})`;
+    }
+    document.getElementById("mIdxDate").innerText = idxLabel;
+  }
   
   const healthPill = document.getElementById("modalHealthPill");
   healthPill.className = `badge-status badge-${blog.health_color}`;

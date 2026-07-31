@@ -174,7 +174,47 @@ def fetch_gsc_data(service):
     for k in queries_by_page:
         queries_by_page[k].sort(key=lambda x: (x['clicks'], x['impressions']), reverse=True)
 
-    # 3. Daily trends
+    # 3. Page + Date metrics (to extract exact First Indexed Date per page)
+    pd_rows = []
+    start_row = 0
+    while True:
+        pd_req = {
+            "startDate": START_DATE,
+            "endDate": END_DATE,
+            "dimensions": ["page", "date"],
+            "dimensionFilterGroups": [{
+                "filters": [{
+                    "dimension": "page",
+                    "operator": "includingRegex",
+                    "expression": r"^https://blog\.bluestone\.com/"
+                }]
+            }],
+            "rowLimit": row_limit,
+            "startRow": start_row,
+            "dataState": "final"
+        }
+        pd_res = service.searchanalytics().query(siteUrl=SITE_URL, body=pd_req).execute()
+        batch = pd_res.get("rows", [])
+        pd_rows.extend(batch)
+        if len(batch) < row_limit:
+            break
+        start_row += len(batch)
+
+    first_indexed_map = {}
+    for r in pd_rows:
+        raw_url = r["keys"][0]
+        date_str = r["keys"][1]
+        impressions = int(r.get("impressions", 0))
+        if impressions > 0:
+            norm_url = normalize_url(raw_url)
+            slug = extract_slug(raw_url)
+            for key in (norm_url, norm_url.rstrip('/'), slug):
+                if key not in first_indexed_map or date_str < first_indexed_map[key]:
+                    first_indexed_map[key] = date_str
+
+    print(f"   Detected First Indexed Date for {len(first_indexed_map)} blog pages.")
+
+    # 4. Daily trends
     dt_req = {
         "startDate": START_DATE,
         "endDate": END_DATE,
@@ -227,7 +267,7 @@ def fetch_gsc_data(service):
             "position": round(r.get("position", 0), 1)
         })
 
-    return gsc_page_map, queries_by_page, daily_trends, devices
+    return gsc_page_map, queries_by_page, daily_trends, devices, first_indexed_map
 
 def get_health_tier(pos, impressions):
     if pos > 0 and pos <= 3:
@@ -278,7 +318,7 @@ def main():
             pass
 
     wp_posts = fetch_wp_posts_parallel(max_pages=15)
-    gsc_page_map, queries_by_page, daily_trends, devices = fetch_gsc_data(service)
+    gsc_page_map, queries_by_page, daily_trends, devices, first_indexed_map = fetch_gsc_data(service)
 
     processed_blogs = []
     seen_urls = set()
@@ -308,6 +348,22 @@ def main():
             "position": 0.0
         }
 
+        # Detect First Indexed Date
+        idx_raw = first_indexed_map.get(link) or first_indexed_map.get(link.rstrip('/')) or first_indexed_map.get(slug)
+        first_indexed_date = "Not Indexed Yet"
+        indexing_lag_days = None
+        if idx_raw:
+            try:
+                idx_dt = datetime.strptime(idx_raw, "%Y-%m-%d")
+                first_indexed_date = idx_dt.strftime("%b %d, %Y")
+                if date_raw:
+                    pub_dt = datetime.strptime(date_raw.split("T")[0], "%Y-%m-%d")
+                    indexing_lag_days = max(0, (idx_dt - pub_dt).days)
+            except Exception:
+                first_indexed_date = idx_raw
+        elif gsc["impressions"] > 0:
+            first_indexed_date = "Indexed (Date Pending)"
+
         q_list = queries_by_page.get(link) or queries_by_page.get(link.rstrip('/')) or queries_by_page.get(slug) or []
         unique_q = []
         seen_q = set()
@@ -325,6 +381,8 @@ def main():
             "slug": slug,
             "published_date": formatted_date,
             "raw_date": date_raw,
+            "first_indexed_date": first_indexed_date,
+            "indexing_lag_days": indexing_lag_days,
             "is_new_strategy": is_new_strategy,
             "strategy_label": "🚀 New Strategy (Post-July 16)" if is_new_strategy else "📜 Pre-July 16",
             "strategy_badge": "new-strategy" if is_new_strategy else "legacy-strategy",
@@ -362,6 +420,14 @@ def main():
         title_from_slug = slug.replace("-", " ").title()
         health, health_color, health_icon = get_health_tier(gsc["position"], gsc["impressions"])
 
+        idx_raw = first_indexed_map.get(norm_url) or first_indexed_map.get(slug)
+        first_indexed_date = "Earlier"
+        if idx_raw:
+            try:
+                first_indexed_date = datetime.strptime(idx_raw, "%Y-%m-%d").strftime("%b %d, %Y")
+            except Exception:
+                first_indexed_date = idx_raw
+
         blog_obj = {
             "wp_id": None,
             "title": title_from_slug,
@@ -369,6 +435,8 @@ def main():
             "slug": slug,
             "published_date": "Earlier",
             "raw_date": "2025-01-01T00:00:00",
+            "first_indexed_date": first_indexed_date,
+            "indexing_lag_days": None,
             "is_new_strategy": False,
             "strategy_label": "📜 Pre-July 16",
             "strategy_badge": "legacy-strategy",

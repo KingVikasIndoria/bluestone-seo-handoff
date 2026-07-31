@@ -265,7 +265,11 @@
         <div class="modal-title-box">
           <span class="health-pill" id="modalHealthPill">Top 3</span>
           <h2 id="modalTitle">Blog Article Title</h2>
-          <a href="#" target="_blank" id="modalLink" class="modal-url"><i class="fa-solid fa-external-link-alt"></i> Open Article</a>
+          <div class="modal-dates-bar" id="modalDatesBar" style="margin-top: 6px; font-size: 0.83rem; color: #475569; display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+            <span><i class="fa-regular fa-calendar-check text-primary"></i> <strong>Published:</strong> <span id="mPubDate">-</span></span>
+            <span><i class="fa-solid fa-bolt text-success"></i> <strong>First Indexed:</strong> <span id="mIdxDate">-</span></span>
+          </div>
+          <a href="#" target="_blank" id="modalLink" class="modal-url" style="margin-top: 6px; display: inline-block;"><i class="fa-solid fa-external-link-alt"></i> Open Article</a>
         </div>
         <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
