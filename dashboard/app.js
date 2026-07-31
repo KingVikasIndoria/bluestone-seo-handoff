@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function fetchDashboardData() {
   try {
-    const res = await fetch("dashboard_data.json");
+    const res = await fetch("dashboard_data.json?t=" + Date.now());
     if (!res.ok) throw new Error("Failed to load dashboard_data.json");
     appData = await res.json();
     
