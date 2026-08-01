@@ -527,22 +527,24 @@ def main():
     prev_post_cnt = prev_new.get("count", 0)
     prev_post_idx = prev_new.get("indexed_count", 0)
     prev_post_clk = prev_new.get("total_clicks", 0)
+    prev_post_imp = prev_new.get("total_impressions", 0)
 
     curr_total_wp = len(wp_posts)
     curr_post_cnt = len(post_july16_blogs)
     curr_post_idx = strategy_comparison["new_strategy"]["indexed_count"]
     curr_post_clk = strategy_comparison["new_strategy"]["total_clicks"]
+    curr_post_imp = strategy_comparison["new_strategy"]["total_impressions"]
 
     def format_diff(curr, prev):
         if not prev:
-            return f"{curr}"
+            return f"{curr:,}"
         diff = curr - prev
         if diff > 0:
-            return f"{prev} ➔ {curr}  (▲ +{diff})"
+            return f"{prev:,} ➔ {curr:,}  (▲ +{diff:,})"
         elif diff < 0:
-            return f"{prev} ➔ {curr}  (▼ {diff})"
+            return f"{prev:,} ➔ {curr:,}  (▼ {abs(diff):,})"
         else:
-            return f"{curr}  (No change)"
+            return f"{curr:,}  (No change)"
 
     print("\n" + "=" * 62)
     print("📊 DASHBOARD UPDATE SUMMARY (BEFORE vs AFTER):")
@@ -551,6 +553,7 @@ def main():
     print(f" • Post-July 16 Articles    : {format_diff(curr_post_cnt, prev_post_cnt)}")
     print(f" • Post-July 16 Indexed URLs: {format_diff(curr_post_idx, prev_post_idx)}")
     print(f" • Post-July 16 Search Clicks: {format_diff(curr_post_clk, prev_post_clk)}")
+    print(f" • Post-July 16 Impressions  : {format_diff(curr_post_imp, prev_post_imp)}")
     print("=" * 62 + "\n")
 
 if __name__ == "__main__":
