@@ -51,7 +51,7 @@ def fetch_wp_page(page):
         r = requests.get(
             f"{WP_URL}?per_page=100&page={page}&status=publish",
             auth=WP_AUTH,
-            timeout=10
+            timeout=15
         )
         if r.status_code == 200:
             data = r.json()
@@ -61,10 +61,10 @@ def fetch_wp_page(page):
         pass
     return page, []
 
-def fetch_wp_posts_parallel(max_pages=15):
+def fetch_wp_posts_parallel(max_pages=20):
     print(f"📥 Fetching WordPress posts (up to {max_pages * 100} posts)...")
     all_posts_map = {}
-    with ThreadPoolExecutor(max_workers=6) as executor:
+    with ThreadPoolExecutor(max_workers=8) as executor:
         futures = [executor.submit(fetch_wp_page, p) for p in range(1, max_pages + 1)]
         for f in as_completed(futures):
             page_num, posts = f.result()
