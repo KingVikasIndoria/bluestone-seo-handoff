@@ -32,8 +32,8 @@ WP_AUTH = ("blogbluestone", "4lKn pjRK GUtF Yts5 VzwF jcwd")
 
 STRATEGY_PIVOT_DATE = datetime(2026, 7, 16)
 
-END_DATE = (datetime.now() - timedelta(days=3)).strftime("%Y-%m-%d")
-START_DATE = (datetime.now() - timedelta(days=33)).strftime("%Y-%m-%d")
+END_DATE = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
+START_DATE = (datetime.now() - timedelta(days=32)).strftime("%Y-%m-%d")
 
 def normalize_url(url):
     if not url:
@@ -99,7 +99,7 @@ def fetch_gsc_data(service):
             }],
             "rowLimit": row_limit,
             "startRow": start_row,
-            "dataState": "final"
+            "dataState": "all"
         }
         p_res = service.searchanalytics().query(siteUrl=SITE_URL, body=p_req).execute()
         batch = p_res.get("rows", [])
@@ -143,7 +143,7 @@ def fetch_gsc_data(service):
             }],
             "rowLimit": row_limit,
             "startRow": start_row,
-            "dataState": "final"
+            "dataState": "all"
         }
         pq_res = service.searchanalytics().query(siteUrl=SITE_URL, body=pq_req).execute()
         batch = pq_res.get("rows", [])
@@ -191,7 +191,7 @@ def fetch_gsc_data(service):
             }],
             "rowLimit": row_limit,
             "startRow": start_row,
-            "dataState": "final"
+            "dataState": "all"
         }
         pd_res = service.searchanalytics().query(siteUrl=SITE_URL, body=pd_req).execute()
         batch = pd_res.get("rows", [])
@@ -227,7 +227,7 @@ def fetch_gsc_data(service):
             }]
         }],
         "rowLimit": 5000,
-        "dataState": "final"
+        "dataState": "all"
     }
     dt_res = service.searchanalytics().query(siteUrl=SITE_URL, body=dt_req).execute()
     daily_trends = []
@@ -254,7 +254,7 @@ def fetch_gsc_data(service):
             }]
         }],
         "rowLimit": 10,
-        "dataState": "final"
+        "dataState": "all"
     }
     dev_res = service.searchanalytics().query(siteUrl=SITE_URL, body=dev_req).execute()
     devices = []
