@@ -42,7 +42,7 @@
     <section class="strategy-banner glass-card">
       <div class="strategy-col new-strategy-box">
         <div class="strat-header">
-          <h2>Post-July 16 Articles</h2>
+          <h2>New Strategy</h2>
         </div>
         <div class="strat-metrics">
           <div class="s-metric">
@@ -69,7 +69,7 @@
 
       <div class="strategy-col legacy-strategy-box">
         <div class="strat-header">
-          <h2>Pre-July 16 Articles</h2>
+          <h2>Old Strategy</h2>
         </div>
         <div class="strat-metrics">
           <div class="s-metric">
@@ -95,14 +95,22 @@
 
     <!-- Overall Key Metrics & Weekly Volume Grid -->
     <section class="kpi-grid">
-      <div class="kpi-card glass-card">
-        <div class="kpi-icon icon-volume">
-          <i class="fa-solid fa-newspaper"></i>
-        </div>
-        <div class="kpi-content">
-          <span class="kpi-label">Weekly Publish Volume</span>
-          <h2 class="kpi-value" id="kpiWeeklyVol">108</h2>
-          <span class="kpi-sub" id="kpiWeeklyVolSub"><i class="fa-solid fa-arrow-trend-up text-success"></i> <strong>This Week (Mon-Thu): 108</strong> | Last Week: 75</span>
+      <div class="kpi-card glass-card" style="grid-column: span 1;">
+        <div class="kpi-content" style="width:100%;">
+          <span class="kpi-label" style="margin-bottom:8px; display:block;">📅 Weekly Publish Volume (Last 4 Weeks)</span>
+          <div class="table-responsive" style="max-height:220px; overflow-y:auto;">
+            <table class="mini-table" id="weeklyPublishTable" style="width:100%; font-size:0.82rem;">
+              <thead>
+                <tr>
+                  <th style="text-align:left; padding:4px 8px;">Date</th>
+                  <th style="text-align:right; padding:4px 8px;">Blogs</th>
+                </tr>
+              </thead>
+              <tbody id="weeklyPublishTableBody">
+                <!-- Filled via JS -->
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -165,11 +173,22 @@
 
       <div class="chart-card glass-card">
         <div class="chart-header">
-          <h3><i class="fa-solid fa-chart-pie"></i> Google Search Rank Breakdown</h3>
-          <span class="badge-tag">Page Rank Tiers</span>
+          <h3><i class="fa-solid fa-table-list"></i> Google Search Rank Breakdown</h3>
+          <span class="badge-tag">Position Distribution</span>
         </div>
-        <div class="chart-container">
-          <canvas id="rankingDistChart"></canvas>
+        <div class="table-responsive" style="padding: 12px;">
+          <table class="mini-table" id="rankBreakdownTable" style="width:100%;">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Position Range</th>
+                <th style="text-align:right;">Articles</th>
+                <th style="text-align:right;">% of Total</th>
+              </tr>
+            </thead>
+            <tbody id="rankBreakdownBody">
+              <!-- Filled via JS -->
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -186,11 +205,11 @@
           <span class="tab-count" id="countTop100">100</span>
         </button>
         <button class="tab-btn" data-tab="striking">
-          <i class="fa-solid fa-bolt"></i> Striking Distance (Pos 11-20)
+          <i class="fa-solid fa-bolt"></i> Striking Distance
           <span class="tab-count" id="countStriking">40</span>
         </button>
         <button class="tab-btn" data-tab="pre_july16">
-          <i class="fa-solid fa-clock-rotate-left"></i> Pre-July 16 Legacy
+          <i class="fa-solid fa-clock-rotate-left"></i> Old Strategy
           <span class="tab-count" id="countPreJuly16">1039</span>
         </button>
         <button class="tab-btn" data-tab="all">

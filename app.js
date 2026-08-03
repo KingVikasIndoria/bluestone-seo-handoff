@@ -44,10 +44,11 @@ async function fetchDashboardData() {
     // Render Strategy Comparison Metrics
     renderStrategyBanner();
 
-    // Render KPIs & Charts
+    // Render KPIs, Weekly Table & Charts
     renderKpiCards();
+    renderWeeklyPublishTable();
     renderDailyTrendChart();
-    renderRankingDistChart();
+    renderRankBreakdownTable();
 
     // Render Table
     renderTable();
@@ -140,37 +141,6 @@ function renderKpiCards() {
     });
   }
 
-  if (document.getElementById("kpiWeeklyVol")) {
-    document.getElementById("kpiWeeklyVol").innerText = thisWeek.toLocaleString();
-  }
-  if (document.getElementById("kpiWeeklyVolSub")) {
-    const isUp = thisWeek >= lastWeek;
-    const iconClass = isUp ? "fa-arrow-trend-up text-success" : "fa-arrow-trend-down text-muted";
-    document.getElementById("kpiWeeklyVolSub").innerHTML = `<i class="fa-solid ${iconClass}"></i> <strong>This Week (Mon-Thu): ${thisWeek}</strong> | Last Week: ${lastWeek}`;
-  }
-
-  let totalClicks = 0;
-  let totalImpressions = 0;
-  let ctrs = [];
-  let positions = [];
-  let indexedCount = 0;
-
-  allBlogs.forEach(b => {
-    totalClicks += b.clicks;
-    totalImpressions += b.impressions;
-    if (b.impressions > 0) {
-      ctrs.push(b.ctr);
-      indexedCount++;
-    }
-    if (b.position > 0) {
-      positions.push(b.position);
-    }
-  });
-
-  const avgCtr = ctrs.length ? (ctrs.reduce((a,b)=>a+b,0)/ctrs.length).toFixed(2) : "0.00";
-  const avgPos = positions.length ? (positions.reduce((a,b)=>a+b,0)/positions.length).toFixed(1) : "0.0";
-  const indexingRate = allBlogs.length ? ((indexedCount / allBlogs.length) * 100).toFixed(1) : "0.0";
-
   if (document.getElementById("kpiClicks")) document.getElementById("kpiClicks").innerText = totalClicks.toLocaleString();
   if (document.getElementById("kpiImpressions")) document.getElementById("kpiImpressions").innerText = totalImpressions.toLocaleString();
   if (document.getElementById("kpiCtr")) document.getElementById("kpiCtr").innerText = `${avgCtr}%`;
@@ -178,14 +148,86 @@ function renderKpiCards() {
   if (document.getElementById("kpiIndexingSub")) document.getElementById("kpiIndexingSub").innerText = `${indexedCount} / ${allBlogs.length} total blogs active`;
 }
 
+function renderWeeklyPublishTable() {
+  if (!appData) return;
+  const tbody = document.getElementById("weeklyPublishTableBody");
+  if (!tbody) return;
+
+  const allBlogs = appData.all_blogs || [];
+  const now = new Date();
+  
+  // Calculate start of current week (Monday)
+  const dayOfWeek = now.getDay();
+  const distToMon = (dayOfWeek + 6) % 7;
+  const currentMon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - distToMon);
+
+  // Define 4 weekly buckets (Week 4 is current week, Week 1 is 3 weeks ago)
+  const weeks = [];
+  for (let i = 0; i < 4; i++) {
+    const wStart = new Date(currentMon.getTime() - (3 - i) * 7 * 24 * 60 * 60 * 1000);
+    const wEnd = new Date(wStart.getTime() + 6 * 24 * 60 * 60 * 1000);
+    weeks.push({
+      start: wStart,
+      end: wEnd,
+      label: `${wStart.getDate()} ${getMonthName(wStart.getMonth())} - ${wEnd.getDate()} ${getMonthName(wEnd.getMonth())}`,
+      isCurrent: i === 3,
+      count: 0
+    });
+  }
+
+  // Count publications per week bucket
+  allBlogs.forEach(b => {
+    if (b.raw_date) {
+      const dt = new Date(b.raw_date.split("T")[0]);
+      if (!isNaN(dt.getTime())) {
+        weeks.forEach(w => {
+          if (dt >= w.start && dt <= w.end) {
+            w.count++;
+          }
+        });
+      }
+    }
+  });
+
+  // Render reverse order (current week first)
+  let html = "";
+  weeks.reverse().forEach(w => {
+    const badge = w.isCurrent ? '<span style="font-size:0.7rem; background:#4f46e5; color:#fff; padding:1px 6px; border-radius:4px; margin-left:4px;">This Week</span>' : '';
+    html += `
+      <tr style="${w.isCurrent ? 'font-weight:600; background:rgba(79,70,229,0.04);' : ''}">
+        <td style="padding:6px 8px; border-bottom:1px solid #f1f5f9;">${w.label} ${badge}</td>
+        <td style="padding:6px 8px; text-align:right; border-bottom:1px solid #f1f5f9; font-weight:600;">${w.count}</td>
+      </tr>
+    `;
+  });
+
+  tbody.innerHTML = html;
+}
+
+function getMonthName(mIndex) {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return months[mIndex] || "";
+}
+
 function renderDailyTrendChart() {
   const ctx = document.getElementById("dailyTrendChart").getContext("2d");
   if (dailyChart) dailyChart.destroy();
 
-  const dates = appData.daily_trends.map(d => d.date.substr(5)); // MM-DD
+  // Format date labels as "1 Aug", "2 Aug", "30 Jul"
+  const dates = appData.daily_trends.map(d => {
+    const parts = d.date.split("-"); // YYYY-MM-DD
+    if (parts.length === 3) {
+      const day = parseInt(parts[2], 10);
+      const mIdx = parseInt(parts[1], 10) - 1;
+      return `${day} ${getMonthName(mIdx)}`;
+    }
+    return d.date;
+  });
+
   const clicks = appData.daily_trends.map(d => d.clicks);
   const impressions = appData.daily_trends.map(d => d.impressions);
 
+  // Minimal aesthetic with 2 distinct colors (Indigo & Cyan)
   dailyChart = new Chart(ctx, {
     type: "line",
     data: {
@@ -194,19 +236,27 @@ function renderDailyTrendChart() {
         {
           label: "Clicks",
           data: clicks,
-          borderColor: "#4338ca",
-          backgroundColor: "rgba(67, 56, 202, 0.08)",
+          borderColor: "#4f46e5",
+          backgroundColor: "rgba(79, 70, 229, 0.05)",
+          borderWidth: 2.5,
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          pointBackgroundColor: "#4f46e5",
           fill: true,
-          tension: 0.3,
+          tension: 0.2,
           yAxisID: "yClicks"
         },
         {
           label: "Impressions",
           data: impressions,
-          borderColor: "#0284c7",
+          borderColor: "#06b6d4",
           backgroundColor: "transparent",
-          borderDash: [4, 4],
-          tension: 0.3,
+          borderWidth: 2,
+          borderDash: [5, 4],
+          pointRadius: 2,
+          pointHoverRadius: 5,
+          pointBackgroundColor: "#06b6d4",
+          tension: 0.2,
           yAxisID: "yImpressions"
         }
       ]
@@ -216,22 +266,27 @@ function renderDailyTrendChart() {
       maintainAspectRatio: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: { labels: { color: "#475569", font: { family: "Inter", size: 12 } } }
+        legend: {
+          position: "top",
+          labels: { color: "#334155", font: { family: "Inter", size: 12, weight: "500" }, usePointStyle: true, boxWidth: 8 }
+        }
       },
       scales: {
-        x: { ticks: { color: "#64748b" }, grid: { color: "#f1f5f9" } },
+        x: { ticks: { color: "#64748b", font: { size: 11 } }, grid: { display: false } },
         yClicks: {
           type: "linear",
           display: true,
           position: "left",
-          ticks: { color: "#4338ca" },
-          grid: { color: "#e2e8f0" }
+          title: { display: true, text: "Clicks", color: "#4f46e5", font: { size: 11, weight: "600" } },
+          ticks: { color: "#4f46e5", font: { size: 11 } },
+          grid: { color: "#f1f5f9" }
         },
         yImpressions: {
           type: "linear",
           display: true,
           position: "right",
-          ticks: { color: "#0284c7" },
+          title: { display: true, text: "Impressions", color: "#06b6d4", font: { size: 11, weight: "600" } },
+          ticks: { color: "#06b6d4", font: { size: 11 } },
           grid: { drawOnChartArea: false }
         }
       }
@@ -239,60 +294,47 @@ function renderDailyTrendChart() {
   });
 }
 
-function renderRankingDistChart() {
-  const ctx = document.getElementById("rankingDistChart").getContext("2d");
-  if (rankingChart) rankingChart.destroy();
+function renderRankBreakdownTable() {
+  const tbody = document.getElementById("rankBreakdownBody");
+  if (!tbody) return;
 
   const dataset = getActiveDataset();
-  let top3 = 0, page1 = 0, striking = 0, lowRank = 0, unindexed = 0;
+  let pos1_3 = 0, pos4_10 = 0, pos11_20 = 0, pos21_plus = 0, unindexed = 0;
 
   dataset.forEach(b => {
     if (b.impressions === 0) unindexed++;
-    else if (b.position > 0 && b.position <= 3) top3++;
-    else if (b.position > 3 && b.position <= 10) page1++;
-    else if (b.position > 10 && b.position <= 20) striking++;
-    else lowRank++;
+    else if (b.position > 0 && b.position <= 3) pos1_3++;
+    else if (b.position > 3 && b.position <= 10) pos4_10++;
+    else if (b.position > 10 && b.position <= 20) pos11_20++;
+    else pos21_plus++;
   });
 
-  rankingChart = new Chart(ctx, {
-    type: "doughnut",
-    data: {
-      labels: [
-        `Top 3 Rank (Pos 1-3): ${top3}`,
-        `Page 1 (Pos 4-10): ${page1}`,
-        `Striking Dist. (Pos 11-20): ${striking}`,
-        `Low Rank (Pos 21+): ${lowRank}`,
-        `Non-Indexed / Pending: ${unindexed}`
-      ],
-      datasets: [{
-        data: [top3, page1, striking, lowRank, unindexed],
-        backgroundColor: [
-          "#059669", // Emerald
-          "#0284c7", // Sky
-          "#d97706", // Amber
-          "#dc2626", // Red
-          "#94a3b8"  // Slate
-        ],
-        borderWidth: 2,
-        borderColor: "#ffffff"
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { 
-          position: "right", 
-          labels: { 
-            color: "#334155", 
-            font: { family: "Inter", size: 11 },
-            boxWidth: 12
-          } 
-        }
-      },
-      cutout: "65%"
-    }
+  const total = dataset.length || 1;
+
+  const rows = [
+    { label: "Pos 1-3", count: pos1_3, color: "#10b981" },
+    { label: "Pos 4-10", count: pos4_10, color: "#06b6d4" },
+    { label: "Pos 11-20", count: pos11_20, color: "#f59e0b" },
+    { label: "Pos 21+", count: pos21_plus, color: "#ef4444" },
+    { label: "Non-Indexed / Pending", count: unindexed, color: "#94a3b8" }
+  ];
+
+  let html = "";
+  rows.forEach(r => {
+    const pct = ((r.count / total) * 100).toFixed(1);
+    html += `
+      <tr>
+        <td style="padding:10px 12px; border-bottom:1px solid #f1f5f9; font-weight:500;">
+          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${r.color}; margin-right:8px;"></span>
+          ${r.label}
+        </td>
+        <td style="padding:10px 12px; text-align:right; border-bottom:1px solid #f1f5f9; font-weight:600;">${r.count}</td>
+        <td style="padding:10px 12px; text-align:right; border-bottom:1px solid #f1f5f9; color:#64748b;">${pct}%</td>
+      </tr>
+    `;
   });
+
+  tbody.innerHTML = html;
 }
 
 function renderTable() {
@@ -350,10 +392,10 @@ function renderTable() {
     const indexBadgeClass = isIndexed ? "badge-success" : "badge-secondary";
     const indexBadgeText = isIndexed ? "🟢 Indexed" : "⚪ Non-Indexed";
 
-    const isPostJuly16 = b.is_post_july16;
+    const isPostJuly16 = b.is_new_strategy;
     const stratGroupBadge = isPostJuly16 ?
-      `<span class="badge-status badge-primary"><i class="fa-solid fa-rocket"></i> Post-July 16</span>` :
-      `<span class="badge-status badge-secondary"><i class="fa-solid fa-clock-rotate-left"></i> Pre-July 16</span>`;
+      `<span class="badge-status badge-primary"><i class="fa-solid fa-rocket"></i> New Strategy</span>` :
+      `<span class="badge-status badge-secondary"><i class="fa-solid fa-clock-rotate-left"></i> Old Strategy</span>`;
 
     const idxDateHtml = (b.first_indexed_date && b.first_indexed_date !== "Not Indexed Yet") ?
       `<div style="font-size: 0.73rem; margin-top:3px; color: #16a34a; font-weight:600;" title="Date first indexed on Google Search Console"><i class="fa-solid fa-bolt"></i> ${b.first_indexed_date}</div>` :
@@ -413,7 +455,7 @@ function setupEventListeners() {
         currentSortOrder = "desc";
       }
 
-      renderRankingDistChart();
+      renderRankBreakdownTable();
       renderTable();
     });
   });
