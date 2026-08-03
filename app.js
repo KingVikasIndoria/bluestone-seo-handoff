@@ -141,6 +141,28 @@ function renderKpiCards() {
     });
   }
 
+  let totalClicks = 0;
+  let totalImpressions = 0;
+  let ctrs = [];
+  let positions = [];
+  let indexedCount = 0;
+
+  allBlogs.forEach(b => {
+    totalClicks += b.clicks;
+    totalImpressions += b.impressions;
+    if (b.impressions > 0) {
+      ctrs.push(b.ctr);
+      indexedCount++;
+    }
+    if (b.position > 0) {
+      positions.push(b.position);
+    }
+  });
+
+  const avgCtr = ctrs.length ? (ctrs.reduce((a,b)=>a+b,0)/ctrs.length).toFixed(2) : "0.00";
+  const avgPos = positions.length ? (positions.reduce((a,b)=>a+b,0)/positions.length).toFixed(1) : "0.0";
+  const indexingRate = allBlogs.length ? ((indexedCount / allBlogs.length) * 100).toFixed(1) : "0.0";
+
   if (document.getElementById("kpiClicks")) document.getElementById("kpiClicks").innerText = totalClicks.toLocaleString();
   if (document.getElementById("kpiImpressions")) document.getElementById("kpiImpressions").innerText = totalImpressions.toLocaleString();
   if (document.getElementById("kpiCtr")) document.getElementById("kpiCtr").innerText = `${avgCtr}%`;
