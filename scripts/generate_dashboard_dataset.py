@@ -528,6 +528,40 @@ def main():
         "overall": compute_group_stats(processed_blogs, indexed_history)
     }
 
+    # Build Post-July 16 Indexing Speed Trend (Daily & Cumulative from July 16 to Today)
+    indexing_by_date = {}
+    for b in post_july16_blogs:
+        idx_str = b.get("first_indexed_date")
+        if idx_str and idx_str not in ["Not Indexed Yet", "Indexed (Date Pending)"]:
+            try:
+                dt = datetime.strptime(idx_str, "%b %d, %Y")
+                d_key = dt.strftime("%Y-%m-%d")
+                indexing_by_date[d_key] = indexing_by_date.get(d_key, 0) + 1
+            except Exception:
+                pass
+
+    start_dt = datetime(2026, 7, 16)
+    end_dt = datetime.now()
+    curr_dt = start_dt
+
+    post_july16_indexing_trend = []
+    cumulative = 0
+    while curr_dt <= end_dt:
+        d_key = curr_dt.strftime("%Y-%m-%d")
+        daily_count = indexing_by_date.get(d_key, 0)
+        cumulative += daily_count
+        is_api_phase = (curr_dt >= datetime(2026, 7, 30))
+        
+        post_july16_indexing_trend.append({
+            "date": d_key,
+            "date_formatted": curr_dt.strftime("%d %b"),
+            "daily_indexed": daily_count,
+            "cumulative_indexed": cumulative,
+            "is_api_phase": is_api_phase,
+            "phase_label": "🚀 Indexing API Active" if is_api_phase else "Standard Search Crawl"
+        })
+        curr_dt += timedelta(days=1)
+
     payload = {
         "metadata": {
             "generated_at": datetime.now().strftime("%b %d, %Y %I:%M %p"),
@@ -544,6 +578,7 @@ def main():
         "striking_distance": striking_distance,
         "all_blogs": processed_blogs,
         "daily_trends": daily_trends,
+        "post_july16_indexing_trend": post_july16_indexing_trend,
         "devices": devices
     }
 

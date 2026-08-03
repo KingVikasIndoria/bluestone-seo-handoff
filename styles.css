@@ -222,11 +222,15 @@ body {
   grid-column: span 2;
 }
 
+.span-3 {
+  grid-column: span 3;
+}
+
 @media (max-width: 1024px) {
   .charts-grid {
     grid-template-columns: 1fr;
   }
-  .span-2 {
+  .span-2, .span-3 {
     grid-column: span 1;
   }
 }

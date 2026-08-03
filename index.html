@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Custom Styles (Cache Buster v8) -->
-  <link rel="stylesheet" href="styles.css?v=8">
+  <!-- Custom Styles (Cache Buster v9) -->
+  <link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
   
@@ -95,15 +95,15 @@
 
     <!-- Overall Key Metrics & Weekly Volume Grid -->
     <section class="kpi-grid">
-      <div class="kpi-card glass-card" style="grid-column: span 1;">
+      <div class="kpi-card glass-card" style="grid-column: span 1; padding: 12px 14px;">
         <div class="kpi-content" style="width:100%;">
-          <span class="kpi-label" style="margin-bottom:8px; display:block;">📅 Weekly Publish Volume (Last 4 Weeks)</span>
-          <div class="table-responsive" style="max-height:220px; overflow-y:auto;">
-            <table class="mini-table" id="weeklyPublishTable" style="width:100%; font-size:0.82rem;">
+          <span class="kpi-label" style="margin-bottom:4px; display:block; font-size:10px;">📅 Publish Volume (4W)</span>
+          <div class="table-responsive" style="max-height:115px; overflow:hidden;">
+            <table class="mini-table" id="weeklyPublishTable" style="width:100%; font-size:0.75rem; line-height:1.2;">
               <thead>
                 <tr>
-                  <th style="text-align:left; padding:4px 8px;">Date</th>
-                  <th style="text-align:right; padding:4px 8px;">Blogs</th>
+                  <th style="text-align:left; padding:2px 4px;">Week</th>
+                  <th style="text-align:right; padding:2px 4px;">Blogs</th>
                 </tr>
               </thead>
               <tbody id="weeklyPublishTableBody">
@@ -189,6 +189,22 @@
               <!-- Filled via JS -->
             </tbody>
           </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Indexing Speed Acceleration Chart (New Strategy Post-July 16) -->
+    <section class="charts-grid" style="margin-top: 20px;">
+      <div class="chart-card glass-card span-3">
+        <div class="chart-header">
+          <div>
+            <h3 style="font-size: 15px;"><i class="fa-solid fa-bolt text-success"></i> New Strategy Indexing Trend (Since July 16)</h3>
+            <span class="sub-text" style="font-size: 0.78rem; color: #64748b; margin-top:2px; display:block;">Daily newly-indexed articles on Google. Highlights the 4x indexing speed acceleration after implementing Google Indexing API on July 30.</span>
+          </div>
+          <span class="badge-tag" style="background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; white-space: nowrap;">🚀 4x Indexing Acceleration (3 ➔ 12.5/day)</span>
+        </div>
+        <div class="chart-container" style="height: 220px;">
+          <canvas id="indexingTrendChart"></canvas>
         </div>
       </div>
     </section>
@@ -345,6 +361,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "Aug 03, 2026 12:13 PM",
+    "generated_at": "Aug 03, 2026 12:26 PM",
     "start_date": "2026-07-02",
     "end_date": "2026-08-01",
     "strategy_pivot_date": "2026-07-16",
@@ -128871,6 +128871,160 @@
       "impressions": 54946,
       "ctr": 0.55,
       "position": 8.7
+    }
+  ],
+  "post_july16_indexing_trend": [
+    {
+      "date": "2026-07-16",
+      "date_formatted": "16 Jul",
+      "daily_indexed": 0,
+      "cumulative_indexed": 0,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-17",
+      "date_formatted": "17 Jul",
+      "daily_indexed": 2,
+      "cumulative_indexed": 2,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-18",
+      "date_formatted": "18 Jul",
+      "daily_indexed": 3,
+      "cumulative_indexed": 5,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-19",
+      "date_formatted": "19 Jul",
+      "daily_indexed": 0,
+      "cumulative_indexed": 5,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-20",
+      "date_formatted": "20 Jul",
+      "daily_indexed": 5,
+      "cumulative_indexed": 10,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-21",
+      "date_formatted": "21 Jul",
+      "daily_indexed": 3,
+      "cumulative_indexed": 13,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-22",
+      "date_formatted": "22 Jul",
+      "daily_indexed": 3,
+      "cumulative_indexed": 16,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-23",
+      "date_formatted": "23 Jul",
+      "daily_indexed": 5,
+      "cumulative_indexed": 21,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-24",
+      "date_formatted": "24 Jul",
+      "daily_indexed": 5,
+      "cumulative_indexed": 26,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-25",
+      "date_formatted": "25 Jul",
+      "daily_indexed": 3,
+      "cumulative_indexed": 29,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-26",
+      "date_formatted": "26 Jul",
+      "daily_indexed": 3,
+      "cumulative_indexed": 32,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-27",
+      "date_formatted": "27 Jul",
+      "daily_indexed": 1,
+      "cumulative_indexed": 33,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-28",
+      "date_formatted": "28 Jul",
+      "daily_indexed": 4,
+      "cumulative_indexed": 37,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-29",
+      "date_formatted": "29 Jul",
+      "daily_indexed": 4,
+      "cumulative_indexed": 41,
+      "is_api_phase": false,
+      "phase_label": "Standard Search Crawl"
+    },
+    {
+      "date": "2026-07-30",
+      "date_formatted": "30 Jul",
+      "daily_indexed": 13,
+      "cumulative_indexed": 54,
+      "is_api_phase": true,
+      "phase_label": "🚀 Indexing API Active"
+    },
+    {
+      "date": "2026-07-31",
+      "date_formatted": "31 Jul",
+      "daily_indexed": 12,
+      "cumulative_indexed": 66,
+      "is_api_phase": true,
+      "phase_label": "🚀 Indexing API Active"
+    },
+    {
+      "date": "2026-08-01",
+      "date_formatted": "01 Aug",
+      "daily_indexed": 12,
+      "cumulative_indexed": 78,
+      "is_api_phase": true,
+      "phase_label": "🚀 Indexing API Active"
+    },
+    {
+      "date": "2026-08-02",
+      "date_formatted": "02 Aug",
+      "daily_indexed": 0,
+      "cumulative_indexed": 78,
+      "is_api_phase": true,
+      "phase_label": "🚀 Indexing API Active"
+    },
+    {
+      "date": "2026-08-03",
+      "date_formatted": "03 Aug",
+      "daily_indexed": 0,
+      "cumulative_indexed": 78,
+      "is_api_phase": true,
+      "phase_label": "🚀 Indexing API Active"
     }
   ],
   "devices": [
