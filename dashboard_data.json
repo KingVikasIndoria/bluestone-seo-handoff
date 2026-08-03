@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "Aug 03, 2026 12:00 PM",
+    "generated_at": "Aug 03, 2026 12:01 PM",
     "start_date": "2026-07-02",
     "end_date": "2026-08-01",
     "strategy_pivot_date": "2026-07-16",
@@ -17,8 +17,8 @@
         "total_impressions": 31660,
         "avg_ctr": 12.43,
         "avg_position": 14.6,
-        "indexed_count": 78,
-        "indexing_rate": 31.3
+        "indexed_count": 98,
+        "indexing_rate": 39.4
       },
       "legacy_strategy": {
         "count": 1039,
@@ -35,8 +35,8 @@
         "total_impressions": 1513867,
         "avg_ctr": 10.94,
         "avg_position": 15.0,
-        "indexed_count": 714,
-        "indexing_rate": 55.4
+        "indexed_count": 734,
+        "indexing_rate": 57.0
       }
     }
   },
