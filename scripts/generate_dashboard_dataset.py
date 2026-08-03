@@ -26,6 +26,7 @@ SCRIPT_DIR = Path(__file__).parent
 TOKEN_FILE = SCRIPT_DIR / "gsc_token.json"
 DASHBOARD_DIR = SCRIPT_DIR.parent / "dashboard"
 DATA_JSON_PATH = DASHBOARD_DIR / "dashboard_data.json"
+INDEXED_HISTORY_PATH = SCRIPT_DIR / "indexed_urls_history.json"
 
 WP_URL = "https://blog.bluestone.com/wp-json/wp/v2/posts"
 WP_AUTH = ("blogbluestone", "4lKn pjRK GUtF Yts5 VzwF jcwd")
@@ -283,12 +284,33 @@ def get_health_tier(pos, impressions):
     else:
         return "New / Pending Index", "secondary", "⏳"
 
-def compute_group_stats(group_list):
+def load_indexed_history():
+    """Load persistent set of URLs ever seen as indexed."""
+    if INDEXED_HISTORY_PATH.exists():
+        try:
+            with open(INDEXED_HISTORY_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return set(data.get("indexed_urls", []))
+        except Exception:
+            pass
+    return set()
+
+def save_indexed_history(indexed_set):
+    """Save persistent set of indexed URLs."""
+    with open(INDEXED_HISTORY_PATH, "w", encoding="utf-8") as f:
+        json.dump({"indexed_urls": sorted(indexed_set), "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M")}, f, indent=2)
+
+def compute_group_stats(group_list, persistent_indexed_urls=None):
     clicks = sum(b["clicks"] for b in group_list)
     impressions = sum(b["impressions"] for b in group_list)
     ctrs = [b["ctr"] for b in group_list if b["impressions"] > 0]
     positions = [b["position"] for b in group_list if b["position"] > 0]
-    indexed_count = len([b for b in group_list if b["impressions"] > 0])
+    
+    # Use persistent indexed count if available (never goes down)
+    if persistent_indexed_urls is not None:
+        indexed_count = len([b for b in group_list if normalize_url(b.get("link", "")) in persistent_indexed_urls or b.get("slug", "") in persistent_indexed_urls])
+    else:
+        indexed_count = len([b for b in group_list if b["impressions"] > 0])
     
     return {
         "count": len(group_list),
@@ -316,6 +338,9 @@ def main():
                 prev_data = json.load(f)
         except Exception:
             pass
+
+    # Load persistent indexed URL history
+    indexed_history = load_indexed_history()
 
     wp_posts = fetch_wp_posts_parallel(max_pages=15)
     gsc_page_map, queries_by_page, daily_trends, devices, first_indexed_map = fetch_gsc_data(service)
@@ -460,6 +485,14 @@ def main():
     striking_distance = [b for b in processed_blogs if 10.0 < b["position"] <= 20.0 and b["impressions"] > 500]
     striking_distance = sorted(striking_distance, key=lambda x: x["impressions"], reverse=True)[:100]
 
+    # Update persistent indexed history — add any URL that has impressions > 0 in this run
+    for b in processed_blogs:
+        if b.get("impressions", 0) > 0:
+            indexed_history.add(normalize_url(b.get("link", "")))
+            if b.get("slug"):
+                indexed_history.add(b["slug"])
+    save_indexed_history(indexed_history)
+
     # Compute Calendar Week publish volumes (Monday to Today vs Prev Monday to Sunday)
     now = datetime.now()
     # Monday of current week
@@ -490,9 +523,9 @@ def main():
         "published_this_week": published_this_week,
         "published_last_week": published_last_week,
         "published_last_30_days": published_30d,
-        "new_strategy": compute_group_stats(post_july16_blogs),
-        "legacy_strategy": compute_group_stats(pre_july16_blogs),
-        "overall": compute_group_stats(processed_blogs)
+        "new_strategy": compute_group_stats(post_july16_blogs, indexed_history),
+        "legacy_strategy": compute_group_stats(pre_july16_blogs, indexed_history),
+        "overall": compute_group_stats(processed_blogs, indexed_history)
     }
 
     payload = {
