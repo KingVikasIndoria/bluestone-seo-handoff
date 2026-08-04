@@ -75,13 +75,14 @@ function renderStrategyBanner() {
 
   const postBlogs = appData.post_july16_blogs;
   const preBlogs = appData.pre_july16_blogs;
+  const stratComp = (appData.metadata && appData.metadata.strategy_comparison) ? appData.metadata.strategy_comparison : null;
 
   // Post July 16
   const postPublished = postBlogs.length;
-  const postIndexed = postBlogs.filter(b => b.impressions > 0).length;
+  const postIndexed = stratComp ? stratComp.new_strategy.indexed_count : postBlogs.filter(b => b.impressions > 0).length;
   const postClicks = postBlogs.reduce((acc, b) => acc + b.clicks, 0);
   const postImpressions = postBlogs.reduce((acc, b) => acc + b.impressions, 0);
-  const postIndexedPct = postPublished ? ((postIndexed / postPublished) * 100).toFixed(1) : "0.0";
+  const postIndexedPct = stratComp ? stratComp.new_strategy.indexing_rate.toFixed(1) : (postPublished ? ((postIndexed / postPublished) * 100).toFixed(1) : "0.0");
 
   document.getElementById("stratNewPublished").innerText = postPublished;
   document.getElementById("stratNewIndexed").innerText = postIndexed;
@@ -91,10 +92,10 @@ function renderStrategyBanner() {
 
   // Pre July 16
   const prePublished = preBlogs.length;
-  const preIndexed = preBlogs.filter(b => b.impressions > 0).length;
+  const preIndexed = stratComp ? stratComp.legacy_strategy.indexed_count : preBlogs.filter(b => b.impressions > 0).length;
   const preClicks = preBlogs.reduce((acc, b) => acc + b.clicks, 0);
   const preImpressions = preBlogs.reduce((acc, b) => acc + b.impressions, 0);
-  const preIndexedPct = prePublished ? ((preIndexed / prePublished) * 100).toFixed(1) : "0.0";
+  const preIndexedPct = stratComp ? stratComp.legacy_strategy.indexing_rate.toFixed(1) : (prePublished ? ((preIndexed / prePublished) * 100).toFixed(1) : "0.0");
 
   document.getElementById("stratLegacyPublished").innerText = prePublished.toLocaleString();
   document.getElementById("stratLegacyIndexed").innerText = preIndexed.toLocaleString();
@@ -147,23 +148,24 @@ function renderKpiCards() {
   let totalImpressions = 0;
   let ctrs = [];
   let positions = [];
-  let indexedCount = 0;
+  let windowIndexedCount = 0;
 
   allBlogs.forEach(b => {
     totalClicks += b.clicks;
     totalImpressions += b.impressions;
     if (b.impressions > 0) {
       ctrs.push(b.ctr);
-      indexedCount++;
+      windowIndexedCount++;
     }
     if (b.position > 0) {
       positions.push(b.position);
     }
   });
 
+  const indexedCount = stratComp && stratComp.overall ? stratComp.overall.indexed_count : windowIndexedCount;
   const avgCtr = ctrs.length ? (ctrs.reduce((a,b)=>a+b,0)/ctrs.length).toFixed(2) : "0.00";
   const avgPos = positions.length ? (positions.reduce((a,b)=>a+b,0)/positions.length).toFixed(1) : "0.0";
-  const indexingRate = allBlogs.length ? ((indexedCount / allBlogs.length) * 100).toFixed(1) : "0.0";
+  const indexingRate = stratComp && stratComp.overall ? stratComp.overall.indexing_rate.toFixed(1) : (allBlogs.length ? ((indexedCount / allBlogs.length) * 100).toFixed(1) : "0.0");
 
   if (document.getElementById("kpiClicks")) document.getElementById("kpiClicks").innerText = totalClicks.toLocaleString();
   if (document.getElementById("kpiImpressions")) document.getElementById("kpiImpressions").innerText = totalImpressions.toLocaleString();
