@@ -49,7 +49,7 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
 }
 
 /* ── Minimal Card Utility ── */
@@ -71,7 +71,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
+  padding: 14px 24px;
 }
 
 .brand-section {
@@ -658,13 +658,14 @@ body {
 
 /* ── Strategy Comparison Banner (Minimalist) ── */
 .strategy-banner {
-  padding: 20px 24px;
+  padding: 12px 20px;
   display: flex;
   align-items: stretch;
-  gap: 24px;
+  gap: 20px;
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
 }
 
 .strategy-col {
