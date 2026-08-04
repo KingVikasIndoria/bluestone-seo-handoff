@@ -374,8 +374,11 @@ function renderIndexingTrendChart() {
   const ctx = canvas.getContext("2d");
   if (indexingChart) indexingChart.destroy();
 
-  const trendData = appData.post_july16_indexing_trend || [];
-  if (!trendData.length) return;
+  const rawTrend = appData.post_july16_indexing_trend || [];
+  if (!rawTrend.length) return;
+
+  // Filter to last 7 days only
+  const trendData = rawTrend.slice(-7);
 
   const labels = trendData.map(d => d.date_formatted);
   const dailyIndexed = trendData.map(d => d.daily_indexed);
