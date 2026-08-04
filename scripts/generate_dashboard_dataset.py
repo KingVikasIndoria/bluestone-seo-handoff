@@ -485,13 +485,20 @@ def main():
     striking_distance = [b for b in processed_blogs if 10.0 < b["position"] <= 20.0 and b["impressions"] > 500]
     striking_distance = sorted(striking_distance, key=lambda x: x["impressions"], reverse=True)[:100]
 
-    # Update persistent indexed history — add any URL that has impressions > 0 in this run
+    # Update persistent indexed history — add any URL that has impressions > 0 or has a detected first_indexed_date
     for b in processed_blogs:
-        if b.get("impressions", 0) > 0:
+        idx_str = b.get("first_indexed_date")
+        if b.get("impressions", 0) > 0 or (idx_str and idx_str not in ["Not Indexed Yet", "Indexed (Date Pending)"]):
             indexed_history.add(normalize_url(b.get("link", "")))
             if b.get("slug"):
                 indexed_history.add(b["slug"])
     save_indexed_history(indexed_history)
+
+    # Flag explicit is_indexed boolean on every blog object
+    for b in processed_blogs:
+        norm = normalize_url(b.get("link", ""))
+        slug = b.get("slug", "")
+        b["is_indexed"] = (norm in indexed_history or slug in indexed_history or b.get("impressions", 0) > 0)
 
     # Compute Calendar Week publish volumes (Monday to Today vs Prev Monday to Sunday)
     now = datetime.now()

@@ -475,8 +475,9 @@ function renderTable() {
       (b.top_queries && b.top_queries.some(q => q.query.toLowerCase().includes(searchVal)));
 
     let matchesIndexing = true;
-    if (indexingFilter === "indexed") matchesIndexing = b.impressions > 0;
-    else if (indexingFilter === "non-indexed") matchesIndexing = b.impressions === 0;
+    const isBIndexed = (b.is_indexed !== undefined) ? b.is_indexed : (b.impressions > 0);
+    if (indexingFilter === "indexed") matchesIndexing = isBIndexed;
+    else if (indexingFilter === "non-indexed") matchesIndexing = !isBIndexed;
 
     const matchesHealth = healthFilter === "all" || b.health === healthFilter;
 
@@ -511,7 +512,7 @@ function renderTable() {
   }
 
   tbody.innerHTML = filtered.map(b => {
-    const isIndexed = b.impressions > 0;
+    const isIndexed = (b.is_indexed !== undefined) ? b.is_indexed : (b.impressions > 0);
     const indexBadgeClass = isIndexed ? "badge-success" : "badge-secondary";
     const indexBadgeText = isIndexed ? "🟢 Indexed" : "⚪ Non-Indexed";
 
