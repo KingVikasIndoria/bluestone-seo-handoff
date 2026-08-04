@@ -241,11 +241,20 @@ function getMonthName(mIndex) {
 }
 
 function renderDailyTrendChart() {
-  const ctx = document.getElementById("dailyTrendChart").getContext("2d");
+  const canvas = document.getElementById("dailyTrendChart");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
   if (dailyChart) dailyChart.destroy();
 
+  const rawTrends = appData.daily_trends || [];
+  if (!rawTrends.length) return;
+
+  // Filter to last 14 days only
+  const last14 = rawTrends.slice(-14);
+
   // Format date labels as "1 Aug", "2 Aug", "30 Jul"
-  const dates = appData.daily_trends.map(d => {
+  const dates = last14.map(d => {
+    if (d.date_formatted) return d.date_formatted;
     const parts = d.date.split("-"); // YYYY-MM-DD
     if (parts.length === 3) {
       const day = parseInt(parts[2], 10);
@@ -255,31 +264,45 @@ function renderDailyTrendChart() {
     return d.date;
   });
 
-  const clicks = appData.daily_trends.map(d => d.clicks);
-  const impressions = appData.daily_trends.map(d => d.impressions);
+  const newClicks = last14.map(d => d.new_clicks || 0);
+  const oldClicks = last14.map(d => d.old_clicks || 0);
+  const totalImpressions = last14.map(d => d.impressions || 0);
 
-  // Minimal aesthetic with 2 distinct colors (Indigo & Cyan)
   dailyChart = new Chart(ctx, {
     type: "line",
     data: {
       labels: dates,
       datasets: [
         {
-          label: "Clicks",
-          data: clicks,
+          label: "New Strategy Clicks",
+          data: newClicks,
           borderColor: "#4f46e5",
-          backgroundColor: "rgba(79, 70, 229, 0.05)",
-          borderWidth: 2.5,
-          pointRadius: 3,
-          pointHoverRadius: 6,
+          backgroundColor: "rgba(79, 70, 229, 0.12)",
+          borderWidth: 3,
+          pointRadius: 4,
+          pointHoverRadius: 7,
           pointBackgroundColor: "#4f46e5",
           fill: true,
-          tension: 0.2,
+          tension: 0.3,
           yAxisID: "yClicks"
         },
         {
-          label: "Impressions",
-          data: impressions,
+          label: "Old Strategy Clicks",
+          data: oldClicks,
+          borderColor: "#94a3b8",
+          backgroundColor: "rgba(148, 163, 184, 0.05)",
+          borderWidth: 2,
+          borderDash: [3, 3],
+          pointRadius: 3,
+          pointHoverRadius: 6,
+          pointBackgroundColor: "#94a3b8",
+          fill: false,
+          tension: 0.3,
+          yAxisID: "yClicks"
+        },
+        {
+          label: "Total Impressions",
+          data: totalImpressions,
           borderColor: "#06b6d4",
           backgroundColor: "transparent",
           borderWidth: 2,
@@ -287,7 +310,7 @@ function renderDailyTrendChart() {
           pointRadius: 2,
           pointHoverRadius: 5,
           pointBackgroundColor: "#06b6d4",
-          tension: 0.2,
+          tension: 0.3,
           yAxisID: "yImpressions"
         }
       ]

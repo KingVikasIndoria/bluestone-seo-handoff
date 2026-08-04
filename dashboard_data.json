@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "Aug 04, 2026 11:46 AM",
+    "generated_at": "Aug 04, 2026 12:11 PM",
     "start_date": "2026-07-03",
     "end_date": "2026-08-02",
     "strategy_pivot_date": "2026-07-16",
@@ -131809,220 +131809,313 @@
   "daily_trends": [
     {
       "date": "2026-07-03",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 242,
+      "old_impressions": 47132,
       "clicks": 242,
       "impressions": 47132,
-      "ctr": 0.51,
-      "position": 7.3
+      "date_formatted": "03 Jul"
     },
     {
       "date": "2026-07-04",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 236,
+      "old_impressions": 65943,
       "clicks": 236,
       "impressions": 65943,
-      "ctr": 0.36,
-      "position": 6.1
+      "date_formatted": "04 Jul"
     },
     {
       "date": "2026-07-05",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 240,
+      "old_impressions": 60695,
       "clicks": 240,
       "impressions": 60695,
-      "ctr": 0.4,
-      "position": 6.3
+      "date_formatted": "05 Jul"
     },
     {
       "date": "2026-07-06",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 240,
+      "old_impressions": 47837,
       "clicks": 240,
       "impressions": 47837,
-      "ctr": 0.5,
-      "position": 7.6
+      "date_formatted": "06 Jul"
     },
     {
       "date": "2026-07-07",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 209,
+      "old_impressions": 46381,
       "clicks": 209,
       "impressions": 46381,
-      "ctr": 0.45,
-      "position": 7.4
+      "date_formatted": "07 Jul"
     },
     {
       "date": "2026-07-08",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 256,
+      "old_impressions": 47320,
       "clicks": 256,
       "impressions": 47320,
-      "ctr": 0.54,
-      "position": 6.9
+      "date_formatted": "08 Jul"
     },
     {
       "date": "2026-07-09",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 202,
+      "old_impressions": 46388,
       "clicks": 202,
       "impressions": 46388,
-      "ctr": 0.44,
-      "position": 6.7
+      "date_formatted": "09 Jul"
     },
     {
       "date": "2026-07-10",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 236,
+      "old_impressions": 46671,
       "clicks": 236,
       "impressions": 46671,
-      "ctr": 0.51,
-      "position": 7.2
+      "date_formatted": "10 Jul"
     },
     {
       "date": "2026-07-11",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 224,
+      "old_impressions": 47828,
       "clicks": 224,
       "impressions": 47828,
-      "ctr": 0.47,
-      "position": 8.6
+      "date_formatted": "11 Jul"
     },
     {
       "date": "2026-07-12",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 262,
+      "old_impressions": 50296,
       "clicks": 262,
       "impressions": 50296,
-      "ctr": 0.52,
-      "position": 7.3
+      "date_formatted": "12 Jul"
     },
     {
       "date": "2026-07-13",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 244,
+      "old_impressions": 50569,
       "clicks": 244,
       "impressions": 50569,
-      "ctr": 0.48,
-      "position": 8.2
+      "date_formatted": "13 Jul"
     },
     {
       "date": "2026-07-14",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 228,
+      "old_impressions": 47519,
       "clicks": 228,
       "impressions": 47519,
-      "ctr": 0.48,
-      "position": 8.5
+      "date_formatted": "14 Jul"
     },
     {
       "date": "2026-07-15",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 225,
+      "old_impressions": 48724,
       "clicks": 225,
       "impressions": 48724,
-      "ctr": 0.46,
-      "position": 8.1
+      "date_formatted": "15 Jul"
     },
     {
       "date": "2026-07-16",
+      "new_clicks": 0,
+      "new_impressions": 0,
+      "old_clicks": 221,
+      "old_impressions": 43940,
       "clicks": 221,
       "impressions": 43940,
-      "ctr": 0.5,
-      "position": 7.4
+      "date_formatted": "16 Jul"
     },
     {
       "date": "2026-07-17",
+      "new_clicks": 1,
+      "new_impressions": 27,
+      "old_clicks": 198,
+      "old_impressions": 48957,
       "clicks": 199,
       "impressions": 48984,
-      "ctr": 0.41,
-      "position": 7.2
+      "date_formatted": "17 Jul"
     },
     {
       "date": "2026-07-18",
+      "new_clicks": 3,
+      "new_impressions": 106,
+      "old_clicks": 257,
+      "old_impressions": 46426,
       "clicks": 260,
       "impressions": 46532,
-      "ctr": 0.56,
-      "position": 6.5
+      "date_formatted": "18 Jul"
     },
     {
       "date": "2026-07-19",
+      "new_clicks": 0,
+      "new_impressions": 142,
+      "old_clicks": 232,
+      "old_impressions": 44841,
       "clicks": 232,
       "impressions": 44983,
-      "ctr": 0.52,
-      "position": 7.0
+      "date_formatted": "19 Jul"
     },
     {
       "date": "2026-07-20",
+      "new_clicks": 4,
+      "new_impressions": 203,
+      "old_clicks": 219,
+      "old_impressions": 45806,
       "clicks": 223,
       "impressions": 46009,
-      "ctr": 0.48,
-      "position": 8.5
+      "date_formatted": "20 Jul"
     },
     {
       "date": "2026-07-21",
+      "new_clicks": 4,
+      "new_impressions": 449,
+      "old_clicks": 191,
+      "old_impressions": 45175,
       "clicks": 195,
       "impressions": 45624,
-      "ctr": 0.43,
-      "position": 9.8
+      "date_formatted": "21 Jul"
     },
     {
       "date": "2026-07-22",
+      "new_clicks": 3,
+      "new_impressions": 345,
+      "old_clicks": 209,
+      "old_impressions": 45961,
       "clicks": 212,
       "impressions": 46306,
-      "ctr": 0.46,
-      "position": 6.8
+      "date_formatted": "22 Jul"
     },
     {
       "date": "2026-07-23",
+      "new_clicks": 9,
+      "new_impressions": 1072,
+      "old_clicks": 211,
+      "old_impressions": 43829,
       "clicks": 220,
       "impressions": 44901,
-      "ctr": 0.49,
-      "position": 6.7
+      "date_formatted": "23 Jul"
     },
     {
       "date": "2026-07-24",
+      "new_clicks": 19,
+      "new_impressions": 1974,
+      "old_clicks": 208,
+      "old_impressions": 45590,
       "clicks": 227,
       "impressions": 47564,
-      "ctr": 0.48,
-      "position": 7.1
+      "date_formatted": "24 Jul"
     },
     {
       "date": "2026-07-25",
+      "new_clicks": 23,
+      "new_impressions": 1866,
+      "old_clicks": 190,
+      "old_impressions": 43159,
       "clicks": 213,
       "impressions": 45025,
-      "ctr": 0.47,
-      "position": 7.3
+      "date_formatted": "25 Jul"
     },
     {
       "date": "2026-07-26",
+      "new_clicks": 15,
+      "new_impressions": 2410,
+      "old_clicks": 211,
+      "old_impressions": 46078,
       "clicks": 226,
       "impressions": 48488,
-      "ctr": 0.47,
-      "position": 8.1
+      "date_formatted": "26 Jul"
     },
     {
       "date": "2026-07-27",
+      "new_clicks": 21,
+      "new_impressions": 2289,
+      "old_clicks": 231,
+      "old_impressions": 47439,
       "clicks": 252,
       "impressions": 49728,
-      "ctr": 0.51,
-      "position": 7.9
+      "date_formatted": "27 Jul"
     },
     {
       "date": "2026-07-28",
+      "new_clicks": 43,
+      "new_impressions": 3690,
+      "old_clicks": 239,
+      "old_impressions": 50034,
       "clicks": 282,
       "impressions": 53724,
-      "ctr": 0.52,
-      "position": 8.6
+      "date_formatted": "28 Jul"
     },
     {
       "date": "2026-07-29",
+      "new_clicks": 20,
+      "new_impressions": 2732,
+      "old_clicks": 185,
+      "old_impressions": 43113,
       "clicks": 205,
       "impressions": 45845,
-      "ctr": 0.45,
-      "position": 7.9
+      "date_formatted": "29 Jul"
     },
     {
       "date": "2026-07-30",
+      "new_clicks": 29,
+      "new_impressions": 2733,
+      "old_clicks": 227,
+      "old_impressions": 45066,
       "clicks": 256,
       "impressions": 47799,
-      "ctr": 0.54,
-      "position": 9.2
+      "date_formatted": "30 Jul"
     },
     {
       "date": "2026-07-31",
+      "new_clicks": 39,
+      "new_impressions": 3823,
+      "old_clicks": 209,
+      "old_impressions": 49150,
       "clicks": 248,
       "impressions": 52973,
-      "ctr": 0.47,
-      "position": 9.8
+      "date_formatted": "31 Jul"
     },
     {
       "date": "2026-08-01",
+      "new_clicks": 104,
+      "new_impressions": 7799,
+      "old_clicks": 196,
+      "old_impressions": 47147,
       "clicks": 300,
       "impressions": 54946,
-      "ctr": 0.55,
-      "position": 8.7
+      "date_formatted": "01 Aug"
     },
     {
       "date": "2026-08-02",
+      "new_clicks": 44,
+      "new_impressions": 5433,
+      "old_clicks": 228,
+      "old_impressions": 51555,
       "clicks": 272,
       "impressions": 56988,
-      "ctr": 0.48,
-      "position": 8.0
+      "date_formatted": "02 Aug"
     }
   ],
   "post_july16_indexing_trend": [

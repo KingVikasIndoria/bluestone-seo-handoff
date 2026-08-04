@@ -215,11 +215,11 @@ def fetch_gsc_data(service):
 
     print(f"   Detected First Indexed Date for {len(first_indexed_map)} blog pages.")
 
-    # 4. Daily trends
+    # 4. Daily trends (Date + Page dimensions)
     dt_req = {
         "startDate": START_DATE,
         "endDate": END_DATE,
-        "dimensions": ["date"],
+        "dimensions": ["date", "page"],
         "dimensionFilterGroups": [{
             "filters": [{
                 "dimension": "page",
@@ -227,22 +227,12 @@ def fetch_gsc_data(service):
                 "expression": r"^https://blog\.bluestone\.com/"
             }]
         }],
-        "rowLimit": 5000,
+        "rowLimit": 25000,
         "dataState": "all"
     }
     dt_res = service.searchanalytics().query(siteUrl=SITE_URL, body=dt_req).execute()
-    daily_trends = []
-    for r in dt_res.get("rows", []):
-        daily_trends.append({
-            "date": r["keys"][0],
-            "clicks": int(r.get("clicks", 0)),
-            "impressions": int(r.get("impressions", 0)),
-            "ctr": round(r.get("ctr", 0) * 100, 2),
-            "position": round(r.get("position", 0), 1)
-        })
-    daily_trends.sort(key=lambda x: x["date"])
-
-    # 4. Devices
+    raw_daily_rows = dt_res.get("rows", [])
+    # 5. Devices
     dev_req = {
         "startDate": START_DATE,
         "endDate": END_DATE,
@@ -268,7 +258,7 @@ def fetch_gsc_data(service):
             "position": round(r.get("position", 0), 1)
         })
 
-    return gsc_page_map, queries_by_page, daily_trends, devices, first_indexed_map
+    return gsc_page_map, queries_by_page, raw_daily_rows, devices, first_indexed_map
 
 def get_health_tier(pos, impressions):
     if pos > 0 and pos <= 3:
@@ -343,7 +333,7 @@ def main():
     indexed_history = load_indexed_history()
 
     wp_posts = fetch_wp_posts_parallel(max_pages=15)
-    gsc_page_map, queries_by_page, daily_trends, devices, first_indexed_map = fetch_gsc_data(service)
+    gsc_page_map, queries_by_page, raw_daily_rows, devices, first_indexed_map = fetch_gsc_data(service)
 
     processed_blogs = []
     seen_urls = set()
@@ -499,6 +489,47 @@ def main():
         norm = normalize_url(b.get("link", ""))
         slug = b.get("slug", "")
         b["is_indexed"] = (norm in indexed_history or slug in indexed_history or b.get("impressions", 0) > 0)
+
+    # Build bifurcated daily_trends (New Strategy vs Old Strategy)
+    post_slugs = set(b["slug"] for b in post_july16_blogs)
+    post_links = set(normalize_url(b["link"]) for b in post_july16_blogs)
+
+    daily_map = {}
+    for r in raw_daily_rows:
+        dt = r["keys"][0]
+        page = r["keys"][1]
+        norm_page = normalize_url(page)
+        slug = norm_page.rstrip('/').split('/')[-1]
+        c = int(r.get("clicks", 0))
+        imp = int(r.get("impressions", 0))
+        
+        if dt not in daily_map:
+            daily_map[dt] = {
+                "date": dt,
+                "new_clicks": 0,
+                "new_impressions": 0,
+                "old_clicks": 0,
+                "old_impressions": 0,
+                "clicks": 0,
+                "impressions": 0
+            }
+        
+        if slug in post_slugs or norm_page in post_links:
+            daily_map[dt]["new_clicks"] += c
+            daily_map[dt]["new_impressions"] += imp
+        else:
+            daily_map[dt]["old_clicks"] += c
+            daily_map[dt]["old_impressions"] += imp
+        
+        daily_map[dt]["clicks"] += c
+        daily_map[dt]["impressions"] += imp
+
+    daily_trends = sorted(daily_map.values(), key=lambda x: x["date"])
+    for d in daily_trends:
+        try:
+            d["date_formatted"] = datetime.strptime(d["date"], "%Y-%m-%d").strftime("%d %b")
+        except Exception:
+            d["date_formatted"] = d["date"]
 
     # Compute Calendar Week publish volumes (Monday to Today vs Prev Monday to Sunday)
     now = datetime.now()
