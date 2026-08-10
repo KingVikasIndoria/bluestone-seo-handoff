@@ -6,7 +6,8 @@
 
 set -e
 
-PROJECT_DIR="/Users/vikasindoria/Documents/Geo and Seo/article generation seo codex"
+# Auto-detect project directory (where this script lives)
+PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$PROJECT_DIR"
 
 echo "============================================================"
