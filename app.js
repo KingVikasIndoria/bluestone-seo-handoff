@@ -102,6 +102,12 @@ function renderStrategyBanner() {
   document.getElementById("stratLegacyIndexedPct").innerText = `${preIndexedPct}% indexed`;
   document.getElementById("stratLegacyClicks").innerText = preClicks.toLocaleString();
   document.getElementById("stratLegacyImpressions").innerText = preImpressions.toLocaleString();
+
+  // Dynamically update the chart article badge
+  const badge = document.getElementById("chartArticleBadge");
+  if (badge) {
+    badge.innerHTML = `⚡ ${postIndexed} New Articles | 📜 ${preIndexed} Old Articles`;
+  }
 }
 
 function getActiveDataset() {
@@ -132,7 +138,8 @@ function renderKpiCards() {
 
     allBlogs.forEach(b => {
       if (b.raw_date) {
-        const dt = new Date(b.raw_date.split("T")[0]);
+        const parts = b.raw_date.split("T")[0].split("-");
+        const dt = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
         if (!isNaN(dt.getTime())) {
           if (dt >= currentMon && dt <= now) {
             thisWeek++;
@@ -202,9 +209,11 @@ function renderWeeklyPublishTable() {
   }
 
   // Count publications per week bucket
+  // Parse dates using local components to avoid UTC vs local timezone mismatch
   allBlogs.forEach(b => {
     if (b.raw_date) {
-      const dt = new Date(b.raw_date.split("T")[0]);
+      const parts = b.raw_date.split("T")[0].split("-");
+      const dt = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
       if (!isNaN(dt.getTime())) {
         weeks.forEach(w => {
           if (dt >= w.start && dt <= w.end) {
