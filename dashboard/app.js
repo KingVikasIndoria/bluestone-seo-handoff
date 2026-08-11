@@ -437,8 +437,7 @@ function renderRankBreakdownTable() {
 
     if (r.type === "positive") {
       if (diff > 0) {
-        const pct = c1 > 0 ? `+${((diff / c1) * 100).toFixed(0)}%` : "NEW";
-        trendBadge = `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:4px; font-weight:600;">📈 +${diff} (${pct})</span>`;
+        trendBadge = `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:4px; font-weight:600;">📈 +${diff}</span>`;
       } else if (diff === 0) {
         trendBadge = `<span style="background:#f1f5f9; color:#64748b; padding:2px 6px; border-radius:4px;">➖ Steady</span>`;
       } else {

@@ -673,35 +673,53 @@ def main():
         })
         curr_dt += timedelta(days=1)
 
+    w3_end_dt = datetime.strptime(END_DATE, "%Y-%m-%d")
+    w3_start_dt = w3_end_dt - timedelta(days=6)
+    w2_end_dt = w3_start_dt - timedelta(days=1)
+    w2_start_dt = w2_end_dt - timedelta(days=6)
+    w1_end_dt = w2_start_dt - timedelta(days=1)
+    w1_start_dt = w1_end_dt - timedelta(days=6)
+
     def compute_3w_breakdown(blog_list):
         def empty_b():
             return {"pos1_3": 0, "pos4_10": 0, "pos11_20": 0, "pos21_plus": 0, "unindexed": 0}
         b1, b2, b3 = empty_b(), empty_b(), empty_b()
+
+        d1_cutoff = w1_end_dt.strftime("%Y-%m-%d")
+        d2_cutoff = w2_end_dt.strftime("%Y-%m-%d")
+        d3_cutoff = w3_end_dt.strftime("%Y-%m-%d")
+
         for b in blog_list:
+            pub_d = b.get("raw_date", "")[:10]
             w = b.get("weekly_rank", {})
-            # W1
-            w1_pos, w1_imp = w.get("w1_pos", 0), w.get("w1_imp", 0)
-            if w1_imp == 0: b1["unindexed"] += 1
-            elif 0 < w1_pos <= 3: b1["pos1_3"] += 1
-            elif 3 < w1_pos <= 10: b1["pos4_10"] += 1
-            elif 10 < w1_pos <= 20: b1["pos11_20"] += 1
-            else: b1["pos21_plus"] += 1
 
-            # W2
-            w2_pos, w2_imp = w.get("w2_pos", 0), w.get("w2_imp", 0)
-            if w2_imp == 0: b2["unindexed"] += 1
-            elif 0 < w2_pos <= 3: b2["pos1_3"] += 1
-            elif 3 < w2_pos <= 10: b2["pos4_10"] += 1
-            elif 10 < w2_pos <= 20: b2["pos11_20"] += 1
-            else: b2["pos21_plus"] += 1
+            # W1: Only evaluate if published on or before W1 end date
+            if not pub_d or pub_d <= d1_cutoff:
+                w1_pos, w1_imp = w.get("w1_pos", 0), w.get("w1_imp", 0)
+                if w1_imp == 0: b1["unindexed"] += 1
+                elif 0 < w1_pos <= 3: b1["pos1_3"] += 1
+                elif 3 < w1_pos <= 10: b1["pos4_10"] += 1
+                elif 10 < w1_pos <= 20: b1["pos11_20"] += 1
+                else: b1["pos21_plus"] += 1
 
-            # W3
-            w3_pos, w3_imp = w.get("w3_pos", 0), w.get("w3_imp", 0)
-            if w3_imp == 0: b3["unindexed"] += 1
-            elif 0 < w3_pos <= 3: b3["pos1_3"] += 1
-            elif 3 < w3_pos <= 10: b3["pos4_10"] += 1
-            elif 10 < w3_pos <= 20: b3["pos11_20"] += 1
-            else: b3["pos21_plus"] += 1
+            # W2: Only evaluate if published on or before W2 end date
+            if not pub_d or pub_d <= d2_cutoff:
+                w2_pos, w2_imp = w.get("w2_pos", 0), w.get("w2_imp", 0)
+                if w2_imp == 0: b2["unindexed"] += 1
+                elif 0 < w2_pos <= 3: b2["pos1_3"] += 1
+                elif 3 < w2_pos <= 10: b2["pos4_10"] += 1
+                elif 10 < w2_pos <= 20: b2["pos11_20"] += 1
+                else: b2["pos21_plus"] += 1
+
+            # W3: Only evaluate if published on or before W3 end date
+            if not pub_d or pub_d <= d3_cutoff:
+                w3_pos, w3_imp = w.get("w3_pos", 0), w.get("w3_imp", 0)
+                if w3_imp == 0: b3["unindexed"] += 1
+                elif 0 < w3_pos <= 3: b3["pos1_3"] += 1
+                elif 3 < w3_pos <= 10: b3["pos4_10"] += 1
+                elif 10 < w3_pos <= 20: b3["pos11_20"] += 1
+                else: b3["pos21_plus"] += 1
+
         return {"w1": b1, "w2": b2, "w3": b3}
 
     rank_breakdown_3w = {
