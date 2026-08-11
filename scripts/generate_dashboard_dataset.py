@@ -34,7 +34,9 @@ WP_AUTH = ("blogbluestone", "4lKn pjRK GUtF Yts5 VzwF jcwd")
 STRATEGY_PIVOT_DATE = datetime(2026, 7, 16)
 
 END_DATE = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
-START_DATE = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d")
+START_DATE_30D = (datetime.now() - timedelta(days=32)).strftime("%Y-%m-%d")
+START_DATE_180D = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d")
+START_DATE = START_DATE_30D
 
 def normalize_url(url):
     if not url:
@@ -217,7 +219,7 @@ def fetch_gsc_data(service):
 
     # 4. Daily trends (Date dimension for 180 days)
     dt_req = {
-        "startDate": START_DATE,
+        "startDate": START_DATE_180D,
         "endDate": END_DATE,
         "dimensions": ["date"],
         "dimensionFilterGroups": [{
