@@ -867,3 +867,151 @@ function escapeHtml(str) {
   if (!str) return "";
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
+
+let kpiModalChart = null;
+
+function openKpiModal(metricType) {
+  const modal = document.getElementById("kpiTrendModal");
+  const titleEl = document.getElementById("kpiModalTitle");
+  const tableLabelEl = document.getElementById("kpiModalTableColLabel");
+  const tbody = document.getElementById("kpiModalTableBody");
+  const canvas = document.getElementById("kpiModalChart");
+  if (!modal || !appData) return;
+
+  const weeklyTrends = appData.weekly_trends_10w || [];
+  if (!weeklyTrends.length) return;
+
+  let titleText = "";
+  let colLabelText = "";
+  let chartLabel = "";
+  let borderColor = "#4f46e5";
+  let backgroundColor = "rgba(79, 70, 229, 0.12)";
+  let values = [];
+
+  if (metricType === "clicks") {
+    titleText = "<i class='fa-solid fa-mouse-pointer text-indigo'></i> Total Clicks — 10-Week Historical Trend";
+    colLabelText = "Weekly Clicks";
+    chartLabel = "Total Clicks";
+    borderColor = "#4f46e5";
+    backgroundColor = "rgba(79, 70, 229, 0.12)";
+    values = weeklyTrends.map(w => w.clicks || 0);
+  } else if (metricType === "impressions") {
+    titleText = "<i class='fa-solid fa-eye text-purple'></i> Total Impressions — 10-Week Historical Trend";
+    colLabelText = "Weekly Impressions";
+    chartLabel = "Total Impressions";
+    borderColor = "#06b6d4";
+    backgroundColor = "rgba(6, 182, 212, 0.12)";
+    values = weeklyTrends.map(w => w.impressions || 0);
+  } else if (metricType === "ctr") {
+    titleText = "<i class='fa-solid fa-percent text-success'></i> Average CTR — 10-Week Historical Trend";
+    colLabelText = "Weekly Average CTR";
+    chartLabel = "Average CTR (%)";
+    borderColor = "#10b981";
+    backgroundColor = "rgba(16, 185, 129, 0.12)";
+    values = weeklyTrends.map(w => {
+      const c = w.clicks || 0;
+      const imp = w.impressions || 0;
+      return imp > 0 ? parseFloat(((c / imp) * 100).toFixed(2)) : 0;
+    });
+  }
+
+  if (titleEl) titleEl.innerHTML = titleText;
+  if (tableLabelEl) tableLabelEl.innerText = colLabelText;
+
+  // 1. Render Table
+  if (tbody) {
+    let html = "";
+    const totalVal = values.reduce((a, b) => a + b, 0);
+    weeklyTrends.forEach((w, idx) => {
+      const val = values[idx];
+      let valStr = val.toLocaleString();
+      let shareStr = "";
+      if (metricType === "ctr") {
+        valStr = val + "%";
+        shareStr = val >= 0.5 ? "🎯 High Engagement" : "⚡ Standard CTR";
+      } else {
+        const pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) + "% of 10W Total" : "-";
+        shareStr = pct;
+      }
+
+      html += `
+        <tr>
+          <td style="text-align:left; padding:6px 8px; font-weight:600; color:#1e293b;">${w.week_label}</td>
+          <td style="text-align:right; padding:6px 8px; font-weight:700; color:${borderColor};">${valStr}</td>
+          <td style="text-align:right; padding:6px 8px; color:#64748b;">${shareStr}</td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  }
+
+  // 2. Render Chart
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    if (kpiModalChart) kpiModalChart.destroy();
+
+    const labels = weeklyTrends.map(w => w.week_label);
+
+    kpiModalChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: chartLabel,
+            data: values,
+            borderColor: borderColor,
+            backgroundColor: backgroundColor,
+            borderWidth: 3,
+            pointRadius: 5,
+            pointHoverRadius: 8,
+            pointBackgroundColor: borderColor,
+            fill: true,
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { color: "#334155", font: { family: "Inter", size: 12, weight: "500" }, usePointStyle: true, boxWidth: 8 }
+          }
+        },
+        scales: {
+          x: { ticks: { color: "#64748b", font: { size: 11, weight: "500" } }, grid: { display: false } },
+          y: {
+            ticks: {
+              color: borderColor,
+              font: { size: 11 },
+              callback: (val) => metricType === "ctr" ? val + "%" : val.toLocaleString()
+            },
+            grid: { color: "#f1f5f9" }
+          }
+        }
+      }
+    });
+  }
+
+  modal.style.display = "flex";
+}
+
+function closeKpiModal() {
+  const modal = document.getElementById("kpiTrendModal");
+  if (modal) modal.style.display = "none";
+}
+
+function handleKpiModalBackdropClick(e) {
+  if (e.target.id === "kpiTrendModal") {
+    closeKpiModal();
+  }
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeKpiModal();
+  }
+});

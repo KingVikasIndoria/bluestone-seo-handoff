@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Custom Styles (Cache Buster v15) -->
-  <link rel="stylesheet" href="styles.css?v=15">
+  <!-- Custom Styles (Cache Buster v16) -->
+  <link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body>
   
@@ -116,34 +116,34 @@
         </div>
       </div>
 
-      <div class="kpi-card glass-card">
+      <div class="kpi-card glass-card clickable-kpi-card" id="kpiCardClicks" onclick="openKpiModal('clicks')">
         <div class="kpi-icon icon-clicks">
           <i class="fa-solid fa-mouse-pointer"></i>
         </div>
         <div class="kpi-content">
-          <span class="kpi-label">Total Clicks (30d)</span>
+          <span class="kpi-label">Total Clicks (30d) <span class="trend-badge-hint"><i class="fa-solid fa-chart-line"></i> 10W Trend</span></span>
           <h2 class="kpi-value" id="kpiClicks">--</h2>
           <span class="kpi-sub" id="kpiClicksSub"><i class="fa-solid fa-calendar"></i> Overall Blog Traffic</span>
         </div>
       </div>
 
-      <div class="kpi-card glass-card">
+      <div class="kpi-card glass-card clickable-kpi-card" id="kpiCardImpressions" onclick="openKpiModal('impressions')">
         <div class="kpi-icon icon-impressions">
           <i class="fa-solid fa-eye"></i>
         </div>
         <div class="kpi-content">
-          <span class="kpi-label">Total Impressions</span>
+          <span class="kpi-label">Total Impressions <span class="trend-badge-hint"><i class="fa-solid fa-chart-line"></i> 10W Trend</span></span>
           <h2 class="kpi-value" id="kpiImpressions">--</h2>
           <span class="kpi-sub" id="kpiImpressionsSub"><i class="fa-solid fa-arrow-trend-up"></i> Search Visibility</span>
         </div>
       </div>
 
-      <div class="kpi-card glass-card">
+      <div class="kpi-card glass-card clickable-kpi-card" id="kpiCardCtr" onclick="openKpiModal('ctr')">
         <div class="kpi-icon icon-ctr">
           <i class="fa-solid fa-percent"></i>
         </div>
         <div class="kpi-content">
-          <span class="kpi-label">Average CTR</span>
+          <span class="kpi-label">Average CTR <span class="trend-badge-hint"><i class="fa-solid fa-chart-line"></i> 10W Trend</span></span>
           <h2 class="kpi-value" id="kpiCtr">--</h2>
           <span class="kpi-sub" id="kpiCtrSub"><i class="fa-solid fa-bullseye"></i> Click-through Rate</span>
         </div>
@@ -395,9 +395,35 @@
         </div>
 
       </div>
+  <!-- KPI 10-Week Trend Modal Popup -->
+  <div id="kpiTrendModal" class="modal-overlay" style="display:none;" onclick="handleKpiModalBackdropClick(event)">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h3 id="kpiModalTitle"><i class="fa-solid fa-chart-line text-indigo"></i> 10-Week Historical Trend</h3>
+        <button class="modal-close-btn" onclick="closeKpiModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="chart-container" style="height: 260px; margin-bottom: 16px;">
+          <canvas id="kpiModalChart"></canvas>
+        </div>
+        <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+          <table class="mini-table" style="width: 100%; font-size: 0.8rem;">
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:6px 8px;">Week Range</th>
+                <th style="text-align:right; padding:6px 8px;" id="kpiModalTableColLabel">Weekly Value</th>
+                <th style="text-align:right; padding:6px 8px;">10W Context</th>
+              </tr>
+            </thead>
+            <tbody id="kpiModalTableBody">
+              <!-- Filled via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
-  <script src="app.js?v=20"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>
