@@ -34,7 +34,7 @@ WP_AUTH = ("blogbluestone", "4lKn pjRK GUtF Yts5 VzwF jcwd")
 STRATEGY_PIVOT_DATE = datetime(2026, 7, 16)
 
 END_DATE = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
-START_DATE = (datetime.now() - timedelta(days=32)).strftime("%Y-%m-%d")
+START_DATE = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d")
 
 def normalize_url(url):
     if not url:
@@ -215,11 +215,11 @@ def fetch_gsc_data(service):
 
     print(f"   Detected First Indexed Date for {len(first_indexed_map)} blog pages.")
 
-    # 4. Daily trends (Date + Page dimensions)
+    # 4. Daily trends (Date dimension for 180 days)
     dt_req = {
         "startDate": START_DATE,
         "endDate": END_DATE,
-        "dimensions": ["date", "page"],
+        "dimensions": ["date"],
         "dimensionFilterGroups": [{
             "filters": [{
                 "dimension": "page",
@@ -227,7 +227,7 @@ def fetch_gsc_data(service):
                 "expression": r"^https://blog\.bluestone\.com/"
             }]
         }],
-        "rowLimit": 25000,
+        "rowLimit": 2500,
         "dataState": "all"
     }
     dt_res = service.searchanalytics().query(siteUrl=SITE_URL, body=dt_req).execute()
@@ -563,46 +563,60 @@ def main():
         slug = b.get("slug", "")
         b["is_indexed"] = (norm in indexed_history or slug in indexed_history or b.get("impressions", 0) > 0)
 
-    # Build bifurcated daily_trends (New Strategy vs Old Strategy)
-    post_slugs = set(b["slug"] for b in post_july16_blogs)
-    post_links = set(normalize_url(b["link"]) for b in post_july16_blogs)
+    # Build Overall Weekly Trends (Last 10 Weeks) & Monthly Trends (Last 6 Months)
+    end_dt = datetime.strptime(END_DATE, "%Y-%m-%d")
+    day_of_week = end_dt.weekday()
+    current_mon = datetime(end_dt.year, end_dt.month, end_dt.day) - timedelta(days=day_of_week)
 
-    daily_map = {}
+    weeks_10 = []
+    for i in range(9, -1, -1):
+        w_start = current_mon - timedelta(days=i*7)
+        w_end = w_start + timedelta(days=6)
+        weeks_10.append({
+            "w_start": w_start,
+            "w_end": w_end,
+            "week_label": f"{w_start.strftime('%d %b')} - {w_end.strftime('%d %b')}",
+            "clicks": 0,
+            "impressions": 0
+        })
+
+    months_dict = {}
+
     for r in raw_daily_rows:
-        dt = r["keys"][0]
-        page = r["keys"][1]
-        norm_page = normalize_url(page)
-        slug = norm_page.rstrip('/').split('/')[-1]
+        d_str = r["keys"][0]
+        dt = datetime.strptime(d_str, "%Y-%m-%d")
         c = int(r.get("clicks", 0))
         imp = int(r.get("impressions", 0))
-        
-        if dt not in daily_map:
-            daily_map[dt] = {
-                "date": dt,
-                "new_clicks": 0,
-                "new_impressions": 0,
-                "old_clicks": 0,
-                "old_impressions": 0,
+
+        # 10 Weeks
+        for w in weeks_10:
+            if w["w_start"] <= dt <= w["w_end"]:
+                w["clicks"] += c
+                w["impressions"] += imp
+                break
+
+        # 6 Months
+        m_key = dt.strftime("%Y-%m")
+        if m_key not in months_dict:
+            months_dict[m_key] = {
+                "month_label": dt.strftime("%b %Y"),
+                "year_month": m_key,
                 "clicks": 0,
                 "impressions": 0
             }
-        
-        if slug in post_slugs or norm_page in post_links:
-            daily_map[dt]["new_clicks"] += c
-            daily_map[dt]["new_impressions"] += imp
-        else:
-            daily_map[dt]["old_clicks"] += c
-            daily_map[dt]["old_impressions"] += imp
-        
-        daily_map[dt]["clicks"] += c
-        daily_map[dt]["impressions"] += imp
+        months_dict[m_key]["clicks"] += c
+        months_dict[m_key]["impressions"] += imp
 
-    daily_trends = sorted(daily_map.values(), key=lambda x: x["date"])
-    for d in daily_trends:
-        try:
-            d["date_formatted"] = datetime.strptime(d["date"], "%Y-%m-%d").strftime("%d %b")
-        except Exception:
-            d["date_formatted"] = d["date"]
+    weekly_trends_10w = [
+        {"week_label": w["week_label"], "clicks": w["clicks"], "impressions": w["impressions"]}
+        for w in weeks_10
+    ]
+
+    sorted_months = sorted(months_dict.keys())[-6:]
+    monthly_trends_6m = [
+        {"month_label": months_dict[k]["month_label"], "clicks": months_dict[k]["clicks"], "impressions": months_dict[k]["impressions"]}
+        for k in sorted_months
+    ]
 
     # Compute Calendar Week publish volumes (Monday to Today vs Prev Monday to Sunday)
     now = datetime.now()
@@ -747,7 +761,8 @@ def main():
         "top_100_performing": top_100_performing,
         "striking_distance": striking_distance,
         "all_blogs": processed_blogs,
-        "daily_trends": daily_trends,
+        "weekly_trends_10w": weekly_trends_10w,
+        "monthly_trends_6m": monthly_trends_6m,
         "post_july16_indexing_trend": post_july16_indexing_trend,
         "devices": devices
     }

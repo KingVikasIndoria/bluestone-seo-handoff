@@ -48,7 +48,8 @@ async function fetchDashboardData() {
     // Render KPIs, Weekly Table & Charts
     renderKpiCards();
     renderWeeklyPublishTable();
-    renderDailyTrendChart();
+    renderWeeklyTrendChart();
+    renderMonthlyTrendChart();
     renderRankBreakdownTable();
     renderIndexingTrendChart();
 
@@ -249,42 +250,30 @@ function getMonthName(mIndex) {
   return months[mIndex] || "";
 }
 
-function renderDailyTrendChart() {
-  const canvas = document.getElementById("dailyTrendChart");
+let weeklyChart = null;
+let monthlyChart = null;
+
+function renderWeeklyTrendChart() {
+  const canvas = document.getElementById("weeklyTrendChart");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
-  if (dailyChart) dailyChart.destroy();
+  if (weeklyChart) weeklyChart.destroy();
 
-  const rawTrends = appData.daily_trends || [];
-  if (!rawTrends.length) return;
+  const weeklyTrends = appData.weekly_trends_10w || [];
+  if (!weeklyTrends.length) return;
 
-  // Filter to last 14 days only
-  const last14 = rawTrends.slice(-14);
+  const labels = weeklyTrends.map(w => w.week_label);
+  const clicks = weeklyTrends.map(w => w.clicks || 0);
+  const impressions = weeklyTrends.map(w => w.impressions || 0);
 
-  // Format date labels as "1 Aug", "2 Aug", "30 Jul"
-  const dates = last14.map(d => {
-    if (d.date_formatted) return d.date_formatted;
-    const parts = d.date.split("-"); // YYYY-MM-DD
-    if (parts.length === 3) {
-      const day = parseInt(parts[2], 10);
-      const mIdx = parseInt(parts[1], 10) - 1;
-      return `${day} ${getMonthName(mIdx)}`;
-    }
-    return d.date;
-  });
-
-  const newClicks = last14.map(d => d.new_clicks || 0);
-  const oldClicks = last14.map(d => d.old_clicks || 0);
-  const totalImpressions = last14.map(d => d.impressions || 0);
-
-  dailyChart = new Chart(ctx, {
+  weeklyChart = new Chart(ctx, {
     type: "line",
     data: {
-      labels: dates,
+      labels: labels,
       datasets: [
         {
-          label: "New Strategy Clicks",
-          data: newClicks,
+          label: "Total Clicks",
+          data: clicks,
           borderColor: "#4f46e5",
           backgroundColor: "rgba(79, 70, 229, 0.12)",
           borderWidth: 3,
@@ -296,28 +285,14 @@ function renderDailyTrendChart() {
           yAxisID: "yClicks"
         },
         {
-          label: "Old Strategy Clicks",
-          data: oldClicks,
-          borderColor: "#94a3b8",
-          backgroundColor: "rgba(148, 163, 184, 0.05)",
-          borderWidth: 2,
-          borderDash: [3, 3],
-          pointRadius: 3,
-          pointHoverRadius: 6,
-          pointBackgroundColor: "#94a3b8",
-          fill: false,
-          tension: 0.3,
-          yAxisID: "yClicks"
-        },
-        {
           label: "Total Impressions",
-          data: totalImpressions,
+          data: impressions,
           borderColor: "#06b6d4",
           backgroundColor: "transparent",
           borderWidth: 2,
           borderDash: [5, 4],
-          pointRadius: 2,
-          pointHoverRadius: 5,
+          pointRadius: 3,
+          pointHoverRadius: 6,
           pointBackgroundColor: "#06b6d4",
           tension: 0.3,
           yAxisID: "yImpressions"
@@ -350,6 +325,85 @@ function renderDailyTrendChart() {
           position: "right",
           title: { display: true, text: "Impressions", color: "#06b6d4", font: { size: 11, weight: "600" } },
           ticks: { color: "#06b6d4", font: { size: 11 } },
+          grid: { drawOnChartArea: false }
+        }
+      }
+    }
+  });
+}
+
+function renderMonthlyTrendChart() {
+  const canvas = document.getElementById("monthlyTrendChart");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (monthlyChart) monthlyChart.destroy();
+
+  const monthlyTrends = appData.monthly_trends_6m || [];
+  if (!monthlyTrends.length) return;
+
+  const labels = monthlyTrends.map(m => m.month_label);
+  const clicks = monthlyTrends.map(m => m.clicks || 0);
+  const impressions = monthlyTrends.map(m => m.impressions || 0);
+
+  monthlyChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Total Clicks",
+          data: clicks,
+          borderColor: "#6366f1",
+          backgroundColor: "rgba(99, 102, 241, 0.15)",
+          borderWidth: 3,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointBackgroundColor: "#6366f1",
+          fill: true,
+          tension: 0.3,
+          yAxisID: "yClicks"
+        },
+        {
+          label: "Total Impressions",
+          data: impressions,
+          borderColor: "#0891b2",
+          backgroundColor: "transparent",
+          borderWidth: 2,
+          borderDash: [5, 4],
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: "#0891b2",
+          tension: 0.3,
+          yAxisID: "yImpressions"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: {
+          position: "top",
+          labels: { color: "#334155", font: { family: "Inter", size: 12, weight: "500" }, usePointStyle: true, boxWidth: 8 }
+        }
+      },
+      scales: {
+        x: { ticks: { color: "#64748b", font: { size: 11, weight: "500" } }, grid: { display: false } },
+        yClicks: {
+          type: "linear",
+          display: true,
+          position: "left",
+          title: { display: true, text: "Clicks", color: "#6366f1", font: { size: 11, weight: "600" } },
+          ticks: { color: "#6366f1", font: { size: 11 } },
+          grid: { color: "#f1f5f9" }
+        },
+        yImpressions: {
+          type: "linear",
+          display: true,
+          position: "right",
+          title: { display: true, text: "Impressions", color: "#0891b2", font: { size: 11, weight: "600" } },
+          ticks: { color: "#0891b2", font: { size: 11 } },
           grid: { drawOnChartArea: false }
         }
       }

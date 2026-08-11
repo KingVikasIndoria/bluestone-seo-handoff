@@ -165,11 +165,11 @@
     <section class="charts-grid">
       <div class="chart-card glass-card span-2">
         <div class="chart-header">
-          <h3><i class="fa-solid fa-chart-line text-indigo"></i> Daily Traffic Breakdown (Last 14 Days)</h3>
-          <span class="badge-tag" id="chartArticleBadge" style="background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;">⚡ -- New Articles | 📜 -- Old Articles</span>
+          <h3><i class="fa-solid fa-chart-line text-indigo"></i> Weekly Traffic Breakdown (Last 10 Weeks)</h3>
+          <span class="badge-tag" style="background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;">📅 Overall Site Performance</span>
         </div>
         <div class="chart-container">
-          <canvas id="dailyTrendChart"></canvas>
+          <canvas id="weeklyTrendChart"></canvas>
         </div>
       </div>
 
@@ -193,6 +193,19 @@
               <!-- Filled via JS -->
             </tbody>
           </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Monthly Traffic & Impressions (Last 6 Months) -->
+    <section class="charts-grid" style="margin-top: 20px;">
+      <div class="chart-card glass-card span-3">
+        <div class="chart-header">
+          <h3><i class="fa-solid fa-calendar-days text-purple"></i> Monthly Traffic & Visibility Breakdown (Last 6 Months)</h3>
+          <span class="badge-tag" style="background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff;">🗓️ 6-Month Visibility Trend</span>
+        </div>
+        <div class="chart-container" style="height: 220px;">
+          <canvas id="monthlyTrendChart"></canvas>
         </div>
       </div>
     </section>
@@ -362,6 +375,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=19"></script>
 </body>
 </html>
