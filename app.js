@@ -51,7 +51,7 @@ async function fetchDashboardData() {
     renderWeeklyTrendChart();
     renderMonthlyTrendChart();
     renderRankBreakdownTable();
-    renderIndexingTrendChart();
+    renderWeeklyIndexingSection();
 
     // Render Table
     renderTable();
@@ -531,96 +531,104 @@ function renderRankBreakdownTable() {
   tbody.innerHTML = html;
 }
 
-function renderIndexingTrendChart() {
-  const canvas = document.getElementById("indexingTrendChart");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  if (indexingChart) indexingChart.destroy();
+let weeklyIndexingChart = null;
 
-  const rawTrend = appData.post_july16_indexing_trend || [];
-  if (!rawTrend.length) return;
+function renderWeeklyIndexingSection() {
+  const canvas = document.getElementById("weeklyIndexingChart");
+  const tbody = document.getElementById("weeklyIndexingTableBody");
+  if (!appData) return;
 
-  // Filter to last 7 days only
-  const trendData = rawTrend.slice(-7);
-
-  const labels = trendData.map(d => d.date_formatted);
-  const dailyIndexed = trendData.map(d => d.daily_indexed);
-  const cumulative = trendData.map(d => d.cumulative_indexed);
+  const weeklyTrend = appData.weekly_indexing_trend || [];
   
-  // Color coding: Muted slate for pre-API, Vibrant Emerald for Post-Indexing API
-  const barColors = trendData.map(d => d.is_api_phase ? "#10b981" : "#94a3b8");
-  const barHoverColors = trendData.map(d => d.is_api_phase ? "#059669" : "#64748b");
+  // 1. Render Table
+  if (tbody && weeklyTrend.length) {
+    let html = "";
+    weeklyTrend.forEach(w => {
+      html += `
+        <tr>
+          <td style="text-align:left; padding:6px 6px; font-weight:600; color:#1e293b;">${w.week_label}</td>
+          <td style="text-align:right; padding:6px 6px; color:#64748b;">${w.published}</td>
+          <td style="text-align:right; padding:6px 6px; color:#10b981; font-weight:600;">+${w.newly_indexed}</td>
+          <td style="text-align:right; padding:6px 6px; color:#4f46e5; font-weight:700;">${w.cumulative_indexed}</td>
+          <td style="text-align:right; padding:6px 6px;"><span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:4px; font-weight:600;">${w.indexing_rate}</span></td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  }
 
-  indexingChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          type: "bar",
-          label: "Daily Newly Indexed Articles",
-          data: dailyIndexed,
-          backgroundColor: barColors,
-          hoverBackgroundColor: barHoverColors,
-          borderRadius: 4,
-          borderSkipped: false,
-          yAxisID: "yDaily"
+  // 2. Render Chart
+  if (canvas && weeklyTrend.length) {
+    const ctx = canvas.getContext("2d");
+    if (weeklyIndexingChart) weeklyIndexingChart.destroy();
+
+    const labels = weeklyTrend.map(w => w.week_label);
+    const newlyIndexed = weeklyTrend.map(w => w.newly_indexed);
+    const cumulativeIndexed = weeklyTrend.map(w => w.cumulative_indexed);
+
+    weeklyIndexingChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            type: "bar",
+            label: "Weekly Newly Indexed",
+            data: newlyIndexed,
+            backgroundColor: "rgba(16, 185, 129, 0.75)",
+            hoverBackgroundColor: "#059669",
+            borderRadius: 4,
+            borderSkipped: false,
+            yAxisID: "yWeekly"
+          },
+          {
+            type: "line",
+            label: "Cumulative Indexed Articles",
+            data: cumulativeIndexed,
+            borderColor: "#6366f1",
+            backgroundColor: "rgba(99, 102, 241, 0.12)",
+            borderWidth: 3,
+            pointRadius: 5,
+            pointHoverRadius: 8,
+            pointBackgroundColor: "#6366f1",
+            fill: true,
+            tension: 0.3,
+            yAxisID: "yCumulative"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { color: "#334155", font: { family: "Inter", size: 12, weight: "500" }, usePointStyle: true, boxWidth: 8 }
+          }
         },
-        {
-          type: "line",
-          label: "Cumulative Indexed Articles",
-          data: cumulative,
-          borderColor: "#6366f1",
-          backgroundColor: "rgba(99, 102, 241, 0.08)",
-          borderWidth: 2.5,
-          pointRadius: 3,
-          pointBackgroundColor: "#6366f1",
-          tension: 0.3,
-          yAxisID: "yCumulative",
-          fill: true
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: {
-          position: "top",
-          labels: { color: "#334155", font: { family: "Inter", size: 11, weight: "500" }, usePointStyle: true, boxWidth: 8 }
-        },
-        tooltip: {
-          callbacks: {
-            footer: (items) => {
-              const idx = items[0].dataIndex;
-              const item = trendData[idx];
-              return item ? `Status: ${item.phase_label}` : "";
-            }
+        scales: {
+          x: { ticks: { color: "#64748b", font: { size: 11, weight: "500" } }, grid: { display: false } },
+          yWeekly: {
+            type: "linear",
+            display: true,
+            position: "left",
+            title: { display: true, text: "Weekly Indexed", color: "#10b981", font: { size: 11, weight: "600" } },
+            ticks: { color: "#10b981", font: { size: 11 } },
+            grid: { color: "#f1f5f9" }
+          },
+          yCumulative: {
+            type: "linear",
+            display: true,
+            position: "right",
+            title: { display: true, text: "Cumulative Indexed", color: "#6366f1", font: { size: 11, weight: "600" } },
+            ticks: { color: "#6366f1", font: { size: 11 } },
+            grid: { drawOnChartArea: false }
           }
         }
-      },
-      scales: {
-        x: { ticks: { color: "#64748b", font: { size: 11 } }, grid: { display: false } },
-        yDaily: {
-          type: "linear",
-          display: true,
-          position: "left",
-          title: { display: true, text: "Daily Articles", color: "#10b981", font: { size: 11, weight: "600" } },
-          ticks: { color: "#10b981", font: { size: 11 }, precision: 0 },
-          grid: { color: "#f1f5f9" }
-        },
-        yCumulative: {
-          type: "linear",
-          display: true,
-          position: "right",
-          title: { display: true, text: "Total Indexed", color: "#6366f1", font: { size: 11, weight: "600" } },
-          ticks: { color: "#6366f1", font: { size: 11 }, precision: 0 },
-          grid: { drawOnChartArea: false }
-        }
       }
-    }
-  });
+    });
+  }
 }
 
 function renderTable() {

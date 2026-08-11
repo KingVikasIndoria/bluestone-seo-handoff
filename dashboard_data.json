@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated_at": "Aug 11, 2026 10:36 PM",
+    "generated_at": "Aug 11, 2026 10:42 PM",
     "start_date": "2026-07-10",
     "end_date": "2026-08-09",
     "strategy_pivot_date": "2026-07-16",
@@ -159486,6 +159486,48 @@
       "cumulative_indexed": 112,
       "is_api_phase": true,
       "phase_label": "🚀 Indexing API Active"
+    }
+  ],
+  "weekly_indexing_trend": [
+    {
+      "week_label": "16 Jul - 19 Jul",
+      "published": 37,
+      "newly_indexed": 11,
+      "cumulative_indexed": 11,
+      "cumulative_published": 37,
+      "indexing_rate": "29.7%"
+    },
+    {
+      "week_label": "20 Jul - 26 Jul",
+      "published": 75,
+      "newly_indexed": 43,
+      "cumulative_indexed": 54,
+      "cumulative_published": 112,
+      "indexing_rate": "48.2%"
+    },
+    {
+      "week_label": "27 Jul - 02 Aug",
+      "published": 132,
+      "newly_indexed": 74,
+      "cumulative_indexed": 128,
+      "cumulative_published": 244,
+      "indexing_rate": "52.5%"
+    },
+    {
+      "week_label": "03 Aug - 09 Aug",
+      "published": 59,
+      "newly_indexed": 28,
+      "cumulative_indexed": 156,
+      "cumulative_published": 303,
+      "indexing_rate": "51.5%"
+    },
+    {
+      "week_label": "10 Aug - 16 Aug",
+      "published": 8,
+      "newly_indexed": 0,
+      "cumulative_indexed": 156,
+      "cumulative_published": 311,
+      "indexing_rate": "50.2%"
     }
   ],
   "devices": [

@@ -210,15 +210,38 @@
       </div>
     </section>
 
-    <!-- Indexing Speed Acceleration Chart (Last 7 Days) -->
+    <!-- New Strategy Indexing Progress & Cumulative Table (Since July 16) -->
     <section class="charts-grid" style="margin-top: 20px;">
-      <div class="chart-card glass-card span-3">
+      <div class="chart-card glass-card span-2">
         <div class="chart-header">
-          <h3><i class="fa-solid fa-bolt text-success"></i> Indexing Velocity (Last 7 Days)</h3>
-          <span class="badge-tag" style="background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0;">🚀 Indexing API Active</span>
+          <h3><i class="fa-solid fa-bolt text-success"></i> New Strategy Indexing Progress (Weekly & Cumulative)</h3>
+          <span class="badge-tag" style="background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0;">🚀 Indexing API Active (156 Indexed)</span>
         </div>
-        <div class="chart-container" style="height: 180px;">
-          <canvas id="indexingTrendChart"></canvas>
+        <div class="chart-container" style="height: 220px;">
+          <canvas id="weeklyIndexingChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card glass-card">
+        <div class="chart-header">
+          <h3><i class="fa-solid fa-list-check text-indigo"></i> Weekly Indexing Summary Table</h3>
+          <span class="badge-tag" style="background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;">📊 New Strategy Progress</span>
+        </div>
+        <div class="table-responsive" style="padding: 8px 12px;">
+          <table class="mini-table" style="width:100%; font-size:0.78rem;">
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:6px 6px;">Week Range</th>
+                <th style="text-align:right; padding:6px 6px;">Published</th>
+                <th style="text-align:right; padding:6px 6px;">Weekly Indexed</th>
+                <th style="text-align:right; padding:6px 6px;">Cumulative</th>
+                <th style="text-align:right; padding:6px 6px;">Rate</th>
+              </tr>
+            </thead>
+            <tbody id="weeklyIndexingTableBody">
+              <!-- Filled via JS -->
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -375,6 +398,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=19"></script>
+  <script src="app.js?v=20"></script>
 </body>
 </html>

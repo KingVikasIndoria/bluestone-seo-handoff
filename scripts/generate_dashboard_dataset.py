@@ -689,6 +689,60 @@ def main():
         })
         curr_dt += timedelta(days=1)
 
+    # Build Weekly Indexing Progress for New Strategy Blogs (Since July 16)
+    weeks_def = [
+        {"week_label": "16 Jul - 19 Jul", "start": "2026-07-16", "end": "2026-07-19"},
+        {"week_label": "20 Jul - 26 Jul", "start": "2026-07-20", "end": "2026-07-26"},
+        {"week_label": "27 Jul - 02 Aug", "start": "2026-07-27", "end": "2026-08-02"},
+        {"week_label": "03 Aug - 09 Aug", "start": "2026-08-03", "end": "2026-08-09"},
+        {"week_label": "10 Aug - 16 Aug", "start": "2026-08-10", "end": "2026-08-16"}
+    ]
+
+    for w in weeks_def:
+        w["published"] = 0
+        w["newly_indexed"] = 0
+
+    for b in post_july16_blogs:
+        pub_d = b.get("raw_date", "")[:10]
+        for w in weeks_def:
+            if w["start"] <= pub_d <= w["end"]:
+                w["published"] += 1
+
+        if b.get("is_indexed"):
+            idx_str = b.get("first_indexed_date", "")
+            matched = False
+            if idx_str and idx_str not in ["Not Indexed Yet", "Indexed (Date Pending)"]:
+                try:
+                    dt = datetime.strptime(idx_str, "%b %d, %Y").strftime("%Y-%m-%d")
+                    for w in weeks_def:
+                        if w["start"] <= dt <= w["end"]:
+                            w["newly_indexed"] += 1
+                            matched = True
+                            break
+                except Exception:
+                    pass
+            if not matched:
+                for w in weeks_def:
+                    if w["start"] <= pub_d <= w["end"]:
+                        w["newly_indexed"] += 1
+                        break
+
+    cum_idx = 0
+    cum_pub = 0
+    weekly_indexing_trend = []
+    for w in weeks_def:
+        cum_idx += w["newly_indexed"]
+        cum_pub += w["published"]
+        rate = round((cum_idx / max(1, cum_pub)) * 100, 1)
+        weekly_indexing_trend.append({
+            "week_label": w["week_label"],
+            "published": w["published"],
+            "newly_indexed": w["newly_indexed"],
+            "cumulative_indexed": cum_idx,
+            "cumulative_published": cum_pub,
+            "indexing_rate": f"{rate}%"
+        })
+
     w3_end_dt = datetime.strptime(END_DATE, "%Y-%m-%d")
     w3_start_dt = w3_end_dt - timedelta(days=6)
     w2_end_dt = w3_start_dt - timedelta(days=1)
@@ -766,6 +820,7 @@ def main():
         "weekly_trends_10w": weekly_trends_10w,
         "monthly_trends_6m": monthly_trends_6m,
         "post_july16_indexing_trend": post_july16_indexing_trend,
+        "weekly_indexing_trend": weekly_indexing_trend,
         "devices": devices
     }
 
