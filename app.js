@@ -422,8 +422,7 @@ function renderRankBreakdownTable() {
     { key: "pos1_3", label: "Pos 1-3", color: "#10b981", type: "positive" },
     { key: "pos4_10", label: "Pos 4-10", color: "#06b6d4", type: "positive" },
     { key: "pos11_20", label: "Pos 11-20", color: "#f59e0b", type: "mid" },
-    { key: "pos21_plus", label: "Pos 21+", color: "#ef4444", type: "lower" },
-    { key: "unindexed", label: "Non-Indexed / Pending", color: "#94a3b8", type: "unindexed" }
+    { key: "pos21_plus", label: "Pos 21+", color: "#ef4444", type: "lower" }
   ];
 
   let html = "";
