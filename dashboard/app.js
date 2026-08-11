@@ -996,12 +996,12 @@ function openKpiModal(metricType) {
     });
   }
 
-  modal.style.display = "flex";
+  modal.classList.add("active");
 }
 
 function closeKpiModal() {
   const modal = document.getElementById("kpiTrendModal");
-  if (modal) modal.style.display = "none";
+  if (modal) modal.classList.remove("active");
 }
 
 function handleKpiModalBackdropClick(e) {
