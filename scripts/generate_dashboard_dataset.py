@@ -258,7 +258,56 @@ def fetch_gsc_data(service):
             "position": round(r.get("position", 0), 1)
         })
 
-    return gsc_page_map, queries_by_page, raw_daily_rows, devices, first_indexed_map
+    # 6. Weekly 7-day windows for 3-week rank breakdown progress
+    w3_end = datetime.strptime(END_DATE, "%Y-%m-%d")
+    w3_start = w3_end - timedelta(days=6)
+    w2_end = w3_start - timedelta(days=1)
+    w2_start = w2_end - timedelta(days=6)
+    w1_end = w2_start - timedelta(days=1)
+    w1_start = w1_end - timedelta(days=6)
+
+    week_labels = [
+        f"{w1_start.strftime('%d %b')} - {w1_end.strftime('%d %b')}",
+        f"{w2_start.strftime('%d %b')} - {w2_end.strftime('%d %b')}",
+        f"{w3_start.strftime('%d %b')} - {w3_end.strftime('%d %b')}"
+    ]
+
+    def fetch_weekly_page_map(s_date, e_date):
+        req = {
+            "startDate": s_date.strftime("%Y-%m-%d"),
+            "endDate": e_date.strftime("%Y-%m-%d"),
+            "dimensions": ["page"],
+            "dimensionFilterGroups": [{
+                "filters": [{
+                    "dimension": "page",
+                    "operator": "includingRegex",
+                    "expression": r"^https://blog\.bluestone\.com/"
+                }]
+            }],
+            "rowLimit": 10000,
+            "dataState": "all"
+        }
+        res = service.searchanalytics().query(siteUrl=SITE_URL, body=req).execute()
+        p_map = {}
+        for r in res.get("rows", []):
+            raw_url = r["keys"][0]
+            norm_url = normalize_url(raw_url)
+            slug = extract_slug(raw_url)
+            item = {
+                "clicks": int(r.get("clicks", 0)),
+                "impressions": int(r.get("impressions", 0)),
+                "position": round(r.get("position", 0), 1)
+            }
+            for k in (norm_url, norm_url.rstrip('/'), slug):
+                p_map[k] = item
+        return p_map
+
+    print("📊 Querying GSC 3-week rank progress data...")
+    w1_page_map = fetch_weekly_page_map(w1_start, w1_end)
+    w2_page_map = fetch_weekly_page_map(w2_start, w2_end)
+    w3_page_map = fetch_weekly_page_map(w3_start, w3_end)
+
+    return gsc_page_map, queries_by_page, raw_daily_rows, devices, first_indexed_map, w1_page_map, w2_page_map, w3_page_map, week_labels
 
 def get_health_tier(pos, impressions):
     if pos > 0 and pos <= 3:
@@ -333,7 +382,7 @@ def main():
     indexed_history = load_indexed_history()
 
     wp_posts = fetch_wp_posts_parallel(max_pages=15)
-    gsc_page_map, queries_by_page, raw_daily_rows, devices, first_indexed_map = fetch_gsc_data(service)
+    gsc_page_map, queries_by_page, raw_daily_rows, devices, first_indexed_map, w1_page_map, w2_page_map, w3_page_map, week_labels = fetch_gsc_data(service)
 
     processed_blogs = []
     seen_urls = set()
@@ -362,6 +411,10 @@ def main():
             "ctr": 0.0,
             "position": 0.0
         }
+
+        w1_gsc = w1_page_map.get(link) or w1_page_map.get(link.rstrip('/')) or w1_page_map.get(slug) or {"position": 0.0, "impressions": 0}
+        w2_gsc = w2_page_map.get(link) or w2_page_map.get(link.rstrip('/')) or w2_page_map.get(slug) or {"position": 0.0, "impressions": 0}
+        w3_gsc = w3_page_map.get(link) or w3_page_map.get(link.rstrip('/')) or w3_page_map.get(slug) or {"position": 0.0, "impressions": 0}
 
         # Detect First Indexed Date
         idx_raw = first_indexed_map.get(link) or first_indexed_map.get(link.rstrip('/')) or first_indexed_map.get(slug)
@@ -405,6 +458,14 @@ def main():
             "impressions": gsc["impressions"],
             "ctr": gsc["ctr"],
             "position": gsc["position"],
+            "weekly_rank": {
+                "w1_pos": w1_gsc["position"],
+                "w1_imp": w1_gsc["impressions"],
+                "w2_pos": w2_gsc["position"],
+                "w2_imp": w2_gsc["impressions"],
+                "w3_pos": w3_gsc["position"],
+                "w3_imp": w3_gsc["impressions"],
+            },
             "health": health,
             "health_color": health_color,
             "health_icon": health_icon,
@@ -443,6 +504,10 @@ def main():
             except Exception:
                 first_indexed_date = idx_raw
 
+        w1_gsc = w1_page_map.get(norm_url) or w1_page_map.get(slug) or {"position": 0.0, "impressions": 0}
+        w2_gsc = w2_page_map.get(norm_url) or w2_page_map.get(slug) or {"position": 0.0, "impressions": 0}
+        w3_gsc = w3_page_map.get(norm_url) or w3_page_map.get(slug) or {"position": 0.0, "impressions": 0}
+
         blog_obj = {
             "wp_id": None,
             "title": title_from_slug,
@@ -459,6 +524,14 @@ def main():
             "impressions": gsc["impressions"],
             "ctr": gsc["ctr"],
             "position": gsc["position"],
+            "weekly_rank": {
+                "w1_pos": w1_gsc["position"],
+                "w1_imp": w1_gsc["impressions"],
+                "w2_pos": w2_gsc["position"],
+                "w2_imp": w2_gsc["impressions"],
+                "w3_pos": w3_gsc["position"],
+                "w3_imp": w3_gsc["impressions"],
+            },
             "health": health,
             "health_color": health_color,
             "health_icon": health_icon,
@@ -600,6 +673,46 @@ def main():
         })
         curr_dt += timedelta(days=1)
 
+    def compute_3w_breakdown(blog_list):
+        def empty_b():
+            return {"pos1_3": 0, "pos4_10": 0, "pos11_20": 0, "pos21_plus": 0, "unindexed": 0}
+        b1, b2, b3 = empty_b(), empty_b(), empty_b()
+        for b in blog_list:
+            w = b.get("weekly_rank", {})
+            # W1
+            w1_pos, w1_imp = w.get("w1_pos", 0), w.get("w1_imp", 0)
+            if w1_imp == 0: b1["unindexed"] += 1
+            elif 0 < w1_pos <= 3: b1["pos1_3"] += 1
+            elif 3 < w1_pos <= 10: b1["pos4_10"] += 1
+            elif 10 < w1_pos <= 20: b1["pos11_20"] += 1
+            else: b1["pos21_plus"] += 1
+
+            # W2
+            w2_pos, w2_imp = w.get("w2_pos", 0), w.get("w2_imp", 0)
+            if w2_imp == 0: b2["unindexed"] += 1
+            elif 0 < w2_pos <= 3: b2["pos1_3"] += 1
+            elif 3 < w2_pos <= 10: b2["pos4_10"] += 1
+            elif 10 < w2_pos <= 20: b2["pos11_20"] += 1
+            else: b2["pos21_plus"] += 1
+
+            # W3
+            w3_pos, w3_imp = w.get("w3_pos", 0), w.get("w3_imp", 0)
+            if w3_imp == 0: b3["unindexed"] += 1
+            elif 0 < w3_pos <= 3: b3["pos1_3"] += 1
+            elif 3 < w3_pos <= 10: b3["pos4_10"] += 1
+            elif 10 < w3_pos <= 20: b3["pos11_20"] += 1
+            else: b3["pos21_plus"] += 1
+        return {"w1": b1, "w2": b2, "w3": b3}
+
+    rank_breakdown_3w = {
+        "week_labels": week_labels,
+        "new_strategy": compute_3w_breakdown(post_july16_blogs),
+        "legacy_strategy": compute_3w_breakdown(pre_july16_blogs),
+        "overall": compute_3w_breakdown(processed_blogs),
+        "top100": compute_3w_breakdown(top_100_performing),
+        "striking": compute_3w_breakdown(striking_distance)
+    }
+
     payload = {
         "metadata": {
             "generated_at": datetime.now().strftime("%b %d, %Y %I:%M %p"),
@@ -608,7 +721,8 @@ def main():
             "strategy_pivot_date": "2026-07-16",
             "total_wp_posts_fetched": len(wp_posts),
             "total_all_blogs": len(processed_blogs),
-            "strategy_comparison": strategy_comparison
+            "strategy_comparison": strategy_comparison,
+            "rank_breakdown_3w": rank_breakdown_3w
         },
         "post_july16_blogs": post_july16_blogs,
         "pre_july16_blogs": pre_july16_blogs,

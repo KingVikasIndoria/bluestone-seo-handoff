@@ -175,16 +175,18 @@
 
       <div class="chart-card glass-card">
         <div class="chart-header">
-          <h3><i class="fa-solid fa-table-list"></i> Google Search Rank Breakdown</h3>
-          <span class="badge-tag">Position Distribution</span>
+          <h3><i class="fa-solid fa-table-list"></i> Google Search Rank Breakdown (3-Week Progress)</h3>
+          <span class="badge-tag" style="background:#e0e7ff; color:#3730a3; border:1px solid #c7d2fe;">📈 3-Week Progress</span>
         </div>
-        <div class="table-responsive" style="padding: 12px;">
-          <table class="mini-table" id="rankBreakdownTable" style="width:100%;">
+        <div class="table-responsive" style="padding: 8px 12px;">
+          <table class="mini-table" id="rankBreakdownTable" style="width:100%; font-size:0.78rem;">
             <thead>
-              <tr>
-                <th style="text-align:left;">Position Range</th>
-                <th style="text-align:right;">Articles</th>
-                <th style="text-align:right;">% of Total</th>
+              <tr id="rankBreakdownHeaderRow">
+                <th style="text-align:left; padding:4px 6px;">Position Range</th>
+                <th style="text-align:right; padding:4px 6px;" id="rbColW1">3W Ago</th>
+                <th style="text-align:right; padding:4px 6px;" id="rbColW2">2W Ago</th>
+                <th style="text-align:right; padding:4px 6px;" id="rbColW3">Latest Week</th>
+                <th style="text-align:right; padding:4px 6px;">3W Trend</th>
               </tr>
             </thead>
             <tbody id="rankBreakdownBody">

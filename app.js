@@ -359,40 +359,119 @@ function renderDailyTrendChart() {
 
 function renderRankBreakdownTable() {
   const tbody = document.getElementById("rankBreakdownBody");
-  if (!tbody) return;
+  if (!tbody || !appData) return;
 
-  const dataset = getActiveDataset();
-  let pos1_3 = 0, pos4_10 = 0, pos11_20 = 0, pos21_plus = 0, unindexed = 0;
+  const rbData = (appData.metadata && appData.metadata.rank_breakdown_3w) ? appData.metadata.rank_breakdown_3w : null;
 
-  dataset.forEach(b => {
-    if (b.impressions === 0) unindexed++;
-    else if (b.position > 0 && b.position <= 3) pos1_3++;
-    else if (b.position > 3 && b.position <= 10) pos4_10++;
-    else if (b.position > 10 && b.position <= 20) pos11_20++;
-    else pos21_plus++;
-  });
+  let labels = ["3W Ago", "2W Ago", "Latest Week"];
+  if (rbData && rbData.week_labels && rbData.week_labels.length === 3) {
+    labels = rbData.week_labels;
+  }
 
-  const total = dataset.length || 1;
+  if (document.getElementById("rbColW1")) document.getElementById("rbColW1").innerText = labels[0];
+  if (document.getElementById("rbColW2")) document.getElementById("rbColW2").innerText = labels[1];
+  if (document.getElementById("rbColW3")) document.getElementById("rbColW3").innerText = labels[2];
+
+  let groupData = null;
+  if (rbData) {
+    if (currentTab === "post_july16") groupData = rbData.new_strategy;
+    else if (currentTab === "pre_july16") groupData = rbData.legacy_strategy;
+    else if (currentTab === "top100") groupData = rbData.top100;
+    else if (currentTab === "striking") groupData = rbData.striking;
+    else groupData = rbData.overall;
+  }
+
+  // Fallback if metadata not present
+  if (!groupData) {
+    const dataset = getActiveDataset();
+    const b1 = { pos1_3: 0, pos4_10: 0, pos11_20: 0, pos21_plus: 0, unindexed: 0 };
+    const b2 = { pos1_3: 0, pos4_10: 0, pos11_20: 0, pos21_plus: 0, unindexed: 0 };
+    const b3 = { pos1_3: 0, pos4_10: 0, pos11_20: 0, pos21_plus: 0, unindexed: 0 };
+
+    dataset.forEach(b => {
+      const wr = b.weekly_rank || {};
+      const p1 = wr.w1_pos || 0, i1 = wr.w1_imp || 0;
+      if (i1 === 0) b1.unindexed++;
+      else if (p1 > 0 && p1 <= 3) b1.pos1_3++;
+      else if (p1 > 3 && p1 <= 10) b1.pos4_10++;
+      else if (p1 > 10 && p1 <= 20) b1.pos11_20++;
+      else b1.pos21_plus++;
+
+      const p2 = wr.w2_pos || 0, i2 = wr.w2_imp || 0;
+      if (i2 === 0) b2.unindexed++;
+      else if (p2 > 0 && p2 <= 3) b2.pos1_3++;
+      else if (p2 > 3 && p2 <= 10) b2.pos4_10++;
+      else if (p2 > 10 && p2 <= 20) b2.pos11_20++;
+      else b2.pos21_plus++;
+
+      const p3 = wr.w3_pos || 0, i3 = wr.w3_imp || 0;
+      if (i3 === 0) b3.unindexed++;
+      else if (p3 > 0 && p3 <= 3) b3.pos1_3++;
+      else if (p3 > 3 && p3 <= 10) b3.pos4_10++;
+      else if (p3 > 10 && p3 <= 20) b3.pos11_20++;
+      else b3.pos21_plus++;
+    });
+    groupData = { w1: b1, w2: b2, w3: b3 };
+  }
+
+  const w1 = groupData.w1 || {};
+  const w2 = groupData.w2 || {};
+  const w3 = groupData.w3 || {};
 
   const rows = [
-    { label: "Pos 1-3", count: pos1_3, color: "#10b981" },
-    { label: "Pos 4-10", count: pos4_10, color: "#06b6d4" },
-    { label: "Pos 11-20", count: pos11_20, color: "#f59e0b" },
-    { label: "Pos 21+", count: pos21_plus, color: "#ef4444" },
-    { label: "Non-Indexed / Pending", count: unindexed, color: "#94a3b8" }
+    { key: "pos1_3", label: "Pos 1-3", color: "#10b981", type: "positive" },
+    { key: "pos4_10", label: "Pos 4-10", color: "#06b6d4", type: "positive" },
+    { key: "pos11_20", label: "Pos 11-20", color: "#f59e0b", type: "mid" },
+    { key: "pos21_plus", label: "Pos 21+", color: "#ef4444", type: "lower" },
+    { key: "unindexed", label: "Non-Indexed / Pending", color: "#94a3b8", type: "unindexed" }
   ];
 
   let html = "";
   rows.forEach(r => {
-    const pct = ((r.count / total) * 100).toFixed(1);
+    const c1 = w1[r.key] || 0;
+    const c2 = w2[r.key] || 0;
+    const c3 = w3[r.key] || 0;
+
+    let trendBadge = "";
+    const diff = c3 - c1;
+
+    if (r.type === "positive") {
+      if (diff > 0) {
+        const pct = c1 > 0 ? `+${((diff / c1) * 100).toFixed(0)}%` : "NEW";
+        trendBadge = `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:4px; font-weight:600;">📈 +${diff} (${pct})</span>`;
+      } else if (diff === 0) {
+        trendBadge = `<span style="background:#f1f5f9; color:#64748b; padding:2px 6px; border-radius:4px;">➖ Steady</span>`;
+      } else {
+        trendBadge = `<span style="background:#fee2e2; color:#b91c1c; padding:2px 6px; border-radius:4px; font-weight:600;">📉 ${diff}</span>`;
+      }
+    } else if (r.type === "mid" || r.type === "lower") {
+      if (diff < 0) {
+        trendBadge = `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:4px; font-weight:600;">🚀 Rank Up (${diff})</span>`;
+      } else if (diff > 0) {
+        trendBadge = `<span style="background:#fef3c7; color:#b45309; padding:2px 6px; border-radius:4px; font-weight:600;">+${diff}</span>`;
+      } else {
+        trendBadge = `<span style="background:#f1f5f9; color:#64748b; padding:2px 6px; border-radius:4px;">➖ Steady</span>`;
+      }
+    } else { // unindexed
+      if (diff < 0) {
+        trendBadge = `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:4px; font-weight:600;">⚡ Indexed (+${Math.abs(diff)})</span>`;
+      } else if (diff > 0) {
+        trendBadge = `<span style="background:#fef3c7; color:#b45309; padding:2px 6px; border-radius:4px;">+${diff} new</span>`;
+      } else {
+        trendBadge = `<span style="background:#f1f5f9; color:#64748b; padding:2px 6px; border-radius:4px;">➖ Steady</span>`;
+      }
+    }
+
     html += `
       <tr>
-        <td style="padding:10px 12px; border-bottom:1px solid #f1f5f9; font-weight:500;">
-          <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:${r.color}; margin-right:8px;"></span>
+        <td style="padding:6px 8px; border-bottom:1px solid #f1f5f9; font-weight:500;">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${r.color}; margin-right:6px;"></span>
           ${r.label}
         </td>
-        <td style="padding:10px 12px; text-align:right; border-bottom:1px solid #f1f5f9; font-weight:600;">${r.count}</td>
-        <td style="padding:10px 12px; text-align:right; border-bottom:1px solid #f1f5f9; color:#64748b;">${pct}%</td>
+        <td style="padding:6px 8px; text-align:right; border-bottom:1px solid #f1f5f9; color:#64748b;">${c1}</td>
+        <td style="padding:6px 8px; text-align:right; border-bottom:1px solid #f1f5f9; color:#64748b;">${c2}</td>
+        <td style="padding:6px 8px; text-align:right; border-bottom:1px solid #f1f5f9; font-weight:700; color:#0f172a;">${c3}</td>
+        <td style="padding:6px 8px; text-align:right; border-bottom:1px solid #f1f5f9;">${trendBadge}</td>
       </tr>
     `;
   });
