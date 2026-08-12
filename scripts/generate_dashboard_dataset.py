@@ -260,13 +260,18 @@ def fetch_gsc_data(service):
             "position": round(r.get("position", 0), 1)
         })
 
-    # 6. Weekly 7-day windows for 3-week rank breakdown progress
-    w3_end = datetime.strptime(END_DATE, "%Y-%m-%d")
-    w3_start = w3_end - timedelta(days=6)
+    # 6. Fixed Calendar Weeks (Monday to Sunday) for 3-week rank breakdown progress
+    now_dt = datetime.now()
+    curr_mon = datetime(now_dt.year, now_dt.month, now_dt.day) - timedelta(days=now_dt.weekday())
+
+    w3_end = curr_mon - timedelta(days=1)       # Sunday of previous completed week
+    w3_start = curr_mon - timedelta(days=7)     # Monday of previous completed week
+
     w2_end = w3_start - timedelta(days=1)
-    w2_start = w2_end - timedelta(days=6)
+    w2_start = w3_start - timedelta(days=7)
+
     w1_end = w2_start - timedelta(days=1)
-    w1_start = w1_end - timedelta(days=6)
+    w1_start = w2_start - timedelta(days=7)
 
     week_labels = [
         f"{w1_start.strftime('%d %b')} - {w1_end.strftime('%d %b')}",
@@ -743,12 +748,17 @@ def main():
             "indexing_rate": f"{rate}%"
         })
 
-    w3_end_dt = datetime.strptime(END_DATE, "%Y-%m-%d")
-    w3_start_dt = w3_end_dt - timedelta(days=6)
+    now_dt = datetime.now()
+    curr_mon = datetime(now_dt.year, now_dt.month, now_dt.day) - timedelta(days=now_dt.weekday())
+
+    w3_end_dt = curr_mon - timedelta(days=1)
+    w3_start_dt = curr_mon - timedelta(days=7)
+
     w2_end_dt = w3_start_dt - timedelta(days=1)
-    w2_start_dt = w2_end_dt - timedelta(days=6)
+    w2_start_dt = w3_start_dt - timedelta(days=7)
+
     w1_end_dt = w2_start_dt - timedelta(days=1)
-    w1_start_dt = w1_end_dt - timedelta(days=6)
+    w1_start_dt = w2_start_dt - timedelta(days=7)
 
     def compute_3w_breakdown(blog_list):
         def empty_b():
