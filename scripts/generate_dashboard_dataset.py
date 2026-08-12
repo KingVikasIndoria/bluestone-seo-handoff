@@ -36,6 +36,7 @@ STRATEGY_PIVOT_DATE = datetime(2026, 7, 16)
 END_DATE = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
 START_DATE_30D = (datetime.now() - timedelta(days=32)).strftime("%Y-%m-%d")
 START_DATE_180D = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d")
+START_DATE_365D = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
 START_DATE = START_DATE_30D
 
 def normalize_url(url):
@@ -217,9 +218,9 @@ def fetch_gsc_data(service):
 
     print(f"   Detected First Indexed Date for {len(first_indexed_map)} blog pages.")
 
-    # 4. Daily trends (Date dimension for 180 days)
+    # 4. Daily trends (Date dimension for 365 days / 12 Months)
     dt_req = {
-        "startDate": START_DATE_180D,
+        "startDate": START_DATE_365D,
         "endDate": END_DATE,
         "dimensions": ["date"],
         "dimensionFilterGroups": [{
@@ -619,11 +620,12 @@ def main():
         for w in weeks_10
     ]
 
-    sorted_months = sorted(months_dict.keys())[-6:]
-    monthly_trends_6m = [
+    sorted_months = sorted(months_dict.keys())[-12:]
+    monthly_trends_12m = [
         {"month_label": months_dict[k]["month_label"], "clicks": months_dict[k]["clicks"], "impressions": months_dict[k]["impressions"]}
         for k in sorted_months
     ]
+    monthly_trends_6m = monthly_trends_12m[-6:]
 
     # Compute Calendar Week publish volumes (Monday to Today vs Prev Monday to Sunday)
     now = datetime.now()
@@ -829,6 +831,7 @@ def main():
         "all_blogs": processed_blogs,
         "weekly_trends_10w": weekly_trends_10w,
         "monthly_trends_6m": monthly_trends_6m,
+        "monthly_trends_12m": monthly_trends_12m,
         "post_july16_indexing_trend": post_july16_indexing_trend,
         "weekly_indexing_trend": weekly_indexing_trend,
         "devices": devices

@@ -338,7 +338,7 @@ function renderMonthlyTrendChart() {
   const ctx = canvas.getContext("2d");
   if (monthlyChart) monthlyChart.destroy();
 
-  const monthlyTrends = appData.monthly_trends_6m || [];
+  const monthlyTrends = appData.monthly_trends_12m || appData.monthly_trends_6m || [];
   if (!monthlyTrends.length) return;
 
   const labels = monthlyTrends.map(m => m.month_label);
