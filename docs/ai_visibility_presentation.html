@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueStone - Executive AI Visibility Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --accent-green: #10b981;
+            --accent-purple: #a855f7;
+            --accent-amber: #f59e0b;
+            --accent-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-live {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        /* Explainer Section */
+        .explainer-grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .explainer-card {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--card-border);
+            border-top: 4px solid var(--primary);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .explainer-card.kw { border-top-color: var(--accent-blue); }
+        .explainer-card.citations { border-top-color: var(--accent-purple); }
+
+        .explainer-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .explainer-text {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* 4 Graphs Grid */
+        .graphs-grid-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .graphs-grid-2x2 { grid-template-columns: 1fr; }
+            .explainer-grid-3 { grid-template-columns: 1fr; }
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .chart-stat-badge {
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+        }
+
+        .stat-green { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+        .stat-purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); }
+        .stat-blue { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .stat-amber { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+
+        .chart-container {
+            height: 250px;
+            position: relative;
+        }
+
+        /* Roadmap Card */
+        .roadmap-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .roadmap-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+        }
+
+        .step-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 1.2rem;
+        }
+
+        .step-num {
+            background: var(--primary);
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .step-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-title">
+            <span class="badge">Executive Presentation</span>
+            <div>
+                <h1>BlueStone AI Visibility 6-Month Trends (4 Graphs)</h1>
+                <div class="subtitle">Live Semrush MCP Data • March 2026 – August 2026 Performance Analysis</div>
+            </div>
+        </div>
+        <div>
+            <span class="badge-live"><span class="pulse-dot"></span> Semrush MCP Connected</span>
+        </div>
+    </div>
+
+    <!-- Explainer Cards: 3 Key Concepts Defined -->
+    <div class="explainer-grid-3">
+        <div class="explainer-card">
+            <div class="explainer-title" style="color: var(--accent-green);">
+                📈 1. AI Overview Positions (1,902)
+            </div>
+            <div class="explainer-text">
+                Queries where <strong>BlueStone's link is directly cited inside Google's AI Overview answer card</strong>. Up from 918 in March to <strong>1,902 (+107.2%)</strong>.
+            </div>
+        </div>
+
+        <div class="explainer-card kw">
+            <div class="explainer-title" style="color: var(--accent-blue);">
+                🔍 2. Domain AIO Keywords (15,455)
+            </div>
+            <div class="explainer-text">
+                The total number of ranking keywords for BlueStone on Google where Google triggers an <strong>AI Overview box on the SERP</strong> (out of ~55.9K organic KWs).
+            </div>
+        </div>
+
+        <div class="explainer-card citations">
+            <div class="explainer-title" style="color: var(--accent-purple);">
+                🔗 3. Citations (8.4K) & Pages (4.8K)
+            </div>
+            <div class="explainer-text">
+                <strong>Citations (8.4K):</strong> Times LLMs (ChatGPT, Gemini, AI Mode) reference BlueStone in answers.<br>
+                <strong>Cited Pages (4.8K):</strong> Unique BlueStone URLs linked by LLMs.
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 Graphs Grid (2x2) -->
+    <div class="graphs-grid-2x2">
+        
+        <!-- Graph 1: 6-Month AIO Growth -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">Graph 1: 6-Month AI Overview Position Growth</div>
+                    <div class="subtitle">Search queries where BlueStone occupies an AI Overview position</div>
+                </div>
+                <span class="chart-stat-badge stat-green">▲ +107.2% Growth</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="chartAioGrowth"></canvas>
+            </div>
+        </div>
+
+        <!-- Graph 2: Domain AIO Keywords -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">Graph 2: Domain AI Overview Keywords</div>
+                    <div class="subtitle">Total keywords in Google Search that trigger AI Overviews</div>
+                </div>
+                <span class="chart-stat-badge stat-blue">15,455 Keywords</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="chartAioKeywords"></canvas>
+            </div>
+        </div>
+
+        <!-- Graph 3: AI Citations Growth -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">Graph 3: AI Citations Growth (Past 6 Months)</div>
+                    <div class="subtitle">Total references to BlueStone in LLM outputs (ChatGPT/Gemini)</div>
+                </div>
+                <span class="chart-stat-badge stat-purple">▲ +17.6% (8.4K Citations)</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="chartCitations"></canvas>
+            </div>
+        </div>
+
+        <!-- Graph 4: Cited Pages Growth -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div>
+                    <div class="chart-title">Graph 4: AI Cited Pages Growth</div>
+                    <div class="subtitle">Unique BlueStone URLs referenced as sources by LLMs</div>
+                </div>
+                <span class="chart-stat-badge stat-amber">▲ +15.7% (4.8K Pages)</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="chartCitedPages"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Roadmap & Action Plan Card -->
+    <div class="roadmap-card">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Strategic Next Steps Ahead for AI Overviews & LLMs</div>
+                <div class="subtitle">Post-July 16 Blog Engine Expansion & Optimization Strategy</div>
+            </div>
+        </div>
+        <div class="roadmap-steps">
+            <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-title">Entity & Schema Markup</div>
+                <div class="step-desc">Deploy BlogPosting & FAQPage JSON-LD schema across remaining 146 pending blogs to accelerate LLM entity parsing.</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-title">Direct Answer Snippets</div>
+                <div class="step-desc">Structure H2 headers with 40-60 word concise direct summaries and key takeaway bullet lists for AEO snippets.</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-title">Product Rotation Engine</div>
+                <div class="step-desc">Expand automated Type 3 photorealistic carousel product rotation to boost ecommerce conversion from AI traffic.</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">4</div>
+                <div class="step-title">Prompt Engineering Tracking</div>
+                <div class="step-desc">Monitor high-intent gift queries in Semrush AI Visibility tool to capture commercial intent on ChatGPT & Gemini.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const months = ['March 2026', 'April 2026', 'May 2026', 'June 2026', 'July 2026', 'August 2026'];
+        const chartOptionsBase = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+            }
+        };
+
+        // Graph 1: 6-Month AIO Growth (Line Chart)
+        new Chart(document.getElementById('chartAioGrowth').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'AIO Positions',
+                    data: [918, 867, 1102, 1512, 1698, 1902],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#10b981'
+                }]
+            },
+            options: chartOptionsBase
+        });
+
+        // Graph 2: Domain AIO Keywords (Bar Chart)
+        new Chart(document.getElementById('chartAioKeywords').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'AIO Keywords',
+                    data: [16430, 15493, 16466, 14286, 14089, 15455],
+                    backgroundColor: 'rgba(59, 130, 246, 0.75)',
+                    borderRadius: 6
+                }]
+            },
+            options: chartOptionsBase
+        });
+
+        // Graph 3: AI Citations Growth (Line Chart)
+        new Chart(document.getElementById('chartCitations').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'AI Citations (K)',
+                    data: [3.4, 3.3, 3.6, 4.8, 7.4, 8.4],
+                    borderColor: '#a855f7',
+                    backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#a855f7'
+                }]
+            },
+            options: chartOptionsBase
+        });
+
+        // Graph 4: Cited Pages Growth (Bar Chart)
+        new Chart(document.getElementById('chartCitedPages').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Cited Pages (K)',
+                    data: [1.9, 2.0, 2.3, 3.1, 4.2, 4.8],
+                    backgroundColor: 'rgba(245, 158, 11, 0.75)',
+                    borderRadius: 6
+                }]
+            },
+            options: chartOptionsBase
+        });
+    </script>
+</body>
+</html>
