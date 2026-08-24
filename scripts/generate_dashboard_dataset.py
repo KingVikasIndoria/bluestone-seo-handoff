@@ -15,6 +15,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from pathlib import Path
 import requests
+import csv
 
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -840,6 +841,28 @@ def main():
     DASHBOARD_DIR.mkdir(parents=True, exist_ok=True)
     with open(DATA_JSON_PATH, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
+
+    # Automatically write fresh unindexed Post-July 16 URLs CSV for Indexing API script
+    output_dir = SCRIPT_DIR.parent / "output"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    unindexed_csv_path = output_dir / "unindexed_post_july16_blogs.csv"
+
+    unindexed_new_strat = [
+        b for b in post_july16_blogs
+        if b.get("first_indexed_date") in ["Not Indexed Yet", "Indexed (Date Pending)"] or b.get("impressions", 0) == 0
+    ]
+
+    with open(unindexed_csv_path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=["wp_id", "title", "link", "published_date"])
+        writer.writeheader()
+        for b in unindexed_new_strat:
+            writer.writerow({
+                "wp_id": b.get("wp_id", ""),
+                "title": b.get("title", ""),
+                "link": b.get("link", ""),
+                "published_date": b.get("published_date", "")
+            })
+    print(f"📄 Generated fresh unindexed CSV ({len(unindexed_new_strat)} URLs) at {unindexed_csv_path.name}")
 
     # Print BEFORE vs AFTER Comparison Summary
     prev_meta = prev_data.get("metadata", {})

@@ -72,19 +72,39 @@ def submit_url(service, url):
         print(f"  ❌ Failed: {url[:55]:<57} | Error: {e}")
         return False
 
+DATA_JSON_PATH = SCRIPT_DIR.parent / "dashboard" / "dashboard_data.json"
+
 def main():
-    if not CSV_PATH.exists():
-        print(f"❌ Missing CSV file: {CSV_PATH}")
-        sys.exit(1)
-
     urls_to_submit = []
-    with open(CSV_PATH, encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            if row.get("link"):
-                urls_to_submit.append(row["link"].strip())
+    
+    # Method 1: Load live unindexed URLs directly from dashboard_data.json if available
+    if DATA_JSON_PATH.exists():
+        try:
+            with open(DATA_JSON_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                blogs_sorted = sorted(blogs, key=lambda x: x.get("raw_date", ""), reverse=True)
+                for b in blogs_sorted:
+                    if b.get("is_new_strategy") and (b.get("first_indexed_date") in ["Not Indexed Yet", "Indexed (Date Pending)"] or b.get("impressions", 0) == 0):
+                        if b.get("link"):
+                            urls_to_submit.append(b["link"].strip())
+            print(f"📊 Loaded {len(urls_to_submit)} live unindexed URLs from dashboard_data.json (Sorted Newest First)")
+        except Exception as e:
+            print(f"⚠️ Could not load from JSON: {e}")
 
-    print(f"🚀 Found {len(urls_to_submit)} unindexed URLs to submit to Google Indexing API.")
+    # Method 2: Fallback to CSV file if JSON didn't provide URLs
+    if not urls_to_submit and CSV_PATH.exists():
+        with open(CSV_PATH, encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get("link"):
+                    urls_to_submit.append(row["link"].strip())
+        print(f"📄 Loaded {len(urls_to_submit)} unindexed URLs from {CSV_PATH.name}")
+
+    if not urls_to_submit:
+        print("❌ No unindexed URLs found to submit.")
+        sys.exit(0)
+
+    print(f"🚀 Total unindexed URLs queued for submission: {len(urls_to_submit)}")
     
     # Cap at 200 per day limit
     batch = urls_to_submit[:200]
