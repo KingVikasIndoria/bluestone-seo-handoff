@@ -10,10 +10,10 @@
 
 ## 📌 Executive Summary
 
-This document provides a unified technical and operational playbook for BlueStone's festive & evergreen SEO blog engine. It details the **AI content generation workflow**, **AI usage & token cost models**, **WordPress publishing pipelines**, **system credentials registry** (with structured security placeholders), and **GEO / AI Overview (SGE) performance metrics**.
+This document provides a unified technical and operational playbook for BlueStone's festive & evergreen SEO blog engine. It details the **AI content generation workflow**, **AI usage & token cost models**, **WordPress publishing pipelines**, **platform user access governance**, and **GEO / AI Overview (SGE) performance metrics**.
 
 > [!NOTE]
-> All sensitive credential placeholders are marked with `[PLACEHOLDER: Need Input from System Admin/User]` to allow easy compliance updates while preserving verified technical configurations.
+> All platform user access control lists have been updated with active authorized team members (**Vikas** and **Satyam**).
 
 ---
 
@@ -56,8 +56,8 @@ flowchart TD
 | Image Type | Source / Model | Spec / Format | Placement & Quantity | Alt Tag & Filename Protocol |
 | :--- | :--- | :--- | :--- | :--- |
 | **Type 1 Raw** | `ProductImages/raw/` | Original studio images | Reference only for AI generation | Internal reference |
-| **Type 2 AI Product** | `ProductImages/seo images/` | WebP ($800\times800\text{px}$) | Carousel block (5–6 items) | `{Keyword} gift idea: {Product Name}` |
-| **Type 3 Photorealistic** | Higgsfield MCP / Magnific | WebP ($1200\times675\text{px}$) `full` | 3 per article (Hero, Flatlay, Lifestyle) | `{occasion}-{type}-{year}.webp` with primary KW in hero alt |
+| **Type 2 AI Product** | `ProductImages/seo images/` | WebP (800×800 px) | Carousel block (5–6 items) | `{Keyword} gift idea: {Product Name}` |
+| **Type 3 Photorealistic** | Higgsfield MCP / Magnific | WebP (1200×675 px) `full` | 3 per article (Hero, Flatlay, Lifestyle) | `{occasion}-{type}-{year}.webp` with primary KW in hero alt |
 
 > [!IMPORTANT]
 > **Hard Quality Rules**: All Gutenberg images must use `sizeSlug: full`. Type 3 prompts must specify fair-skinned Indian hand/wrist/model features. Prices are strictly prohibited.
@@ -71,22 +71,22 @@ flowchart TD
 Each published blog article consumes AI resources across two main categories: **LLM Text Generation** (briefing, competitor parsing, drafting, schema generation) and **AI Image Generation** (photorealistic Type 3 images).
 
 #### A. LLM Token Consumption (per Article)
-- **Input Tokens (Prompt + Context + Competitor Text + Product Specs)**: $\sim 15,000\text{ tokens}$
-- **Output Tokens (Full Article + Gutenberg HTML + Schemas)**: $\sim 4,000\text{ tokens}$
+- **Input Tokens (Prompt + Context + Competitor Text + Product Specs)**: ~15,000 tokens
+- **Output Tokens (Full Article + Gutenberg HTML + Schemas)**: ~4,000 tokens
 - **Estimated LLM Pricing Rates (e.g. OpenAI GPT-4o / Claude 3.5 Sonnet)**:
-  - Input Rate: $\$2.50\text{ / 1M tokens}$
-  - Output Rate: $\$10.00\text{ / 1M tokens}$
+  - Input Rate: $2.50 / 1M tokens
+  - Output Rate: $10.00 / 1M tokens
 - **LLM Cost Calculation per Article**:
-  $$\text{LLM Cost} = (15,000 \times \$0.0000025) + (4,000 \times \$0.000010) = \$0.0375 + \$0.0400 = \mathbf{\$0.0775\text{ per article}}$$
+  **LLM Cost** = (15,000 × $0.0000025) + (4,000 × $0.000010) = $0.0375 + $0.0400 = **$0.0775 per article**
 
 #### B. AI Image Generation API Cost (per Article)
 - **Type 3 Images Required**: 3 images per article (Hero, Flatlay, Lifestyle)
 - **Generation Engine**: Higgsfield MCP / Magnific AI / Flux
-- **Unit Cost per Image**: $\$0.05 - \$0.10\text{ per image}$
-- **Image Cost per Article**: $3 \times \$0.08 = \mathbf{\$0.2400\text{ per article}}$
+- **Unit Cost per Image**: $0.05 – $0.10 per image
+- **Image Cost per Article**: 3 × $0.08 = **$0.2400 per article**
 
 #### C. Total Production Cost per Article
-$$\text{Total Direct AI Cost per Article} = \$0.0775\text{ (LLM)} + \$0.2400\text{ (Images)} = \mathbf{\$0.3175\text{ ($\sim \$0.32$ USD)}}$$
+**Total Direct AI Cost per Article** = $0.0775 (LLM) + $0.2400 (Images) = **$0.3175 (~$0.32 USD)**
 
 ---
 
@@ -96,14 +96,14 @@ Based on historical data from `dashboard_data.json` (292 articles published in t
 
 | Production Tier | Articles / Month | Estimated LLM Cost | Estimated Image API Cost | Total Monthly Spend (USD) | Total Monthly Spend (INR @ ₹83/$) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Last 30 Days Actuals** | **292** | $\$22.63$ | $\$70.08$ | **$\$92.71$** | **₹7,695** |
-| **Steady-State (300/mo)** | **300** | $\$23.25$ | $\$72.00$ | **$\$95.25$** | **₹7,906** |
-| **Aggressive Scaling (500/mo)**| **500** | $\$38.75$ | $\$120.00$ | **$\$158.75$** | **₹13,176** |
+| **Last 30 Days Actuals** | **292** | $22.63 | $70.08 | **$92.71** | **₹7,695** |
+| **Steady-State (300/mo)** | **300** | $23.25 | $72.00 | **$95.25** | **₹7,906** |
+| **Aggressive Scaling (500/mo)**| **500** | $38.75 | $120.00 | **$158.75** | **₹13,176** |
 
 #### Portfolio Lifetime Spend Summary:
-- **New Strategy Cohort (536 Articles, Post-July 16)**: $\$170.18\text{ USD}$ ($\sim \text{₹14,125}$)
-- **Legacy Strategy Cohort (1,028 Articles, Pre-July 16)**: $\$326.39\text{ USD}$ ($\sim \text{₹27,090}$)
-- **Total Portfolio Investment (1,564 Articles)**: **$\mathbf{\$496.57\text{ USD}}$ ($\sim \text{₹41,215}$)**
+- **New Strategy Cohort (536 Articles, Post-July 16)**: $170.18 USD (~₹14,125)
+- **Legacy Strategy Cohort (1,028 Articles, Pre-July 16)**: $326.39 USD (~₹27,090)
+- **Total Portfolio Investment (1,564 Articles)**: **$496.57 USD (~₹41,215)**
 
 ---
 
@@ -118,20 +118,18 @@ WordPress integration operates via headless REST API endpoints under OAuth/Basic
 - **Media Upload Endpoint**: `POST /wp-json/wp/v2/media`
 - **Default Author ID**: `270271338` (Vikas - BlueStone Editorial)
 - **Active Theme Template**: Creatio (`wp_id` **`29900`**)
-- **Default Categories**: Festive Wishes (`Category ID: [PLACEHOLDER]`), Quotes & Wishes (`Category ID: [PLACEHOLDER]`)
+- **Default Categories**: Festive Wishes (`Category ID: **`554493477`**`), Quotes & Wishes (`Category ID: **`554493415`**`)
 
 ---
 
 ### 3.2 WordPress User Access Control List
 
-The table below outlines verified user roles and placeholders for team access management:
+The table below outlines active user roles and access permissions for team management:
 
-| User ID | Username / Name | Role | Email | Status | API Access Granted |
+| User ID | Username / Name | Role | Access Level | Status | API Access Granted |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| `270271338` | `blogbluestone` (Vikas) | Administrator / Author | `[PLACEHOLDER: Email]` | Active | Yes (REST API Key) |
-| `[PLACEHOLDER]` | `[PLACEHOLDER: Name]` | Editor | `[PLACEHOLDER: Email]` | `[PLACEHOLDER]` | `[PLACEHOLDER]` |
-| `[PLACEHOLDER]` | `[PLACEHOLDER: Name]` | SEO Manager | `[PLACEHOLDER: Email]` | `[PLACEHOLDER]` | `[PLACEHOLDER]` |
-| `[PLACEHOLDER]` | `[PLACEHOLDER: Name]` | Technical Admin | `[PLACEHOLDER: Email]` | `[PLACEHOLDER]` | `[PLACEHOLDER]` |
+| `270271338` | `blogbluestone` (Vikas) | Administrator / Lead | Full Admin & Publishing | Active | Yes (REST API Key & OAuth) |
+| `Verified` | Satyam | Administrator / Lead | Full Admin & System Access | Active | Yes (REST API Key & Admin) |
 
 ---
 
@@ -147,7 +145,7 @@ payload = {
     "status": "publish",
     "author": 270271338,
     "content": "<!-- Gutenberg HTML Content -->",
-    "categories": [23, 45], # Festive Wishes Category IDs
+    "categories": [554493477, 554493415], # Festive Wishes & Quotes Category IDs
     "meta": {
         "_yoast_wpseo_title": "Happy Gudi Padwa Wishes 2027: 100+ Quotes & Messages",
         "_yoast_wpseo_metadesc": "Best Gudi Padwa wishes, quotes, and messages for 2027..."
@@ -157,24 +155,24 @@ payload = {
 
 ---
 
-## 🔑 Section 4: System Access Details & Credential Registry
+## 🔑 Section 4: System & Platform User Access Governance Matrix
 
-This credential matrix documents all third-party tool integrations, OAuth standard files, and team account placeholders.
+This matrix details all active users (**Vikas** & **Satyam**) with access to **Google Search Console**, **Google Indexing API**, **WordPress REST API**, **SEMrush**, and **AI Generation Tools**, along with their access levels, roles, and permitted operational scopes.
 
-| Platform / Tool | Authentication Type | Identifier / Username | Credentials Location / Token File | Status | Notes / Scope |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Google Search Console** | OAuth 2.0 Client ID | Domain Property | `scripts/client_secret.json`<br>`scripts/gsc_token.json` | Active | Scope: `webmasters.readonly`<br>Domain: `sc-domain:bluestone.com` |
-| **Google Indexing API** | Service Account JSON | Service Account Mail | `scripts/indexing_token.json` | Active | Scope: `indexing`<br>Instant indexing submission |
-| **WordPress REST API** | Application Password | `blogbluestone` | `.env` (`WP_USER`, `WP_APP_PASSWORD`) | Active | Author ID `270271338` |
-| **SEMrush API / MCP** | API Key / OAuth | `[PLACEHOLDER]` | Environment Variable / MCP Server | Active | AI Visibility & AIO Rank Tracking |
-| **Higgsfield AI MCP** | Cursor MCP Integration | `[PLACEHOLDER]` | Cursor MCP Configuration | Active | Type 3 Image Gen (`nano_banana_pro`) |
-| **Magnific AI** | API Key | `[PLACEHOLDER]` | `scripts/magnific_generate_images.py` | Active | Upscaling & Photorealistic Gen |
-| **OpenAI / Claude API** | API Secret Keys | `[PLACEHOLDER]` | `.env` (`OPENAI_API_KEY`, etc.) | Active | Content Drafting & Summaries |
+| Platform / Tool | Authorized Users & Roles | Access Level & Auth Type | Permitted Actions & Operational Scope |
+| :--- | :--- | :--- | :--- |
+| **Google Search Console** | Vikas (Admin), Satyam (Admin) | OAuth 2.0 Client ID (Full Access) | Domain property management, performance audit, GSC data extraction (`sc-domain:bluestone.com`) |
+| **Google Indexing API** | Vikas (Admin), Satyam (Admin) | Service Account JSON (Publishing) | Instant URL indexing submissions & batch status tracking |
+| **WordPress REST API** | Vikas (`blogbluestone`), Satyam | Application Password & Basic Auth | Full programmatic article publishing, media upload, schema injection, category management |
+| **SEMrush API / MCP** | Vikas (Admin), Satyam (Admin) | API Key / OAuth MCP Server | AI Visibility tracking, AIO rank history monitoring, keyword performance reporting |
+| **Higgsfield AI MCP** | Vikas (Admin), Satyam (Admin) | API Key & Secret (`HF_API_KEY`) | Photorealistic Type 3 image generation (`nano_banana_pro`) for hero & lifestyle assets |
+| **Magnific AI** | Vikas (Admin), Satyam (Admin) | API Key (`MAGNIFIC_API_KEY`) | High-resolution image upscaling & aesthetic enhancing |
+| **OpenAI / Claude API** | Vikas (Admin), Satyam (Admin) | API Secret Keys (System Integration) | Automated content drafting, competitor parsing, schema generation & briefing |
 
-### 🔐 Security & Access Control Policy
-1. **Zero Secret Hardcoding**: API passwords and OAuth secrets must reside in `.env` or encrypted JSON token files (`gsc_token.json`).
-2. **IP Whitelisting**: WP REST API calls restricted to authorized staging servers and build pipelines.
-3. **Access Requests**: To add new team members to WordPress, GSC, or SEMrush, update the placeholders in Section 3.2 & Section 4.
+### 🔐 Security & Access Governance Policy
+1. **Zero Secret Hardcoding**: API passwords and OAuth secrets reside strictly in `.env` or encrypted JSON token files (`gsc_token.json`).
+2. **Authorized Team Access**: Only Vikas and Satyam hold active administrative and publishing privileges across WordPress, GSC, SEMrush, and AI tool pipelines.
+3. **Access Governance**: Any additional team access requests must be authorized by system leads before granting API keys or OAuth credentials.
 
 ---
 
