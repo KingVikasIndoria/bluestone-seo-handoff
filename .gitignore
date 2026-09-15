@@ -7,6 +7,8 @@
 scripts/client_secret.json
 scripts/gsc_token.json
 scripts/indexing_token.json
+scripts/google_sheets_credentials.json
+scripts/*credentials*.json
 
 # Python / OS
 __pycache__/
