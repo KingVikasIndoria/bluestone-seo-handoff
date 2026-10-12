@@ -193,13 +193,13 @@ function renderWeeklyPublishTable() {
   // Calculate start of current week (Monday)
   const dayOfWeek = now.getDay();
   const distToMon = (dayOfWeek + 6) % 7;
-  const currentMon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - distToMon);
+  const currentMon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - distToMon, 0, 0, 0, 0);
 
   // Define 4 weekly buckets (Week 4 is current week, Week 1 is 3 weeks ago)
   const weeks = [];
   for (let i = 0; i < 4; i++) {
-    const wStart = new Date(currentMon.getTime() - (3 - i) * 7 * 24 * 60 * 60 * 1000);
-    const wEnd = new Date(wStart.getTime() + 6 * 24 * 60 * 60 * 1000);
+    const wStart = new Date(currentMon.getFullYear(), currentMon.getMonth(), currentMon.getDate() - (3 - i) * 7, 0, 0, 0, 0);
+    const wEnd = new Date(wStart.getFullYear(), wStart.getMonth(), wStart.getDate() + 6, 23, 59, 59, 999);
     weeks.push({
       start: wStart,
       end: wEnd,
@@ -210,11 +210,10 @@ function renderWeeklyPublishTable() {
   }
 
   // Count publications per week bucket
-  // Parse dates using local components to avoid UTC vs local timezone mismatch
   allBlogs.forEach(b => {
     if (b.raw_date) {
       const parts = b.raw_date.split("T")[0].split("-");
-      const dt = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+      const dt = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), 12, 0, 0);
       if (!isNaN(dt.getTime())) {
         weeks.forEach(w => {
           if (dt >= w.start && dt <= w.end) {

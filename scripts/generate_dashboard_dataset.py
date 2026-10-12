@@ -11,6 +11,7 @@ import os
 import json
 import sys
 import html
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -52,25 +53,44 @@ def extract_slug(url):
     return url.strip().rstrip('/').split('/')[-1]
 
 def fetch_wp_page(page):
+    url = f"{WP_URL}?per_page=100&page={page}&status=publish&_fields=id,date,link,title,slug"
+    for attempt in range(1, 4):
+        try:
+            r = requests.get(url, auth=WP_AUTH, timeout=25)
+            if r.status_code == 200:
+                data = r.json()
+                if isinstance(data, list):
+                    return page, data
+            elif r.status_code == 400:
+                # Beyond last page
+                return page, []
+            else:
+                print(f"⚠️ WP page {page} attempt {attempt} returned status {r.status_code}")
+        except Exception as e:
+            print(f"⚠️ WP page {page} attempt {attempt} error: {e}")
+        time.sleep(1)
+    print(f"❌ Failed to fetch WP page {page} after 3 attempts.")
+    return page, []
+
+def fetch_wp_posts_parallel(max_pages=None):
+    total_pages = 20
     try:
-        r = requests.get(
-            f"{WP_URL}?per_page=100&page={page}&status=publish",
+        head_res = requests.get(
+            f"{WP_URL}?per_page=100&page=1&status=publish&_fields=id",
             auth=WP_AUTH,
             timeout=15
         )
-        if r.status_code == 200:
-            data = r.json()
-            if isinstance(data, list):
-                return page, data
+        if "X-WP-TotalPages" in head_res.headers:
+            total_pages = int(head_res.headers["X-WP-TotalPages"])
+            print(f"📡 WordPress reports {head_res.headers.get('X-WP-Total')} total posts across {total_pages} pages.")
     except Exception as e:
-        pass
-    return page, []
+        print(f"⚠️ Unable to query X-WP-TotalPages, defaulting to {total_pages} pages. ({e})")
 
-def fetch_wp_posts_parallel(max_pages=20):
-    print(f"📥 Fetching WordPress posts (up to {max_pages * 100} posts)...")
+    pages_to_fetch = max_pages if max_pages else total_pages
+    print(f"📥 Fetching WordPress posts ({pages_to_fetch} pages)...")
     all_posts_map = {}
-    with ThreadPoolExecutor(max_workers=8) as executor:
-        futures = [executor.submit(fetch_wp_page, p) for p in range(1, max_pages + 1)]
+    with ThreadPoolExecutor(max_workers=6) as executor:
+        futures = [executor.submit(fetch_wp_page, p) for p in range(1, pages_to_fetch + 1)]
         for f in as_completed(futures):
             page_num, posts = f.result()
             if posts:
@@ -390,7 +410,7 @@ def main():
     # Load persistent indexed URL history
     indexed_history = load_indexed_history()
 
-    wp_posts = fetch_wp_posts_parallel(max_pages=15)
+    wp_posts = fetch_wp_posts_parallel()
     gsc_page_map, queries_by_page, raw_daily_rows, devices, first_indexed_map, w1_page_map, w2_page_map, w3_page_map, week_labels = fetch_gsc_data(service)
 
     processed_blogs = []
