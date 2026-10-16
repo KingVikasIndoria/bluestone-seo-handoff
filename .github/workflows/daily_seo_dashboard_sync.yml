@@ -38,9 +38,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: Configure GSC Credentials
-        if: ${{ secrets.GSC_TOKEN_JSON != '' }}
+        env:
+          GSC_TOKEN: ${{ secrets.GSC_TOKEN_JSON }}
+        if: env.GSC_TOKEN != ''
         run: |
-          echo '${{ secrets.GSC_TOKEN_JSON }}' > scripts/gsc_token.json
+          echo "$GSC_TOKEN" > scripts/gsc_token.json
 
       - name: Run Dashboard Dataset Generator
         # Only run data generation on cron schedule or manual dispatch
