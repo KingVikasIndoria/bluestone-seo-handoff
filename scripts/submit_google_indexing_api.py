@@ -95,11 +95,15 @@ def main():
                 
                 blogs_sorted = sorted(combined, key=lambda x: x.get("raw_date", ""), reverse=True)
                 for b in blogs_sorted:
-                    if (b.get("first_indexed_date") in ["Not Indexed Yet", "Indexed (Date Pending)"] or b.get("impressions", 0) == 0 or not b.get("is_indexed", True)):
-                        if b.get("link"):
-                            urls_to_submit.append(b["link"].strip())
+                    is_indexed = (
+                        b.get("is_indexed", False)
+                        or b.get("impressions", 0) > 0
+                        or (b.get("first_indexed_date") and b.get("first_indexed_date") not in ["Not Indexed Yet", "Indexed (Date Pending)"])
+                    )
+                    if not is_indexed and b.get("link"):
+                        urls_to_submit.append(b["link"].strip())
             urls_to_submit = list(dict.fromkeys(urls_to_submit))
-            print(f"📊 Loaded {len(urls_to_submit)} live unindexed URLs from dashboard_data.json (Sorted Newest First)")
+            print(f"📊 Loaded {len(urls_to_submit)} strictly UNINDEXED URLs from dashboard_data.json (Sorted Newest First)")
         except Exception as e:
             print(f"⚠️ Could not load from JSON: {e}")
 
