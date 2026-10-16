@@ -65,6 +65,7 @@ jobs:
       - name: Send Daily Email Performance Summary
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           SMTP_HOST: ${{ secrets.SMTP_HOST || 'smtp.gmail.com' }}
           SMTP_PORT: ${{ secrets.SMTP_PORT || '465' }}
           SMTP_USER: ${{ secrets.SMTP_USER }}

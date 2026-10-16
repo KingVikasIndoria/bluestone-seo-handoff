@@ -20,6 +20,7 @@ import os
 import sys
 import json
 import smtplib
+import requests
 from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -281,49 +282,77 @@ Strategy Breakdown:
 def send_email():
     subject, html_content, plain_content = generate_report()
     
-    smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
-    smtp_port = int(os.environ.get("SMTP_PORT", 465))
-    smtp_user = os.environ.get("SMTP_USER", "").strip()
-    smtp_pass = os.environ.get("SMTP_PASSWORD", "").strip()
-    email_to = os.environ.get("EMAIL_TO", "").strip()
-    
-    if not smtp_user or not smtp_pass or not email_to:
-        print("⚠️ Missing email environment variables (SMTP_USER, SMTP_PASSWORD, or EMAIL_TO).")
-        print("   Skipping actual SMTP send. Summary report generated successfully.")
-        print(f"\nSubject: {subject}\n")
-        print(plain_content)
-        return False
-        
+    email_to = os.environ.get("EMAIL_TO", "vikas.indoria@bluestone.com").strip()
     recipients = [e.strip() for e in email_to.split(",") if e.strip()]
     if not recipients:
         print("⚠️ No valid recipient email addresses specified.")
         return False
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"] = f"Bluestone SEO Bot <{smtp_user}>"
-    msg["To"] = ", ".join(recipients)
+    resend_api_key = os.environ.get("RESEND_API_KEY", "").strip()
+    if resend_api_key:
+        print("📡 Sending daily report via Resend API...")
+        try:
+            res = requests.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {resend_api_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "from": "Bluestone SEO Bot <onboarding@resend.dev>",
+                    "to": recipients,
+                    "subject": subject,
+                    "html": html_content,
+                    "text": plain_content
+                },
+                timeout=15
+            )
+            if res.status_code in [200, 201]:
+                print(f"✅ Daily SEO performance email successfully sent via Resend to: {', '.join(recipients)}")
+                return True
+            else:
+                print(f"❌ Resend API returned status {res.status_code}: {res.text}")
+        except Exception as e:
+            print(f"❌ Failed to send via Resend API: {e}")
+
+    # Fallback to standard SMTP
+    smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
+    smtp_port = int(os.environ.get("SMTP_PORT", 465))
+    smtp_user = os.environ.get("SMTP_USER", "").strip()
+    smtp_pass = os.environ.get("SMTP_PASSWORD", "").strip()
     
-    part1 = MIMEText(plain_content, "plain", "utf-8")
-    part2 = MIMEText(html_content, "html", "utf-8")
-    msg.attach(part1)
-    msg.attach(part2)
-    
-    try:
-        if smtp_port == 465:
-            with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=30) as server:
-                server.login(smtp_user, smtp_pass)
-                server.sendmail(smtp_user, recipients, msg.as_string())
-        else:
-            with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as server:
-                server.starttls()
-                server.login(smtp_user, smtp_pass)
-                server.sendmail(smtp_user, recipients, msg.as_string())
-        print(f"✅ Daily SEO performance email successfully sent to: {', '.join(recipients)}")
-        return True
-    except Exception as e:
-        print(f"❌ Failed to send email via {smtp_host}:{smtp_port}: {e}")
-        return False
+    if smtp_user and smtp_pass:
+        print("📡 Sending daily report via SMTP...")
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"] = f"Bluestone SEO Bot <{smtp_user}>"
+        msg["To"] = ", ".join(recipients)
+        
+        part1 = MIMEText(plain_content, "plain", "utf-8")
+        part2 = MIMEText(html_content, "html", "utf-8")
+        msg.attach(part1)
+        msg.attach(part2)
+        
+        try:
+            if smtp_port == 465:
+                with smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=30) as server:
+                    server.login(smtp_user, smtp_pass)
+                    server.sendmail(smtp_user, recipients, msg.as_string())
+            else:
+                with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as server:
+                    server.starttls()
+                    server.login(smtp_user, smtp_pass)
+                    server.sendmail(smtp_user, recipients, msg.as_string())
+            print(f"✅ Daily SEO performance email successfully sent via SMTP to: {', '.join(recipients)}")
+            return True
+        except Exception as e:
+            print(f"❌ Failed to send email via SMTP ({smtp_host}:{smtp_port}): {e}")
+            return False
+
+    print("⚠️ No email delivery service configured (neither RESEND_API_KEY nor SMTP_USER/SMTP_PASSWORD provided).")
+    print(f"\nSubject: {subject}\n")
+    print(plain_content)
+    return False
 
 if __name__ == "__main__":
     send_email()
