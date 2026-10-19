@@ -2,8 +2,10 @@ name: Daily SEO Dashboard Sync & Email Report
 
 on:
   schedule:
-    # 04:30 UTC = 10:00 AM IST daily
-    - cron: '30 4 * * *'
+    # Primary run: ~09:47 AM IST (04:17 UTC) - off-peak minute avoids GitHub Actions queue backlog
+    - cron: '17 4 * * *'
+    # Backup run: ~10:23 AM IST (04:53 UTC) - ensures delivery if the primary queue is delayed
+    - cron: '53 4 * * *'
   workflow_dispatch:
   push:
     branches: ["main"]
