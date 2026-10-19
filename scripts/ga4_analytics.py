@@ -144,14 +144,16 @@ def fetch_ga4_utm_data():
                         "outbound_pdp_clicks": int(sess * 0.35),
                         "conversions": conv
                     })
+                campaigns.sort(key=lambda x: x["sessions"], reverse=True)
                 if campaigns:
+                    weighted_eng = sum(float(c["engagement_rate"].rstrip("%")) * c["sessions"] for c in campaigns) / max(1, tot_sessions)
                     return {
                         "source": f"GA4 Live API (Property {GA4_PROPERTY_ID})",
                         "status": "Connected & Live",
                         "date_range": "Last 30 Days",
                         "summary": {
                             "total_blog_sessions": tot_sessions,
-                            "avg_engagement_rate": "65%",
+                            "avg_engagement_rate": f"{weighted_eng:.1f}%",
                             "outbound_pdp_clicks": int(tot_sessions * 0.35),
                             "assisted_add_to_carts": sum(c["conversions"] for c in campaigns),
                             "est_assisted_revenue": "Live API"
