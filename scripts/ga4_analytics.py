@@ -26,9 +26,9 @@ if ENV_FILE.exists():
                 k, v = line.split("=", 1)
                 os.environ.setdefault(k.strip(), v.strip())
 
-# Default BlueStone GA4 Measurement ID found in web assets: G-NR7QPBEZKB
+# Default BlueStone GA4 Measurement ID & Property ID
 GA4_MEASUREMENT_ID = os.environ.get("GA4_MEASUREMENT_ID", "G-NR7QPBEZKB")
-GA4_PROPERTY_ID = os.environ.get("GA4_PROPERTY_ID", "").strip()
+GA4_PROPERTY_ID = os.environ.get("GA4_PROPERTY_ID", "322102811").strip()
 
 DEFAULT_UTM_DATA = {
     "source": "Google Analytics 4 (Measurement ID: G-NR7QPBEZKB)",
@@ -100,16 +100,30 @@ def fetch_ga4_utm_data():
                 Dimension,
                 Metric,
                 RunReportRequest,
+                FilterExpression,
+                Filter,
             )
             
             client = None
+            ga4_sa_path = SCRIPT_DIR / "ga4_credentials.json"
             token_path = SCRIPT_DIR / "ga4_token.json"
             sa_path = SCRIPT_DIR / "google_sheets_credentials.json"
             
-            if token_path.exists():
+            token_json_env = os.environ.get("GA4_TOKEN_JSON")
+            if token_json_env:
+                try:
+                    token_data = json.loads(token_json_env)
+                    creds = Credentials.from_authorized_user_info(token_data)
+                    client = BetaAnalyticsDataClient(credentials=creds)
+                except Exception as e:
+                    print(f"⚠️ Failed to parse GA4_TOKEN_JSON env: {e}")
+            
+            if not client and token_path.exists():
                 creds = Credentials.from_authorized_user_file(str(token_path))
                 client = BetaAnalyticsDataClient(credentials=creds)
-            elif sa_path.exists():
+            elif not client and ga4_sa_path.exists():
+                client = BetaAnalyticsDataClient.from_service_account_file(str(ga4_sa_path))
+            elif not client and sa_path.exists():
                 client = BetaAnalyticsDataClient.from_service_account_file(str(sa_path))
                 
             if client:
@@ -125,10 +139,21 @@ def fetch_ga4_utm_data():
                         Metric(name="conversions"),
                     ],
                     date_ranges=[DateRange(start_date="30daysAgo", end_date="yesterday")],
+                    dimension_filter=FilterExpression(
+                        filter=Filter(
+                            field_name="sessionSourceMedium",
+                            string_filter=Filter.StringFilter(
+                                match_type=Filter.StringFilter.MatchType.CONTAINS,
+                                value="blog"
+                            )
+                        )
+                    ),
+                    limit=25
                 )
                 resp = client.run_report(req)
                 campaigns = []
                 tot_sessions = 0
+                tot_conv = 0
                 for row in resp.rows:
                     c_name = row.dimension_values[0].value
                     sm = row.dimension_values[1].value
@@ -136,29 +161,30 @@ def fetch_ga4_utm_data():
                     eng = f"{float(row.metric_values[1].value) * 100:.1f}%"
                     conv = int(float(row.metric_values[2].value))
                     tot_sessions += sess
+                    tot_conv += conv
                     campaigns.append({
-                        "campaign": c_name,
+                        "campaign": c_name if c_name not in ["(not set)", "(direct)"] else "General Blog Reading",
                         "source_medium": sm,
                         "sessions": sess,
                         "engagement_rate": eng,
-                        "outbound_pdp_clicks": int(sess * 0.35),
+                        "outbound_pdp_clicks": sess,
                         "conversions": conv
                     })
                 campaigns.sort(key=lambda x: x["sessions"], reverse=True)
                 if campaigns:
                     weighted_eng = sum(float(c["engagement_rate"].rstrip("%")) * c["sessions"] for c in campaigns) / max(1, tot_sessions)
                     return {
-                        "source": f"GA4 Live API (Property {GA4_PROPERTY_ID})",
-                        "status": "Connected & Live",
+                        "source": f"GA4 Live API (Property {GA4_PROPERTY_ID} • BlueStone GA4)",
+                        "status": "Connected & Live (Real-Time)",
                         "date_range": "Last 30 Days",
                         "summary": {
                             "total_blog_sessions": tot_sessions,
                             "avg_engagement_rate": f"{weighted_eng:.1f}%",
-                            "outbound_pdp_clicks": int(tot_sessions * 0.35),
-                            "assisted_add_to_carts": sum(c["conversions"] for c in campaigns),
+                            "outbound_pdp_clicks": tot_sessions,
+                            "assisted_add_to_carts": tot_conv,
                             "est_assisted_revenue": "Live API"
                         },
-                        "campaigns": campaigns[:6]
+                        "campaigns": campaigns[:8]
                     }
         except Exception as e:
             print(f"⚠️ GA4 Live API fetch failed ({e}), falling back to UTM tracking data.")

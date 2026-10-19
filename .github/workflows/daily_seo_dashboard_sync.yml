@@ -46,6 +46,13 @@ jobs:
         run: |
           echo "$GSC_TOKEN" > scripts/gsc_token.json
 
+      - name: Configure GA4 Credentials
+        env:
+          GA4_TOKEN: ${{ secrets.GA4_TOKEN_JSON }}
+        if: env.GA4_TOKEN != ''
+        run: |
+          echo "$GA4_TOKEN" > scripts/ga4_token.json
+
       - name: Run Dashboard Dataset Generator
         # Only run data generation on cron schedule or manual dispatch
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
@@ -75,6 +82,8 @@ jobs:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          GA4_TOKEN_JSON: ${{ secrets.GA4_TOKEN_JSON }}
+          GA4_PROPERTY_ID: ${{ secrets.GA4_PROPERTY_ID }}
         run: |
           python3 scripts/send_daily_summary_email.py
 

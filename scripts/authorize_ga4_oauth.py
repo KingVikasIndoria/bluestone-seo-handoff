@@ -25,7 +25,12 @@ def authorize():
         
     print("🔐 Launching Google OAuth authorization in your browser...")
     flow = InstalledAppFlow.from_client_secrets_file(str(CLIENT_SECRET_FILE), SCOPES)
-    creds = flow.run_local_server(port=8088)
+    creds = flow.run_local_server(
+        port=8088,
+        prompt="consent",
+        access_type="offline",
+        open_browser=True
+    )
     
     with open(GA4_TOKEN_FILE, "w", encoding="utf-8") as f:
         f.write(creds.to_json())
