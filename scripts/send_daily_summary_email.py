@@ -31,6 +31,16 @@ DATA_JSON_PATH = SCRIPT_DIR.parent / "dashboard_data.json"
 if not DATA_JSON_PATH.exists():
     DATA_JSON_PATH = SCRIPT_DIR.parent / "dashboard" / "dashboard_data.json"
 
+# Load local .env if present
+ENV_FILE = SCRIPT_DIR.parent / ".env"
+if ENV_FILE.exists():
+    with open(ENV_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
 def get_4w_publish_volume(all_blogs):
     now = datetime.now()
     dist_to_mon = now.weekday()
