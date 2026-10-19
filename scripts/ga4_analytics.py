@@ -93,16 +93,26 @@ def fetch_ga4_utm_data():
     if GA4_PROPERTY_ID:
         try:
             from google.oauth2 import service_account
+            from google.oauth2.credentials import Credentials
+            from google.analytics.data_v1beta import BetaAnalyticsDataClient
+            from google.analytics.data_v1beta.types import (
+                DateRange,
+                Dimension,
+                Metric,
+                RunReportRequest,
+            )
+            
+            client = None
+            token_path = SCRIPT_DIR / "ga4_token.json"
             sa_path = SCRIPT_DIR / "google_sheets_credentials.json"
-            if sa_path.exists():
-                from google.analytics.data_v1beta import BetaAnalyticsDataClient
-                from google.analytics.data_v1beta.types import (
-                    DateRange,
-                    Dimension,
-                    Metric,
-                    RunReportRequest,
-                )
+            
+            if token_path.exists():
+                creds = Credentials.from_authorized_user_file(str(token_path))
+                client = BetaAnalyticsDataClient(credentials=creds)
+            elif sa_path.exists():
                 client = BetaAnalyticsDataClient.from_service_account_file(str(sa_path))
+                
+            if client:
                 req = RunReportRequest(
                     property=f"properties/{GA4_PROPERTY_ID}",
                     dimensions=[
