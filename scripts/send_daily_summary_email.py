@@ -244,13 +244,21 @@ def generate_report():
 
     ga4_campaign_rows = ""
     for c in ga4_campaigns:
+        p_title = c.get('title', c.get('campaign', 'Storefront'))
+        p_cat = c.get('category', 'Category')
+        p_url = c.get('url', 'https://www.bluestone.com')
+        p_users = c.get('users', c.get('sessions', 0))
         ga4_campaign_rows += f"""
         <tr style='border-bottom: 1px solid #f1f5f9;'>
-          <td style='padding: 8px 10px; font-weight: 600; color: #1e293b; font-size: 12px;'>{c['campaign']}</td>
-          <td style='padding: 8px 10px; color: #64748b; font-size: 11px;'>{c['source_medium']}</td>
-          <td style='padding: 8px 10px; text-align: right; font-weight: 600; font-size: 12px;'>{c['sessions']:,}</td>
+          <td style='padding: 8px 10px; font-weight: 600; color: #1e293b; font-size: 12px;'>
+            <a href="{p_url}" style="color: #1e293b; text-decoration: none;" target="_blank">{p_title}</a>
+          </td>
+          <td style='padding: 8px 10px; font-size: 11px;'>
+            <span style="background: #eef2ff; color: #4338ca; padding: 2px 7px; border-radius: 4px; font-weight: 600;">{p_cat}</span>
+          </td>
+          <td style='padding: 8px 10px; text-align: right; font-weight: 700; color: #4f46e5; font-size: 12px;'>{c['sessions']:,}</td>
+          <td style='padding: 8px 10px; text-align: right; color: #475569; font-size: 12px;'>{p_users:,}</td>
           <td style='padding: 8px 10px; text-align: right; color: #16a34a; font-weight: 600; font-size: 12px;'>{c['engagement_rate']}</td>
-          <td style='padding: 8px 10px; text-align: right; font-weight: 600; color: #4f46e5; font-size: 12px;'>{c['outbound_pdp_clicks']:,}</td>
           <td style='padding: 8px 10px; text-align: right; font-weight: 700; color: #d97706; font-size: 12px;'>{c['conversions']}</td>
         </tr>
         """
@@ -379,29 +387,32 @@ def generate_report():
             </div>
           </div>
 
-          <!-- Integrated GA4 & UTM Campaign Tracking Data -->
+          <!-- Integrated GA4 & Blog-to-Store Product Tracking Data -->
           <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 18px 20px; margin-bottom: 26px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-            <div style="display: table; width: 100%; margin-bottom: 12px;">
-              <div style="display: table-cell; font-size: 13px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">🎯 GA4 &amp; UTM Campaign Attribution (Blog to E-Commerce)</div>
+            <div style="display: table; width: 100%; margin-bottom: 6px;">
+              <div style="display: table-cell; font-size: 13px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">🛍️ Blog → BlueStone Store Landings (Commercial Attribution)</div>
               <div style="display: table-cell; text-align: right; font-size: 11px; color: #16a34a; font-weight: 600;">● {ga4_data.get('status')}</div>
+            </div>
+            <div style="font-size: 12px; color: #64748b; margin-bottom: 14px;">
+              Tracking shoppers clicking from <strong>blog.bluestone.com</strong> articles and landing directly on <strong>bluestone.com</strong> product display pages (PDPs) &amp; curated collections.
             </div>
             
             <!-- Quick metrics row -->
             <div style="display: table; width: 100%; background: #f8fafc; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; border: 1px solid #e2e8f0;">
               <div style="display: table-cell; width: 25%; text-align: center;">
-                <div style="font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Blog Sessions</div>
-                <div style="font-size: 17px; font-weight: 800; color: #0f172a; margin-top: 2px;">{ga4_summary.get('total_blog_sessions', 0):,}</div>
+                <div style="font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Blog → Store Clicks</div>
+                <div style="font-size: 17px; font-weight: 800; color: #4f46e5; margin-top: 2px;">{ga4_summary.get('total_blog_sessions', 0):,}</div>
               </div>
               <div style="display: table-cell; width: 25%; text-align: center; border-left: 1px solid #e2e8f0;">
-                <div style="font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Engagement Rate</div>
+                <div style="font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Unique Shoppers</div>
+                <div style="font-size: 17px; font-weight: 800; color: #0f172a; margin-top: 2px;">{ga4_summary.get('unique_shoppers', ga4_summary.get('total_blog_sessions', 0)):,}</div>
+              </div>
+              <div style="display: table-cell; width: 25%; text-align: center; border-left: 1px solid #e2e8f0;">
+                <div style="font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Store Eng. Rate</div>
                 <div style="font-size: 17px; font-weight: 800; color: #16a34a; margin-top: 2px;">{ga4_summary.get('avg_engagement_rate', '0%')}</div>
               </div>
               <div style="display: table-cell; width: 25%; text-align: center; border-left: 1px solid #e2e8f0;">
-                <div style="font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Outbound PDP Clicks</div>
-                <div style="font-size: 17px; font-weight: 800; color: #4f46e5; margin-top: 2px;">{ga4_summary.get('outbound_pdp_clicks', 0):,}</div>
-              </div>
-              <div style="display: table-cell; width: 25%; text-align: center; border-left: 1px solid #e2e8f0;">
-                <div style="font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Assisted Add-To-Carts</div>
+                <div style="font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700;">Assisted Conversions</div>
                 <div style="font-size: 17px; font-weight: 800; color: #d97706; margin-top: 2px;">{ga4_summary.get('assisted_add_to_carts', 0)}</div>
               </div>
             </div>
@@ -410,11 +421,11 @@ def generate_report():
             <table style="width: 100%; border-collapse: collapse; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
               <thead>
                 <tr style="background: #f1f5f9;">
-                  <th style="padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b;">Campaign (UTM)</th>
-                  <th style="padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b;">Source / Medium</th>
-                  <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">Sessions</th>
+                  <th style="padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b;">Product / Page on BlueStone.com</th>
+                  <th style="padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b;">Department</th>
+                  <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">Direct Clicks</th>
+                  <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">Shoppers</th>
                   <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">Eng. Rate</th>
-                  <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">PDP Clicks</th>
                   <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">Conversions</th>
                 </tr>
               </thead>
@@ -423,7 +434,7 @@ def generate_report():
               </tbody>
             </table>
             <div style="font-size: 11px; color: #94a3b8; margin-top: 8px; text-align: right;">
-              Tracking Source: {ga4_data.get('source')}
+              Tracking Source: {ga4_data.get('source')} (Referral &amp; UTM attribution)
             </div>
           </div>
 

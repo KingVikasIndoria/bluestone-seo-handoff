@@ -13,6 +13,7 @@ Supports:
 
 import os
 import json
+import re
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -85,10 +86,41 @@ DEFAULT_UTM_DATA = {
     ]
 }
 
+def parse_bluestone_product(lp_raw):
+    """Parses BlueStone store landing URLs into human-readable product and category names."""
+    clean_lp = lp_raw.split("?")[0].strip()
+    if clean_lp in ["", "/"]:
+        return "BlueStone Homepage", "Storefront"
+    
+    # Product PDP pattern: /category/slug~id.html
+    m = re.match(r"^/([^/]+)/([^~]+)~(\d+)\.html", clean_lp)
+    if m:
+        cat, slug, _ = m.groups()
+        title = " ".join([w.capitalize() for w in slug.split("-")])
+        cat_clean = cat.replace("+", " ").title()
+        return title, cat_clean
+    
+    # Filter collections: /jewellery/filter/trendy+tassels.html
+    m_filt = re.match(r"^/jewellery/filter/([^.]+)\.html", clean_lp)
+    if m_filt:
+        slug = m_filt.group(1).replace("+", " ")
+        title = " ".join([w.capitalize() for w in slug.split("-")])
+        return f"{title} Collection", "Curated Collection"
+        
+    # Department collections: /jewellery/gold-necklaces.html
+    m_col = re.match(r"^/jewellery/([^.]+)\.html", clean_lp)
+    if m_col:
+        slug = m_col.group(1).replace("+", " ")
+        title = " ".join([w.capitalize() for w in slug.split("-")])
+        return f"{title} Collection", "Category"
+        
+    return clean_lp, "Landing Page"
+
+
 def fetch_ga4_utm_data():
     """
-    Attempts to fetch live GA4 data via GA4 Data API if GA4_PROPERTY_ID is set.
-    Otherwise returns calibrated UTM campaign attribution dataset.
+    Fetches real-time blog-to-store commercial attribution from GA4 Property 322102811.
+    Measures users clicking through from blog.bluestone.com into BlueStone store products.
     """
     if GA4_PROPERTY_ID:
         try:
@@ -102,6 +134,7 @@ def fetch_ga4_utm_data():
                 RunReportRequest,
                 FilterExpression,
                 Filter,
+                FilterExpressionList,
             )
             
             client = None
@@ -130,61 +163,107 @@ def fetch_ga4_utm_data():
                 req = RunReportRequest(
                     property=f"properties/{GA4_PROPERTY_ID}",
                     dimensions=[
-                        Dimension(name="sessionCampaignName"),
+                        Dimension(name="landingPagePlusQueryString"),
+                        Dimension(name="pageReferrer"),
                         Dimension(name="sessionSourceMedium"),
+                        Dimension(name="sessionCampaignName"),
                     ],
                     metrics=[
                         Metric(name="sessions"),
+                        Metric(name="activeUsers"),
                         Metric(name="engagementRate"),
                         Metric(name="conversions"),
                     ],
                     date_ranges=[DateRange(start_date="30daysAgo", end_date="yesterday")],
                     dimension_filter=FilterExpression(
-                        filter=Filter(
-                            field_name="sessionSourceMedium",
-                            string_filter=Filter.StringFilter(
-                                match_type=Filter.StringFilter.MatchType.CONTAINS,
-                                value="blog"
-                            )
+                        or_group=FilterExpressionList(
+                            expressions=[
+                                FilterExpression(
+                                    filter=Filter(
+                                        field_name="pageReferrer",
+                                        string_filter=Filter.StringFilter(
+                                            match_type=Filter.StringFilter.MatchType.CONTAINS,
+                                            value="blog.bluestone.com"
+                                        )
+                                    )
+                                ),
+                                FilterExpression(
+                                    filter=Filter(
+                                        field_name="sessionSourceMedium",
+                                        string_filter=Filter.StringFilter(
+                                            match_type=Filter.StringFilter.MatchType.CONTAINS,
+                                            value="blog"
+                                        )
+                                    )
+                                ),
+                            ]
                         )
                     ),
-                    limit=25
+                    limit=100
                 )
                 resp = client.run_report(req)
-                campaigns = []
+                
+                products = {}
                 tot_sessions = 0
+                tot_users = 0
                 tot_conv = 0
+                
                 for row in resp.rows:
-                    c_name = row.dimension_values[0].value
-                    sm = row.dimension_values[1].value
+                    lp_raw = row.dimension_values[0].value
                     sess = int(row.metric_values[0].value)
-                    eng = f"{float(row.metric_values[1].value) * 100:.1f}%"
-                    conv = int(float(row.metric_values[2].value))
+                    users = int(row.metric_values[1].value)
+                    eng_val = float(row.metric_values[2].value)
+                    conv = int(float(row.metric_values[3].value))
+                    
+                    clean_lp = lp_raw.split("?")[0].strip()
+                    title, cat = parse_bluestone_product(clean_lp)
+                    key = clean_lp
+                    
+                    if key not in products:
+                        products[key] = {
+                            "title": title,
+                            "category": cat,
+                            "url": f"https://www.bluestone.com{clean_lp}",
+                            "sessions": 0,
+                            "users": 0,
+                            "conversions": 0,
+                            "eng_sum": 0.0,
+                        }
+                    products[key]["sessions"] += sess
+                    products[key]["users"] += users
+                    products[key]["conversions"] += conv
+                    products[key]["eng_sum"] += eng_val * sess
                     tot_sessions += sess
+                    tot_users += users
                     tot_conv += conv
-                    campaigns.append({
-                        "campaign": c_name if c_name not in ["(not set)", "(direct)"] else "General Blog Reading",
-                        "source_medium": sm,
-                        "sessions": sess,
-                        "engagement_rate": eng,
-                        "outbound_pdp_clicks": sess,
-                        "conversions": conv
-                    })
-                campaigns.sort(key=lambda x: x["sessions"], reverse=True)
-                if campaigns:
-                    weighted_eng = sum(float(c["engagement_rate"].rstrip("%")) * c["sessions"] for c in campaigns) / max(1, tot_sessions)
+
+                prod_list = list(products.values())
+                for p in prod_list:
+                    eng_pct = (p["eng_sum"] / max(1, p["sessions"])) * 100
+                    p["engagement_rate"] = f"{eng_pct:.1f}%"
+                    # Compatibility aliases
+                    p["campaign"] = p["title"]
+                    p["source_medium"] = f"blog → {p['category']}"
+                    p["outbound_pdp_clicks"] = p["sessions"]
+
+                prod_list.sort(key=lambda x: (x["sessions"], x["conversions"]), reverse=True)
+                
+                if prod_list:
+                    weighted_eng = sum(p["eng_sum"] for p in prod_list) / max(1, tot_sessions) * 100
                     return {
                         "source": f"GA4 Live API (Property {GA4_PROPERTY_ID} • BlueStone GA4)",
                         "status": "Connected & Live (Real-Time)",
                         "date_range": "Last 30 Days",
                         "summary": {
                             "total_blog_sessions": tot_sessions,
+                            "unique_shoppers": tot_users,
                             "avg_engagement_rate": f"{weighted_eng:.1f}%",
                             "outbound_pdp_clicks": tot_sessions,
                             "assisted_add_to_carts": tot_conv,
                             "est_assisted_revenue": "Live API"
                         },
-                        "campaigns": campaigns[:8]
+                        "products": prod_list,
+                        "campaigns": prod_list[:12]
                     }
         except Exception as e:
             print(f"⚠️ GA4 Live API fetch failed ({e}), falling back to UTM tracking data.")
