@@ -275,7 +275,6 @@ def generate_report():
           </td>
           <td style='padding: 8px 10px; text-align: right; font-weight: 700; color: #4f46e5; font-size: 12px;'>{c['sessions']:,}</td>
           <td style='padding: 8px 10px; text-align: right; color: #475569; font-size: 12px;'>{p_users:,}</td>
-          <td style='padding: 8px 10px; text-align: right; color: #16a34a; font-weight: 600; font-size: 12px;'>{c['engagement_rate']}</td>
           <td style='padding: 8px 10px; text-align: right; font-weight: 700; color: #d97706; font-size: 12px;'>{c['conversions']}</td>
         </tr>
         """
@@ -468,10 +467,10 @@ def generate_report():
             </div>
 
             <!-- Explanatory note on definitions -->
-            <div style="background: #f8fafc; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 6px; font-size: 11px; color: #475569; line-height: 1.5; margin-bottom: 14px;">
-              <strong>ℹ️ Note on Commercial Definitions (Rolling 30-Day Window):</strong><br/>
-              • <strong>Engaged Store Visitors:</strong> Unique blog readers who clicked over to inspect jewellery items on the store (exploring designs, 360° views, carat/weight options). <em>These represent potential buyers exploring products, not completed order purchases.</em><br/>
-              • <strong>Commercial Intent Signals:</strong> High-intent micro-conversions recorded in GA4 (<code>product_display</code> and qualified sessions where visitors load live gold rates, select ring/bangle sizes, check diamond specs, or start carts). <em>These indicate active buying consideration, not finalized transactions.</em>
+            <div style="background: #f8fafc; border-left: 3px solid #3b82f6; padding: 8px 12px; border-radius: 6px; font-size: 11px; color: #475569; line-height: 1.4; margin-bottom: 14px;">
+              <strong>ℹ️ Definitions (30-Day Window):</strong><br/>
+              • <strong>Engaged Store Visitors:</strong> Unique readers exploring product pages (browsers, not completed orders).<br/>
+              • <strong>Commercial Intent Signals:</strong> High-intent actions like checking live gold rates, purity/sizes, or cart starts (intent signals, not final sales).
             </div>
 
             <!-- UTM Table -->
@@ -479,10 +478,9 @@ def generate_report():
               <thead>
                 <tr style="background: #f1f5f9;">
                   <th style="padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b;">Product / Page on BlueStone.com</th>
-                  <th style="padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b;">Department</th>
+                  <th style="padding: 8px 10px; text-align: left; font-size: 10px; text-transform: uppercase; color: #64748b;">Design Category</th>
                   <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">Direct Clicks</th>
                   <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">Visitors</th>
-                  <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">Eng. Rate</th>
                   <th style="padding: 8px 10px; text-align: right; font-size: 10px; text-transform: uppercase; color: #64748b;">Intent Signals</th>
                 </tr>
               </thead>
@@ -611,9 +609,9 @@ Key Metrics (Last 30 Days):
 
 GA4 Commercial Attribution (Trailing 30-Day Window):
 - Blog -> Store Clicks: {ga4_summary.get('total_blog_sessions', 0):,}
-- Engaged Store Visitors: {ga4_summary.get('unique_shoppers', ga4_summary.get('total_blog_sessions', 0)):,} (Potential buyers exploring products, not completed sales)
+- Engaged Store Visitors: {ga4_summary.get('unique_shoppers', ga4_summary.get('total_blog_sessions', 0)):,} (Unique readers exploring PDPs - browsers, not completed orders)
 - Store Engagement Rate: {ga4_summary.get('avg_engagement_rate', '0%')}
-- Commercial Intent Signals: {ga4_summary.get('assisted_add_to_carts', 0)} (Price & spec checks, ring/bangle size selection, cart starts - not finished purchases)
+- Commercial Intent Signals: {ga4_summary.get('assisted_add_to_carts', 0)} (Live gold rates, purity/sizes & cart starts - intent signals, not final sales)
 
 Recently Published Articles (Past 24-48h):
 """ + "\n".join([f"- {b.get('title')} ({b.get('published_date', '')})" for b in recent_published]) + f"""
@@ -629,38 +627,42 @@ Charts Included:
 def send_email():
     subject, html_content, plain_content = generate_report()
     
-    email_to = os.environ.get("EMAIL_TO", "vikas.indoria@bluestone.com").strip()
+    email_to = os.environ.get("EMAIL_TO", "satyam.kumar3@bluestone.com,vikas.indoria@bluestone.com").strip()
     recipients = [e.strip() for e in email_to.split(",") if e.strip()]
     if not recipients:
         print("⚠️ No valid recipient email addresses specified.")
         return False
 
     resend_api_key = os.environ.get("RESEND_API_KEY", "").strip()
+    resend_success_count = 0
     if resend_api_key:
         print("📡 Sending daily report via Resend API...")
-        try:
-            res = requests.post(
-                "https://api.resend.com/emails",
-                headers={
-                    "Authorization": f"Bearer {resend_api_key}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "from": "Bluestone SEO Bot <onboarding@resend.dev>",
-                    "to": recipients,
-                    "subject": subject,
-                    "html": html_content,
-                    "text": plain_content
-                },
-                timeout=15
-            )
-            if res.status_code in [200, 201]:
-                print(f"✅ Daily SEO performance email successfully sent via Resend to: {', '.join(recipients)}")
-                return True
-            else:
-                print(f"❌ Resend API returned status {res.status_code}: {res.text}")
-        except Exception as e:
-            print(f"❌ Failed to send via Resend API: {e}")
+        for recipient in recipients:
+            try:
+                res = requests.post(
+                    "https://api.resend.com/emails",
+                    headers={
+                        "Authorization": f"Bearer {resend_api_key}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "from": "Bluestone SEO Bot <onboarding@resend.dev>",
+                        "to": [recipient],
+                        "subject": subject,
+                        "html": html_content,
+                        "text": plain_content
+                    },
+                    timeout=15
+                )
+                if res.status_code in [200, 201]:
+                    print(f"✅ Daily SEO performance email successfully sent via Resend to: {recipient}")
+                    resend_success_count += 1
+                else:
+                    print(f"❌ Resend API returned status {res.status_code} for {recipient}: {res.text}")
+            except Exception as e:
+                print(f"❌ Failed to send via Resend API to {recipient}: {e}")
+        if resend_success_count > 0:
+            return True
 
     # Fallback to standard SMTP
     smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
