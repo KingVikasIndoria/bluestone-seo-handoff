@@ -493,90 +493,6 @@ def generate_report():
             </div>
           </div>
 
-          <!-- Generative Engine Optimization (GEO & AI Overview Visibility) -->
-          <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 18px 20px; margin-bottom: 26px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
-            <div style="display: table; width: 100%; margin-bottom: 6px;">
-              <div style="display: table-cell; font-size: 13px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">🤖 Generative Engine Optimization (GEO &amp; AI Visibility)</div>
-              <div style="display: table-cell; text-align: right; font-size: 11px; color: #7c3aed; font-weight: 600;">● Semrush AI &amp; LLM Citations</div>
-            </div>
-            <div style="font-size: 12px; color: #64748b; margin-bottom: 14px;">
-              Tracking BlueStone brand citations, answer snippets, and knowledge graph extraction across <strong>Google AI Overviews</strong>, <strong>ChatGPT</strong>, and <strong>Search Engine AI</strong>.
-            </div>
-
-            <!-- GEO Metrics Grid -->
-            <div style="display: table; width: 100%; background: #fdf4ff; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; border: 1px solid #f0abfc;">
-              <div style="display: table-cell; width: 25%; text-align: center;">
-                <div style="font-size: 10px; color: #701a75; text-transform: uppercase; font-weight: 700;">AI Visibility Score</div>
-                <div style="font-size: 17px; font-weight: 800; color: #a21caf; margin-top: 2px;">40 / 100</div>
-                <div style="font-size: 9px; color: #86198f; margin-top: 2px;">Active LLM Mentions</div>
-              </div>
-              <div style="display: table-cell; width: 25%; text-align: center; border-left: 1px solid #f5d0fe;">
-                <div style="font-size: 10px; color: #701a75; text-transform: uppercase; font-weight: 700;">AI Overview Growth</div>
-                <div style="font-size: 17px; font-weight: 800; color: #16a34a; margin-top: 2px;">+107.2%</div>
-                <div style="font-size: 9px; color: #86198f; margin-top: 2px;">1,902 AIO Positions</div>
-              </div>
-              <div style="display: table-cell; width: 25%; text-align: center; border-left: 1px solid #f5d0fe;">
-                <div style="font-size: 10px; color: #701a75; text-transform: uppercase; font-weight: 700;">Total AI Citations</div>
-                <div style="font-size: 17px; font-weight: 800; color: #4338ca; margin-top: 2px;">8.4K</div>
-                <div style="font-size: 9px; color: #86198f; margin-top: 2px;">Across 4.8K Pages</div>
-              </div>
-              <div style="display: table-cell; width: 25%; text-align: center; border-left: 1px solid #f5d0fe;">
-                <div style="font-size: 10px; color: #701a75; text-transform: uppercase; font-weight: 700;">AIO Keywords</div>
-                <div style="font-size: 17px; font-weight: 800; color: #0f172a; margin-top: 2px;">15,455</div>
-                <div style="font-size: 9px; color: #86198f; margin-top: 2px;">Triggering AI Overviews</div>
-              </div>
-            </div>
-
-            <!-- LLM Share of Voice & Technical GEO Pillars -->
-            <div style="display: table; width: 100%; border-collapse: collapse;">
-              <!-- Left Column: LLM Platform Citations -->
-              <div style="display: table-cell; width: 48%; vertical-align: top; padding-right: 8px;">
-                <div style="font-size: 11px; font-weight: 700; color: #334155; text-transform: uppercase; margin-bottom: 8px;">LLM Platform Share of Voice</div>
-                <table style="width: 100%; font-size: 11px; border-collapse: collapse;">
-                  <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 5px 0; color: #1e293b; font-weight: 600;">ChatGPT (OpenAI)</td>
-                    <td style="padding: 5px 0; text-align: right; font-weight: 700; color: #10b981;">68.1% <span style="font-size: 10px; color: #64748b; font-weight: normal;">(4.8K)</span></td>
-                  </tr>
-                  <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 5px 0; color: #1e293b; font-weight: 600;">Search Engine AI Mode</td>
-                    <td style="padding: 5px 0; text-align: right; font-weight: 700; color: #3b82f6;">29.9% <span style="font-size: 10px; color: #64748b; font-weight: normal;">(2.1K)</span></td>
-                  </tr>
-                  <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 5px 0; color: #1e293b; font-weight: 600;">Google AI Overview (AEO)</td>
-                    <td style="padding: 5px 0; text-align: right; font-weight: 700; color: #8b5cf6;">19.7% <span style="font-size: 10px; color: #64748b; font-weight: normal;">(1.4K)</span></td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 5px 0; color: #1e293b; font-weight: 600;">Google Gemini</td>
-                    <td style="padding: 5px 0; text-align: right; font-weight: 700; color: #f59e0b;">4.1% <span style="font-size: 10px; color: #64748b; font-weight: normal;">(284)</span></td>
-                  </tr>
-                </table>
-              </div>
-
-              <!-- Right Column: GEO Architectural Optimizations Completed -->
-              <div style="display: table-cell; width: 52%; vertical-align: top; padding-left: 12px; border-left: 1px solid #e2e8f0;">
-                <div style="font-size: 11px; font-weight: 700; color: #334155; text-transform: uppercase; margin-bottom: 8px;">GEO Architecture &amp; Delivery</div>
-                <table style="width: 100%; font-size: 11px; border-collapse: collapse;">
-                  <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 5px 0; color: #64748b;">FAQ Schema JSON-LD</td>
-                    <td style="padding: 5px 0; text-align: right; font-weight: 700; color: #16a34a;">100% Strategy Blogs</td>
-                  </tr>
-                  <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 5px 0; color: #64748b;">Direct Answer Blocks</td>
-                    <td style="padding: 5px 0; text-align: right; font-weight: 700; color: #16a34a;">40–60w H2 Summaries</td>
-                  </tr>
-                  <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 5px 0; color: #64748b;">AIO Extraction Eligible</td>
-                    <td style="padding: 5px 0; text-align: right; font-weight: 700; color: #4f46e5;">101+ Articles (Top 15)</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 5px 0; color: #64748b;">Entity Linkage</td>
-                    <td style="padding: 5px 0; text-align: right; font-weight: 700; color: #0284c7;">Canonical PDPs Linked</td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </div>
-
           <!-- Strategy Pivot Table -->
           <h2 style="font-size: 14px; font-weight: 700; margin: 0 0 10px 0; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">📊 Strategy Pivot Performance Breakdown</h2>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
@@ -696,14 +612,6 @@ GA4 Commercial Attribution (Trailing 30-Day Window):
 - Engaged Store Visitors: {ga4_summary.get('unique_shoppers', ga4_summary.get('total_blog_sessions', 0)):,} (Unique readers exploring PDPs - browsers, not completed orders)
 - Store Engagement Rate: {ga4_summary.get('avg_engagement_rate', '0%')}
 - Commercial Intent Signals: {ga4_summary.get('assisted_add_to_carts', 0)} (Live gold rates, purity/sizes & cart starts - intent signals, not final sales)
-
-Generative Engine Optimization (GEO & AI Visibility):
-- Semrush AI Visibility Score: 40 / 100 (Active LLM Mentions Tier)
-- AI Overview Growth (6-Month): +107.2% (1,902 AIO Positions)
-- Total AI Citations: 8.4K Citations across 4.8K cited pages
-- Domain AI Overview Keywords: 15,455 keywords triggering Google AIOs
-- LLM Platform Share of Voice: ChatGPT 68.1% (4,800 mentions), Search AI Mode 29.9% (2,100), Google AI Overview 19.7% (1,400), Google Gemini 4.1% (284)
-- GEO Optimization Architecture: 100% FAQ schema JSON-LD, 40-60w direct answer blocks, 101+ AIO eligible (Top 15), canonical entity linkage
 
 Recently Published Articles (Past 24-48h):
 """ + "\n".join([f"- {b.get('title')} ({b.get('published_date', '')})" for b in recent_published]) + f"""
