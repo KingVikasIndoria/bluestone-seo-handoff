@@ -34,3 +34,6 @@ google_product_feed.csv
 
 # Standalone pack, contains credentials
 seo_email_dashboard_sync/
+
+# Daily report handed to the Apps Script mailer
+email_out/
