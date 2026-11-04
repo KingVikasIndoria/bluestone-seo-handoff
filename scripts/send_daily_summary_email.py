@@ -623,8 +623,35 @@ Charts Included:
     subject = "BlueStone SEO & GEO Daily Report 🔍"
     return subject, html_content, plain_content
 
+def send_via_apps_script(url, subject, html_content, plain_content):
+    """Post the report to the Apps Script web app, which sends it from its owner's Gmail."""
+    try:
+        res = requests.post(
+            url,
+            json={
+                "token": os.environ.get("APPS_SCRIPT_TOKEN", "").strip(),
+                "subject": subject,
+                "html": html_content,
+                "text": plain_content
+            },
+            timeout=60
+        )
+        result = res.json()
+    except Exception as e:
+        print(f"❌ Failed to reach Apps Script mailer: {e}")
+        return False
+    if not result.get("ok"):
+        print(f"❌ Apps Script mailer refused the report: {result.get('error')}")
+        return False
+    print(f"✅ Apps Script mailer: {result.get('skipped', 'daily report sent')}")
+    return True
+
 def send_email():
     subject, html_content, plain_content = generate_report()
+
+    apps_script_url = os.environ.get("APPS_SCRIPT_URL", "").strip()
+    if apps_script_url:
+        return send_via_apps_script(apps_script_url, subject, html_content, plain_content)
     
     email_to = os.environ.get("EMAIL_TO", "satyam.kumar3@bluestone.com,vikas.indoria@bluestone.com").strip()
     recipients = [e.strip() for e in email_to.split(",") if e.strip()]
@@ -703,4 +730,4 @@ def send_email():
     return False
 
 if __name__ == "__main__":
-    send_email()
+    sys.exit(0 if send_email() else 1)
