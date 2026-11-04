@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Bluestone SEO Dashboard Daily Email Summary with Embedded Visual Graphs
+BlueStone SEO Dashboard Daily Email Summary with Embedded Visual Graphs
 =======================================================================
 Reads dashboard_data.json and sends a daily HTML email report with:
   - Key Performance Indicators (Clicks, Impressions, CTR, Avg Rank)
@@ -353,15 +353,14 @@ def generate_report():
     <html>
     <head>
       <meta charset="utf-8">
-      <title>Bluestone SEO &amp; GEO Daily Performance Report</title>
+      <title>BlueStone SEO &amp; GEO Daily Report 🔍</title>
     </head>
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 24px; color: #1e293b;">
       <div style="max-width: 680px; margin: 0 auto; background: #ffffff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
         
         <!-- Header -->
-        <div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); padding: 26px 32px; color: #ffffff;">
-          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #a5b4fc; font-weight: 700; margin-bottom: 4px;">Automated Executive Report</div>
-          <h1 style="margin: 0 0 6px 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">💎 Bluestone SEO &amp; GEO Daily Performance</h1>
+        <div style="background: #001E38; padding: 26px 32px; color: #ffffff;">
+          <h1 style="margin: 0 0 6px 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">BlueStone SEO &amp; GEO Daily Report 🔍</h1>
           <p style="margin: 0; font-size: 13px; color: #cbd5e1;">Live Data Sync: <strong>{generated_at}</strong></p>
         </div>
 
@@ -588,7 +587,7 @@ def generate_report():
 
         <!-- Footer -->
         <div style="background: #f8fafc; padding: 16px 30px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0;">
-          Bluestone SEO Automation Pipeline • Generated automatically from Google Search Console & WordPress API
+          BlueStone SEO Automation Pipeline • Generated automatically from Google Search Console & WordPress API
         </div>
 
       </div>
@@ -597,7 +596,7 @@ def generate_report():
     """
 
     plain_content = f"""
-Bluestone SEO & GEO Daily Performance Report
+BlueStone SEO & GEO Daily Report 🔍
 Generated: {generated_at}
 Live Dashboard: https://kingvikasindoria.github.io/bluestone-seo-handoff/
 
@@ -621,7 +620,7 @@ Charts Included:
 2. Monthly Organic Impressions (Last 6 Months)
 """
 
-    subject = "Bluestone SEO & GEO Daily Report"
+    subject = "BlueStone SEO & GEO Daily Report 🔍"
     return subject, html_content, plain_content
 
 def send_email():
@@ -646,7 +645,7 @@ def send_email():
                         "Content-Type": "application/json"
                     },
                     json={
-                        "from": "Bluestone SEO Bot <onboarding@resend.dev>",
+                        "from": "BlueStone SEO Bot <onboarding@resend.dev>",
                         "to": [recipient],
                         "subject": subject,
                         "html": html_content,
@@ -674,7 +673,7 @@ def send_email():
         print("📡 Sending daily report via SMTP...")
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
-        msg["From"] = f"Bluestone SEO Bot <{smtp_user}>"
+        msg["From"] = f"BlueStone SEO Bot <{smtp_user}>"
         msg["To"] = ", ".join(recipients)
         
         part1 = MIMEText(plain_content, "plain", "utf-8")

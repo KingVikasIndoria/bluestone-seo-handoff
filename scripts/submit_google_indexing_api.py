@@ -9,12 +9,20 @@ Prerequisite:
   1. Enable "Indexing API" in Google Cloud Console
      → https://console.cloud.google.com/apis/library/indexing.googleapis.com
   2. Scope: https://www.googleapis.com/auth/indexing
+
+Usage:
+  submit_google_indexing_api.py <url> [<url> ...]   Submit only these URLs
+  submit_google_indexing_api.py --batch             Submit all unindexed URLs (uses up to 200 of the daily quota)
+  submit_google_indexing_api.py --batch --min-age-days 7   Only URLs published at least 7 days ago
+  Add --dry-run to list the count without submitting.
 """
 
 import os
 import sys
 import json
 import time
+import argparse
+from datetime import datetime, timedelta
 from pathlib import Path
 import csv
 
@@ -75,10 +83,19 @@ def submit_url(service, url):
 DATA_JSON_PATH = SCRIPT_DIR.parent / "dashboard" / "dashboard_data.json"
 
 def main():
-    urls_to_submit = []
+    parser = argparse.ArgumentParser(description="Submit URLs to the Google Indexing API")
+    parser.add_argument("urls", nargs="*")
+    parser.add_argument("--batch", action="store_true")
+    parser.add_argument("--min-age-days", type=int, default=0)
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
+    if bool(args.urls) == args.batch or not all(u.startswith("http") for u in args.urls):
+        parser.error("give either URLs or --batch")
+    urls_to_submit = list(args.urls)
+    cutoff = (datetime.now() - timedelta(days=args.min_age_days)).strftime("%Y-%m-%d")
     
     # Method 1: Load live unindexed URLs directly from dashboard_data.json if available
-    if DATA_JSON_PATH.exists():
+    if not urls_to_submit and DATA_JSON_PATH.exists():
         try:
             with open(DATA_JSON_PATH, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -100,7 +117,7 @@ def main():
                         or b.get("impressions", 0) > 0
                         or (b.get("first_indexed_date") and b.get("first_indexed_date") not in ["Not Indexed Yet", "Indexed (Date Pending)"])
                     )
-                    if not is_indexed and b.get("link"):
+                    if not is_indexed and b.get("link") and b.get("raw_date", "")[:10] <= cutoff:
                         urls_to_submit.append(b["link"].strip())
             urls_to_submit = list(dict.fromkeys(urls_to_submit))
             print(f"📊 Loaded {len(urls_to_submit)} strictly UNINDEXED URLs from dashboard_data.json (Sorted Newest First)")
@@ -108,7 +125,7 @@ def main():
             print(f"⚠️ Could not load from JSON: {e}")
 
     # Method 2: Fallback to CSV file if JSON didn't provide URLs
-    if not urls_to_submit and CSV_PATH.exists():
+    if not urls_to_submit and not args.min_age_days and CSV_PATH.exists():
         with open(CSV_PATH, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
@@ -120,11 +137,14 @@ def main():
         print("❌ No unindexed URLs found to submit.")
         sys.exit(0)
 
-    print(f"🚀 Total unindexed URLs queued for submission: {len(urls_to_submit)}")
+    print(f"🚀 Total URLs queued for submission: {len(urls_to_submit)}")
     
     # Cap at 200 per day limit
     batch = urls_to_submit[:200]
     print(f"📦 Submitting batch of {len(batch)} URLs (Daily quota limit is 200 URLs)...")
+    if args.dry_run:
+        print("Dry run: nothing submitted.")
+        return
 
     creds = authenticate_indexing()
     service = build("indexing", "v3", credentials=creds)
@@ -140,6 +160,8 @@ def main():
     print(f"🎉 Submitted {success_count} / {len(batch)} URLs to Google Indexing API!")
     print("   Googlebot will crawl these URLs within minutes to hours.")
     print("=" * 60)
+    if success_count == 0:
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
