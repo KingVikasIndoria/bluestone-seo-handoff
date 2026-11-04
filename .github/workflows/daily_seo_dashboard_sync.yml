@@ -54,6 +54,9 @@ jobs:
       - name: Run Dashboard Dataset Generator
         # Only run data generation on cron schedule or manual dispatch
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          WP_USER: ${{ secrets.WP_USER }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
         run: |
           python3 scripts/generate_dashboard_dataset.py
           cp dashboard/dashboard_data.json ./dashboard_data.json

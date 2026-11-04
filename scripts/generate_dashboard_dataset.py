@@ -31,7 +31,17 @@ DATA_JSON_PATH = DASHBOARD_DIR / "dashboard_data.json"
 INDEXED_HISTORY_PATH = SCRIPT_DIR / "indexed_urls_history.json"
 
 WP_URL = "https://blog.bluestone.com/wp-json/wp/v2/posts"
-WP_AUTH = ("blogbluestone", "4lKn pjRK GUtF Yts5 VzwF jcwd")
+# Load local .env if present
+ENV_FILE = SCRIPT_DIR.parent / ".env"
+if ENV_FILE.exists():
+    with open(ENV_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
+WP_AUTH = (os.environ["WP_USER"], os.environ["WP_APP_PASSWORD"])
 
 STRATEGY_PIVOT_DATE = datetime(2026, 7, 16)
 

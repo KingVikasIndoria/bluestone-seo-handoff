@@ -1,0 +1,36 @@
+name: Weekly Indexing Retry
+
+on:
+  schedule:
+    # Mondays ~11:11 AM IST (05:41 UTC): articles still unindexed 7+ days after publishing
+    - cron: '41 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  retry-unindexed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure Indexing Credentials
+        env:
+          INDEXING_TOKEN: ${{ secrets.INDEXING_TOKEN_JSON }}
+        run: |
+          echo "$INDEXING_TOKEN" > scripts/indexing_token.json
+
+      - name: Submit Unindexed URLs
+        run: python3 scripts/submit_google_indexing_api.py --batch --min-age-days 7
