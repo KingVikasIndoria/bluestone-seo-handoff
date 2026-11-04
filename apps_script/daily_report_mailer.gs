@@ -2,7 +2,7 @@
  * BlueStone SEO daily report mailer (Google Apps Script, runs in Google's cloud as the owner).
  *
  * sendDailyReport starts the GitHub workflow, waits for the report it produces,
- * sends it from the owner's Gmail, then deletes the report file from GitHub.
+ * sends it from the owner's mailbox, then deletes the report file from GitHub.
  *
  * Script properties (Project Settings -> Script properties):
  *   RECIPIENTS  comma-separated addresses
@@ -51,7 +51,8 @@ function sendDailyReport() {
   const zip = UrlFetchApp.fetch(redirect.getHeaders().Location).getBlob().setContentType('application/zip');
   const report = JSON.parse(Utilities.unzip(zip)[0].getDataAsString('UTF-8'));
 
-  GmailApp.sendEmail(props.getProperty('RECIPIENTS'), report.subject, report.text, {
+  // MailApp, not GmailApp: GmailApp garbles emoji.
+  MailApp.sendEmail(props.getProperty('RECIPIENTS'), report.subject, report.text, {
     htmlBody: report.html,
     name: 'BlueStone SEO Bot'
   });

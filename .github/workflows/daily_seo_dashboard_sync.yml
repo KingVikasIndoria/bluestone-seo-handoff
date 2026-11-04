@@ -20,6 +20,8 @@ concurrency:
 jobs:
   sync-and-report:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Kolkata
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
