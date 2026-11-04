@@ -31,3 +31,6 @@ google_product_feed.csv
 !output/product_rotation.json
 !output/publish_configs/
 !output/publish_configs/**
+
+# Standalone pack, contains credentials
+seo_email_dashboard_sync/
