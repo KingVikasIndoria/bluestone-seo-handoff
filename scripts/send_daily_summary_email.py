@@ -126,6 +126,7 @@ def generate_report():
         
     meta = data.get("metadata", {})
     generated_at = meta.get("generated_at", datetime.now().strftime("%b %d, %Y %I:%M %p"))
+    report_date = datetime.now().strftime("%-d %b %Y")
     sc = meta.get("strategy_comparison", {})
     new_strat = sc.get("new_strategy", {})
     leg_strat = sc.get("legacy_strategy", {})
@@ -353,14 +354,14 @@ def generate_report():
     <html>
     <head>
       <meta charset="utf-8">
-      <title>BlueStone SEO &amp; GEO Daily Report 🔍</title>
+      <title>BlueStone SEO &amp; GEO Daily Report 🔍 - {report_date}</title>
     </head>
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 24px; color: #1e293b;">
       <div style="max-width: 680px; margin: 0 auto; background: #ffffff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
         
         <!-- Header -->
         <div style="background: #001E38; padding: 26px 32px; color: #ffffff;">
-          <h1 style="margin: 0 0 6px 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">BlueStone SEO &amp; GEO Daily Report 🔍</h1>
+          <h1 style="margin: 0 0 6px 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">BlueStone SEO &amp; GEO Daily Report 🔍 - {report_date}</h1>
           <p style="margin: 0; font-size: 13px; color: #cbd5e1;">Live Data Sync: <strong>{generated_at}</strong></p>
         </div>
 
@@ -596,7 +597,7 @@ def generate_report():
     """
 
     plain_content = f"""
-BlueStone SEO & GEO Daily Report 🔍
+BlueStone SEO & GEO Daily Report 🔍 - {report_date}
 Generated: {generated_at}
 Live Dashboard: https://kingvikasindoria.github.io/bluestone-seo-handoff/
 
@@ -620,7 +621,7 @@ Charts Included:
 2. Monthly Organic Impressions (Last 6 Months)
 """
 
-    subject = "BlueStone SEO & GEO Daily Report 🔍"
+    subject = f"BlueStone SEO & GEO Daily Report 🔍 - {report_date}"
     return subject, html_content, plain_content
 
 def write_report_file(subject, html_content, plain_content):
